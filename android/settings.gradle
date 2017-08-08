@@ -1,3 +1,3 @@
-rootProject.name = 'fort'
+rootProject.name = 'FortReports'
 
 include ':app'
