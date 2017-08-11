@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import ReactNative from 'react-native';
+import Setup from './screens/Setup'
 
 const { StyleSheet, Text, View } = ReactNative;
 
@@ -26,11 +27,9 @@ class App extends Component {
    */
   render() {
     return ( 
-      <View>
-        <Text>
-        Hello
-        </Text>
-      </View>
+      
+        <Setup />
+      
     );
   }
 }
