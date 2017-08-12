@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import ReactNative from 'react-native';
 import {Header, Footer} from '../components';
-import {InnerSetup} from './';
+import {InnerReport} from './';
 
 const {
   Image,
@@ -16,7 +16,7 @@ const {
 /**
  * Container component for Setup page
  */
-class Setup extends Component {
+class Report extends Component {
 
   /**
     * Setup Container Constructor
@@ -35,15 +35,15 @@ class Setup extends Component {
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
       	<Header.Main
-          page='Setup'
+          page='Report'
         />
      	  <View style={{flex:1}}>
           <Image source={require('../assets/imgs/mainBackground.png')}>
-            <InnerSetup />
+            <InnerReport />
           </Image>
         </View>
         <Footer.Main
-          page='Setup'
+          page='Report'
         />
       </View>
     );
@@ -54,4 +54,4 @@ let styles = StyleSheet.create({
   
 });
 
-export default Setup;
+export default Report;

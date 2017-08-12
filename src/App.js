@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import ReactNative from 'react-native';
-import Setup from './screens/Setup'
+import {
+  Setup,
+  Report,
+  Preview
+} from './screens'
 
 const { StyleSheet, Text, View } = ReactNative;
 
@@ -26,10 +30,8 @@ class App extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    return ( 
-      
+    return (
         <Setup />
-      
     );
   }
 }
