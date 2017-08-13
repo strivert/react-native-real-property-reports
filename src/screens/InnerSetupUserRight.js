@@ -1,11 +1,9 @@
 import React, {Component} from 'react';
 import ReactNative from 'react-native';
 import {
-  InnerSetupReviewLeft,
-  InnerSetupReviewRight,
-  InnerSetupUserLeft,
-  InnerSetupUserRight
-} from './';
+  InputToggleText,
+  Letter
+} from '../components/Atoms';
 
 const {
   Image,
@@ -20,7 +18,7 @@ const {
 /**
  * Container component for Setup page
  */
-class InnerSetup extends Component {
+class InnerSetupUserRight extends Component {
 
   /**
     * Setup Container Constructor
@@ -29,21 +27,26 @@ class InnerSetup extends Component {
     */
   constructor(props){
     super(props);
+
+    this.state={
+      mode: '1',
+      data: { 
+        firstName: {
+          label: 'First Name',
+          value: 'Samual'
+        }
+      }
+    }
   }
 
   /**
    * Render Setup page
    * @return {jsxresult} result in jsx format
    */
-  render() {
+  render() {    
     return (
-      <View style={{flex:1, flexDirection: 'row' }}>
-      	<View style={{width: 360}}>
-          <InnerSetupUserLeft />
-        </View>
-        <View style={{flex: 1}}>
-          <InnerSetupUserRight />
-        </View>
+      <View style={{flex:1, padding:10, paddingLeft: 40, paddingRight: 40, paddingBottom: 70}}>
+        <Text>User Right</Text>
       </View>
     );
   }
@@ -53,4 +56,4 @@ let styles = StyleSheet.create({
   
 });
 
-export default InnerSetup;
+export default InnerSetupUserRight;

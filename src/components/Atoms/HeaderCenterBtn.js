@@ -43,7 +43,7 @@ class HeaderCenterBtn extends Component {
           </Image>
         </View>)
       :
-        (<TouchableOpacity onPress={()=>{}} style={{width:140, marginRight:20}}>
+        (<TouchableOpacity onPress={this.props.onPress} style={{width:140, marginRight:20}}>
           <Text style={{color:'white', fontSize:23, textAlign:'center', lineHeight:20, fontWeight: 'bold'}}>
             {innerText}
           </Text>

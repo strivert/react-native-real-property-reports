@@ -4,8 +4,10 @@ import Preview from './Preview';
 import InnerSetup from './InnerSetup';
 import InnerReport from './InnerReport';
 import InnerPreview from './InnerPreview';
-import InnerSetupLeft from './InnerSetupLeft';
-import InnerSetupRight from './InnerSetupRight';
+import InnerSetupReviewLeft from './InnerSetupReviewLeft';
+import InnerSetupReviewRight from './InnerSetupReviewRight';
+import InnerSetupUserLeft from './InnerSetupUserLeft';
+import InnerSetupUserRight from './InnerSetupUserRight';
 
 export {
   Setup,
@@ -14,6 +16,8 @@ export {
   InnerSetup,
   InnerReport,
   InnerPreview,
-  InnerSetupLeft,
-  InnerSetupRight
+  InnerSetupReviewLeft,
+  InnerSetupReviewRight,
+  InnerSetupUserLeft,
+  InnerSetupUserRight
 }

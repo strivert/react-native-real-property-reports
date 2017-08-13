@@ -9,6 +9,7 @@
   "dependencies": {
     "react": "16.0.0-alpha.12",
     "react-native": "0.47.1",
+    "react-native-router-flux": "3.38.0",
     "react-native-simple-radio-button": "^2.6.0"
   },
   "devDependencies": {

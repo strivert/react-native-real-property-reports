@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import ReactNative from 'react-native';
+import { Actions } from 'react-native-router-flux';
 import {
   HeaderCenterBtn,
   BarCircularBtn
@@ -43,9 +44,9 @@ class HeaderReport extends Component {
         </View>
 
         <View style={{flex:0.6, flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
-          <HeaderCenterBtn clicked={false}>SET-UP</HeaderCenterBtn>
+          <HeaderCenterBtn clicked={false} onPress={()=>{Actions.setup()}}>SET-UP</HeaderCenterBtn>
           <HeaderCenterBtn clicked={true} imgSrc={require('../../assets/imgs/mainBtnBkgHvr.png')}>REPORT</HeaderCenterBtn>
-          <HeaderCenterBtn clicked={false}>PREVIEW</HeaderCenterBtn>
+          <HeaderCenterBtn clicked={false} onPress={()=>{Actions.preview()}}>PREVIEW</HeaderCenterBtn>
         </View>
 
         <View style={{flex:0.2, flexDirection: 'row', justifyContent:'flex-end', alignItems:'center', marginRight: 30}}>
