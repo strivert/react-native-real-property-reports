@@ -35,12 +35,12 @@ class FooterCenterBtn extends Component {
     const innerText = this.props.children;
     return (
       (clicked)?
-        (<View style={{marginLeft:10, marginRight:10}}>
+        (<View style={{marginLeft: 5, marginRight: 5}}>
           <Image source={imgSrcClicked} style={style} />
         </View>)
       :
-        (<View style={{marginLeft:0, marginRight:0}}>
-          <TouchableOpacity onPress={()=>{}}>
+        (<View style={{marginLeft: 5, marginRight: 5}}>
+          <TouchableOpacity onPress={()=>this.props.onPress()}>
             <Image source={imgSrcUnClicked} style={style} />                      
           </TouchableOpacity>
         </View>

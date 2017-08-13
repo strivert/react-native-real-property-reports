@@ -36,7 +36,7 @@ class GreenToggleBtn extends Component {
     return (
       (clicked)?
         (<View>
-          <TouchableOpacity onPress={()=>{}}>
+          <TouchableOpacity onPress={()=>this.props.onPress()}>
             <Image source={require('../../assets/imgs/BTN_Blue_Small.png')} style={style}>
               <Text style={{color: 'white', fontSize: 16, textAlign: 'center', lineHeight: 25, fontWeight: 'bold'}}>{textClicked}</Text>
             </Image>
@@ -44,7 +44,7 @@ class GreenToggleBtn extends Component {
         </View>)
       :
         (<View>
-          <TouchableOpacity onPress={()=>{}}>
+          <TouchableOpacity onPress={()=>this.props.onPress()}>
             <Image source={require('../../assets/imgs/BTN_Green_Small.png')} style={style}>
               <Text style={{color: 'white', fontSize: 16, textAlign: 'center', lineHeight: 25, fontWeight: 'bold'}}>{textUnClicked}</Text>
             </Image>

@@ -43,7 +43,15 @@ class Main extends Component {
     if (page==='Report') {
       renderCom = <FooterReport />;
     } else if(page==='Setup') {
-      renderCom = <FooterSetup />;
+      renderCom =
+        <FooterSetup 
+          changePage={(innerPage)=>{
+            this.props.changePage(innerPage);
+          }}
+          changeEditToggle={(reportEditBtnClicked, userEditBtnClicked)=>{
+            this.props.changeEditToggle(reportEditBtnClicked, userEditBtnClicked);
+          }}
+        />;
     } else if(page==='Preview') {
       renderCom = <FooterPreview />;
     }

@@ -29,6 +29,12 @@ class FooterSetup extends Component {
     */
   constructor(props){
     super(props);
+    this.state={
+      reportBtnClicked: true,
+      userBtnClicked: false,
+      reportEditBtnClicked: false,
+      userEditBtnClicked: false
+    }
   }
 
   /**
@@ -45,22 +51,52 @@ class FooterSetup extends Component {
 
         <View style={{flex:0.7, flexDirection: 'row', justifyContent:'center', alignItems:'center', }}>
           <FooterCenterBtn
-            clicked={false}
+            clicked={this.state.reportBtnClicked}
             imgSrcClicked={require('../../assets/imgs/ReportsBtnSMOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/ReportsBtnSM.png')}
+            onPress={()=>{
+              this.setState({
+                reportBtnClicked: true,
+                userBtnClicked: false
+              });
+              this.props.changePage("report");
+            }}
           />
           <FooterCenterBtn
-            clicked={true}
+            clicked={this.state.userBtnClicked}
             imgSrcClicked={require('../../assets/imgs/UserBtnSMOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/UserBtnSM.png')}
+            onPress={()=>{
+              this.setState({
+                reportBtnClicked: false,
+                userBtnClicked: true
+              });
+              this.props.changePage("user");
+            }}
           />
         </View>
 
         <View style={{flex:0.15, flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
           <GreenToggleBtn
-            clicked={false}
-            textClicked='Edit'
-            textUnClicked='Save'
+            clicked={(this.state.reportBtnClicked)?this.state.reportEditBtnClicked:this.state.userEditBtnClicked}
+            textClicked='Save'
+            textUnClicked='Edit'
+            onPress={()=>{
+              if ( this.state.reportBtnClicked ) {
+                this.setState({
+                  reportEditBtnClicked: !this.state.reportEditBtnClicked
+                },()=>{
+                  this.props.changeEditToggle(this.state.reportEditBtnClicked, this.state.userEditBtnClicked);
+                })
+              } else {
+                this.setState({
+                  userEditBtnClicked: !this.state.userEditBtnClicked
+                },()=>{
+                  this.props.changeEditToggle(this.state.reportEditBtnClicked, this.state.userEditBtnClicked);
+                })
+              }
+
+            }}
           />
         </View>
 

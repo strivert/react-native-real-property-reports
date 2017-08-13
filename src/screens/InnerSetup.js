@@ -36,13 +36,29 @@ class InnerSetup extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
+    const {clickedPage, reportEditBtnClicked, userEditBtnClicked} = this.props;    
+    let leftPage=null, rightPage=null;
+    if (clickedPage==='report'){
+      leftPage = <InnerSetupReviewLeft />;
+      rightPage =
+        <InnerSetupReviewRight
+          reportEditBtnClicked={reportEditBtnClicked}
+        />;
+    } else {
+      leftPage = <InnerSetupUserLeft />;
+      rightPage =
+        <InnerSetupUserRight
+          userEditBtnClicked={userEditBtnClicked}
+        />;
+    }
+
     return (
       <View style={{flex:1, flexDirection: 'row' }}>
       	<View style={{width: 360}}>
-          <InnerSetupUserLeft />
+          {leftPage}
         </View>
         <View style={{flex: 1}}>
-          <InnerSetupUserRight />
+          {rightPage}
         </View>
       </View>
     );

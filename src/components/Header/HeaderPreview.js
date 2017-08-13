@@ -48,6 +48,9 @@ class HeaderPreview extends Component {
           <HeaderCenterBtn clicked={false} onPress={()=>{Actions.report()}}>REPORT</HeaderCenterBtn>
           <HeaderCenterBtn clicked={true} imgSrc={require('../../assets/imgs/mainBtnBkgHvr.png')}>PREVIEW</HeaderCenterBtn>
         </View>
+
+        <View style={{flex: 0.2, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 30}}>
+        </View>
       </View>
     );
   }

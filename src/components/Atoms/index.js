@@ -6,6 +6,7 @@ import TextBtn from './TextBtn';
 import InputToggleText from './InputToggleText';
 import Letter from './Letter';
 import {TextWithLetterSpacing} from './TextWithLetterSpacing';
+import InputRowToggleText from './InputRowToggleText';
 
 export {
     HeaderCenterBtn,
@@ -14,6 +15,7 @@ export {
     GreenToggleBtn,
     TextBtn,
     InputToggleText,
+    InputRowToggleText,
     Letter,
     TextWithLetterSpacing
 }

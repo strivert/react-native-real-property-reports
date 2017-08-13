@@ -25,6 +25,11 @@ class Setup extends Component {
     */
   constructor(props){
     super(props);
+    this.state={
+      clickedPage: 'report',
+      reportEditBtnClicked: false,
+      userEditBtnClicked: false
+    }
   }
 
   /**
@@ -39,11 +44,26 @@ class Setup extends Component {
         />
      	  <View style={{flex:1}}>
           <Image source={require('../assets/imgs/mainBackground.png')}>
-            <InnerSetup />
+            <InnerSetup
+              clickedPage={this.state.clickedPage}
+              reportEditBtnClicked={this.state.reportEditBtnClicked}
+              userEditBtnClicked={this.state.userEditBtnClicked}
+            />
           </Image>
         </View>
         <Footer.Main
           page='Setup'
+          changePage={(innerPage)=>{
+            this.setState({
+              clickedPage: innerPage
+            })
+          }}
+          changeEditToggle={(reportEditBtnClicked, userEditBtnClicked)=>{
+            this.setState({
+              reportEditBtnClicked: reportEditBtnClicked,
+              userEditBtnClicked: userEditBtnClicked
+            })
+          }}
         />
       </View>
     );
