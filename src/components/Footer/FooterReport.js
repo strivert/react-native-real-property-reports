@@ -49,52 +49,61 @@ class FooterReport extends Component {
 
         <View style={{flex:0.7, flexDirection: 'row', justifyContent:'center', alignItems:'center', }}>
           <FooterCenterBtn
-            clicked={false}
+            clicked={true}
             imgSrcClicked={require('../../assets/imgs/BtnRptRoofingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptRoofing.png')}
+            onPress={()=>{}}
           />
           <FooterCenterBtn
             clicked={false}
             imgSrcClicked={require('../../assets/imgs/BtnRptExteriorOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptExterior.png')}
+            onPress={()=>{}}
           />
           <FooterCenterBtn
-            clicked={true}
+            clicked={false}
             imgSrcClicked={require('../../assets/imgs/BtnRptStructureOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptStructure.png')}
+            onPress={()=>{}}
           />
           <FooterCenterBtn
             clicked={false}
             imgSrcClicked={require('../../assets/imgs/BtnRptInteriorOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptInterior.png')}
+            onPress={()=>{}}
           />
           <FooterCenterBtn
             clicked={false}
             imgSrcClicked={require('../../assets/imgs/BtnRptElectricalOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptElectrical.png')}
+            onPress={()=>{}}
           />
           <FooterCenterBtn
             clicked={false}
             imgSrcClicked={require('../../assets/imgs/BtnRptPlumbingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptPlumbing.png')}
+            onPress={()=>{}}
           />
           <FooterCenterBtn
             clicked={false}
             imgSrcClicked={require('../../assets/imgs/BtnRptCoolingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptCooling.png')}
+            onPress={()=>{}}
           />
           <FooterCenterBtn
             clicked={false}
             imgSrcClicked={require('../../assets/imgs/BtnRptHeatingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptHeating.png')}
+            onPress={()=>{}}
           />
         </View>
 
         <View style={{flex:0.15, flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
           <GreenToggleBtn
             clicked={false}
-            textClicked='Edit'
-            textUnClicked='Save'
+            textClicked='Save'
+            textUnClicked='Edit'
+            onPress={()=>{}}
           />
         </View>
 

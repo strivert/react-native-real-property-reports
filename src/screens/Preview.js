@@ -14,12 +14,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for Preview page
  */
 class Preview extends Component {
 
   /**
-    * Setup Container Constructor
+    * Preview Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -28,7 +28,7 @@ class Preview extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render Preview page
    * @return {jsxresult} result in jsx format
    */
   render() {    

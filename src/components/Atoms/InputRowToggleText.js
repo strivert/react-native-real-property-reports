@@ -14,12 +14,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * InputRowToggleText component
  */
 class InputRowToggleText extends Component {
 
   /**
-    * Setup Container Constructor
+    * InputRowToggleText Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -28,7 +28,7 @@ class InputRowToggleText extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render InputRowToggleText
    * @return {jsxresult} result in jsx format
    */
   render() {

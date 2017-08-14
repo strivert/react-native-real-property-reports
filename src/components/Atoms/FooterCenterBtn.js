@@ -13,12 +13,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * FooterCenterBtn component
  */
 class FooterCenterBtn extends Component {
 
   /**
-    * Setup Container Constructor
+    * FooterCenterBtn Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -27,7 +27,7 @@ class FooterCenterBtn extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render FooterCenterBtn page
    * @return {jsxresult} result in jsx format
    */
   render() {

@@ -14,12 +14,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for Report page
  */
 class Report extends Component {
 
   /**
-    * Setup Container Constructor
+    * Report Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -28,7 +28,7 @@ class Report extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render Report page
    * @return {jsxresult} result in jsx format
    */
   render() {    

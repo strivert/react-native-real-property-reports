@@ -13,12 +13,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * GreenToggleBtn component
  */
 class GreenToggleBtn extends Component {
 
   /**
-    * Setup Container Constructor
+    * GreenToggleBtn Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -27,7 +27,7 @@ class GreenToggleBtn extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render GreenToggleBtn
    * @return {jsxresult} result in jsx format
    */
   render() {

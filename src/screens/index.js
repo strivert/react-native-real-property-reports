@@ -8,6 +8,8 @@ import InnerSetupReviewLeft from './InnerSetupReviewLeft';
 import InnerSetupReviewRight from './InnerSetupReviewRight';
 import InnerSetupUserLeft from './InnerSetupUserLeft';
 import InnerSetupUserRight from './InnerSetupUserRight';
+import InnerReportLeft from './InnerReportLeft';
+import InnerReportRight from './InnerReportRight';
 
 export {
   Setup,
@@ -19,5 +21,7 @@ export {
   InnerSetupReviewLeft,
   InnerSetupReviewRight,
   InnerSetupUserLeft,
-  InnerSetupUserRight
+  InnerSetupUserRight,
+  InnerReportLeft,
+  InnerReportRight
 }

@@ -28,7 +28,7 @@ class Main extends Component {
     * @param {props} props from parent component
     * @return {void}
     */
-  constructor(props){
+  constructor(props) {
     super(props);
   }
 

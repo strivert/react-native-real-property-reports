@@ -18,12 +18,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for ReportLeft of Setup page
  */
 class InnerSetupReviewLeft extends Component {
 
   /**
-    * Setup Container Constructor
+    * SetupReportLeft Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -42,12 +42,7 @@ class InnerSetupReviewLeft extends Component {
       {"name": "123 Sample Street", state: "0"},
       {"name": "Address 1", state: "1"},
       {"name": "Address 2", state: "0"},
-      {"name": "Address 3 K sdklf  lksd f k lkj lkj 123", state: "0"},
-      {"name": "Address 3 K sdklf  lksd f k lkj lkj 123", state: "0"},
-      {"name": "Address 3 K sdklf  lksd f k lkj lkj 123", state: "0"},
-      {"name": "Address 3 K sdklf  lksd f k lkj lkj 123", state: "0"},
-      {"name": "Address 3 K sdklf  lksd f k lkj lkj 123", state: "0"},
-      {"name": "Address 3 K sdklf  lksd f k lkj lkj 123", state: "0"}
+      {"name": "Address 3", state: "0"},
     ];
     itemData = itemData.map((item, key)=>{
       return {'label': item.name, value: key, radioBtnState: item.state}; //0: inital gray, 1: only blue, 2: checked blue, 3: checked blue with camera icon

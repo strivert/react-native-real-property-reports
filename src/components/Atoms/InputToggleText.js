@@ -14,7 +14,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * InputToggleText component
  */
 class InputToggleText extends Component {
 
@@ -28,7 +28,7 @@ class InputToggleText extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render InputToggleText
    * @return {jsxresult} result in jsx format
    */
   render() {
@@ -40,6 +40,7 @@ class InputToggleText extends Component {
         {mode === '0' ?
             <TextInput
               style={{height: textarea==='1'?80:40, borderColor: 'gray', borderWidth: 1}}
+              underlineColorAndroid='transparent'
               onChangeText={(text) => {}}
               value={value}
               multiline = {textarea==='1'?true:false}

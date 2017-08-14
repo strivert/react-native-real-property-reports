@@ -13,12 +13,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * TextBtn component
  */
 class TextBtn extends Component {
 
   /**
-    * Setup Container Constructor
+    * TextBtn Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -27,7 +27,7 @@ class TextBtn extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render TextBtn
    * @return {jsxresult} result in jsx format
    */
   render() {

@@ -13,12 +13,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Component for BarCircularBtn
  */
 class BarCircularBtn extends Component {
 
   /**
-    * Setup Container Constructor
+    * BarCircularBtn Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -27,7 +27,7 @@ class BarCircularBtn extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render BarCircularBtn
    * @return {jsxresult} result in jsx format
    */
   render() {

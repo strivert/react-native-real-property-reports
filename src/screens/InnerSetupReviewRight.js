@@ -15,12 +15,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for ReportRight of Setup page
  */
 class InnerSetupReviewRight extends Component {
 
   /**
-    * Setup Container Constructor
+    * SetupReportRight Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -38,7 +38,7 @@ class InnerSetupReviewRight extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render SetupReportRight page
    * @return {jsxresult} result in jsx format
    */
   render() {

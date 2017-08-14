@@ -18,12 +18,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for InnerSetup page
  */
 class InnerSetup extends Component {
 
   /**
-    * Setup Container Constructor
+    * InnerSetup Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -32,7 +32,7 @@ class InnerSetup extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render InnerSetup page
    * @return {jsxresult} result in jsx format
    */
   render() {

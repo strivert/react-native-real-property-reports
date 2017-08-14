@@ -20,12 +20,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for UserLeft of Setup page
  */
 class InnerSetupUserLeft extends Component {
 
   /**
-    * Setup Container Constructor
+    * SetupUserLeft Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -34,7 +34,7 @@ class InnerSetupUserLeft extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render SetupUserLeft page
    * @return {jsxresult} result in jsx format
    */
   render() {

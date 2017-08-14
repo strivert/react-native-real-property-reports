@@ -13,12 +13,12 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * HeaderCenterBtn component
  */
 class HeaderCenterBtn extends Component {
 
   /**
-    * Setup Container Constructor
+    * HeaderCenterBtn Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -27,7 +27,7 @@ class HeaderCenterBtn extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render HeaderCenterBtn
    * @return {jsxresult} result in jsx format
    */
   render() {
