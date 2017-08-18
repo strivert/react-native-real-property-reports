@@ -19,7 +19,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for Main page
  */
 class Main extends Component {
 
@@ -33,7 +33,7 @@ class Main extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render Main page
    * @return {jsxresult} result in jsx format
    */
   render() {

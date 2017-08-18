@@ -32,7 +32,7 @@ class HeaderReport extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render HeaderReport page
    * @return {jsxresult} result in jsx format
    */
   render() {    
