@@ -18,7 +18,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for HeaderReport page
+ * Container component for Setup page
  */
 class HeaderReport extends Component {
 
@@ -32,7 +32,7 @@ class HeaderReport extends Component {
   }
 
   /**
-   * Render HeaderReport page
+   * Render Setup page
    * @return {jsxresult} result in jsx format
    */
   render() {    

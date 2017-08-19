@@ -18,7 +18,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for HeaderPreview page
+ * Container component for Setup page
  */
 class HeaderPreview extends Component {
 
@@ -32,7 +32,7 @@ class HeaderPreview extends Component {
   }
 
   /**
-   * Render HeaderPreview page
+   * Render Setup page
    * @return {jsxresult} result in jsx format
    */
   render() {    

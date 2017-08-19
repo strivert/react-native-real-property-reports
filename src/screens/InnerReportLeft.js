@@ -5,7 +5,7 @@ import {
   TextWithLetterSpacing
 } from '../components/Atoms';
 import {
-  ItemList
+  ItemListsWithTag
 } from '../components/Molecule';
 
 const {
@@ -63,7 +63,7 @@ class InnerReportLeft extends Component {
 
           {
             name: 'Porch(roof)',
-            state: "0",
+            state: "2",
             data:[
               {
                 name: 'Slate',
@@ -89,7 +89,7 @@ class InnerReportLeft extends Component {
           }
 
 
-        ]/*,
+        ],
         'Flashings': [
           {
             name: 'Valley(flashing)',
@@ -117,7 +117,7 @@ class InnerReportLeft extends Component {
               {name: 'Repairs'}
             ]
           }
-        ]*/
+        ]
       }
     }
   }
@@ -132,22 +132,19 @@ class InnerReportLeft extends Component {
 
     let count = 0;
     for(var key in this.state.Roofing) {
-      itemListData = this.state.Roofing[key].map((item,index)=>{      
+      itemListData = this.state.Roofing[key].map((item,index)=>{
         //itemListData = item.map((obj, key)=>{
           return {'label': item.name, value: index, radioBtnState: item.state}; //0: inital gray, 1: only blue, 2: checked blue, 3: checked blue with camera icon
         //});        
       });
 
-      leftCnt[count] = 
-        (
-          <View>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black', marginLeft: 10}}>{key}</Text>
-            <ItemList items={itemListData} handleChangeItem = {()=>{}} />
-          </View>
-        )
+      leftCnt[count] = {
+        listTag: key,
+        listData: itemListData
+      };        
       count++;
     }
-    
+
     return (
       <View style={{flex: 1}}>
         <View>
@@ -157,9 +154,7 @@ class InnerReportLeft extends Component {
           >
             Overview Notes
           </TextBtn>
-          {leftCnt.map((item,i)=>{
-            return <View key={`rep-group-${i}`}>{item}</View>;
-          })}
+          <ItemListsWithTag itemInfo={leftCnt} handleChangeItem = {()=>{}} />
         </View>
       </View>
     );

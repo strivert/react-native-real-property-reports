@@ -43,10 +43,6 @@ export default class ItemList extends Component {
     this.props.handleChangeItem(value.label);
   }
 
-  onChangeOther(value){
-    this.props.handleChangeItem(value);
-  }
-
   componentWillReceiveProps(nextProps){
     if( nextProps.new != this.props.new ){
       this.setState({

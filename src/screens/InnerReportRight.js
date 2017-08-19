@@ -43,7 +43,14 @@ class InnerReportRight extends Component {
    */
   render() {        
     return (
-      <View style={{flex:1, padding:10, paddingLeft: 40, paddingRight: 40, paddingBottom: 70}}>
+      <View style={{flex:1, padding:10, paddingLeft: 40, paddingRight: 40, paddingBottom: 70, paddingTop: 0}}>
+        <View>
+          <View>
+            <Image source={require('../assets/imgs/Blue-waving-flag-iconSM.png')} />
+          </View>
+          <View>
+          </View>
+        </View>
         <Text>Right View</Text>
       </View>
     );

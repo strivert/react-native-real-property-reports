@@ -18,7 +18,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Header Setup page
+ * Container component for Setup page
  */
 class HeaderSetup extends Component {
 
