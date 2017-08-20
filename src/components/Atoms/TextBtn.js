@@ -42,7 +42,7 @@ class TextBtn extends Component {
 
     return (
       <View>
-        <TouchableOpacity onPress={()=>{}}>
+        <TouchableOpacity onPress={()=>this.props.onPress()}>
           <Image source={imgSrc} style={imgStyle}>
             <Text style={{color: 'white', fontSize: 16, textAlign: 'center', fontWeight: 'bold'}}>{innerText}</Text>
           </Image>
