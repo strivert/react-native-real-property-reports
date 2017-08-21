@@ -48,13 +48,13 @@ class InnerReportRight extends Component {
    */
   render() {
     let details = [
-      {"name": "Hiking"},
-      {"name": "Cycling"},
-      {"name": "ATV/snow scooter"},
-      {"name": "Horse riding"},
-      {"name": "Wildlife viewing"},
-      {"name": "Fishing"},
-      {"name": "Hunting"},
+      {"name": "Asphalt shingles"},
+      {"name": "Wood shingles / shakes"},
+      {"name": "Concrete / Clay tiles"},
+      {"name": "Slate"},
+      {"name": "Plastic / Fiberglass"},
+      {"name": "Metal"},
+      {"name": "One layer noted"},
       {"name": "Horse riding"},
       {"name": "Wildlife viewing"},
       {"name": "Fishing"},

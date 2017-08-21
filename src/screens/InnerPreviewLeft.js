@@ -116,7 +116,7 @@ class InnerPreviewLeft extends Component {
                 </Image>
               </TouchableOpacity>
               <TextInput
-                style={{width:'80%', height: '100%'}} 
+                style={{width:'80%', height: '100%', fontSize: 27}} 
                 underlineColorAndroid='transparent'
                 onSubmitEditing={()=>{this.handleAddEmail()}}
                 onChangeText={(v) => this.setState({enteredEmail: v})}

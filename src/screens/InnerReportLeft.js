@@ -36,7 +36,7 @@ class InnerReportLeft extends Component {
         'Roofing': [
           {
             name: 'Sloped(roof)',
-            state: "0",
+            state: "3",
             data:[
               {
                 name: 'Asphalt shingles',
@@ -86,6 +86,33 @@ class InnerReportLeft extends Component {
               {name: 'Poor'},
               {name: 'Repairs'}
             ]
+          },
+
+          {
+            name: 'Bay',
+            state: "0",
+            data:[
+              {
+                name: 'Slate',
+                selected: '0',
+                selectedEndDataIndex:[
+                  0,
+                  1
+                ]
+              },
+              {
+                name: 'Metal',
+                selected: '0',
+                selectedEndDataIndex:[
+                  1
+                ]
+              }
+            ],
+            endData: [
+              {name: 'Wind'},
+              {name: 'Poor'},
+              {name: 'Repairs'}
+            ]
           }
 
 
@@ -93,6 +120,34 @@ class InnerReportLeft extends Component {
         'Flashings': [
           {
             name: 'Valley(flashing)',
+            state: "0",
+            data:[
+              {
+                name: 'Metal open',
+                selected: '0',
+                selectedEndDataIndex:[
+                  0,
+                  1
+                ]
+              },
+              {
+                name: 'Asphalt strip',
+                selected: '0',
+                selectedEndDataIndex:[
+                  1
+                ]
+              }
+            ],
+            endData: [
+              {name: 'Minor cracking'},
+              {name: 'Poor installation'},
+              {name: 'Repairs'}
+            ]
+          }
+        ],
+        'Chimneys': [
+          {
+            name: 'Chimney',
             state: "0",
             data:[
               {

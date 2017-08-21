@@ -162,7 +162,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', top: 30, left: 40}} 
+            viewStyle={{position: 'absolute', top: 35, left: 40}} 
             imgStyle={{}}
             imgSrc={require('../../assets/imgs/compassNWBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/compassNWBtnOVR.png')} 
@@ -171,7 +171,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', top: 30, left: 80}} 
+            viewStyle={{position: 'absolute', top: 35, left: 80}} 
             imgStyle={{}}
             imgSrc={require('../../assets/imgs/compassNEBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/compassNEBtnOVR.png')} 
@@ -180,7 +180,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', top: 53, left: 63}} 
+            viewStyle={{position: 'absolute', top: 58, left: 63}} 
             imgStyle={{resizeMode: 'stretch', width: 25, height: 25}}
             imgSrc={require('../../assets/imgs/compassCenterBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/compassCenterBtnOVR.png')} 
@@ -189,7 +189,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', top: 70, left: 40}} 
+            viewStyle={{position: 'absolute', top: 75, left: 40}} 
             imgStyle={{}}
             imgSrc={require('../../assets/imgs/compassSWBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/compassSWBtnOVR.png')} 
@@ -198,7 +198,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', top: 70, left: 80}} 
+            viewStyle={{position: 'absolute', top: 75, left: 80}} 
             imgStyle={{}}
             imgSrc={require('../../assets/imgs/compassSEBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/compassSEBtnOVR.png')} 
@@ -207,7 +207,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', top: 40, left: 0}} 
+            viewStyle={{position: 'absolute', top: 45, left: 0}} 
             imgStyle={{}}
             imgSrc={require('../../assets/imgs/CompassWBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/CompassWBtnOVR.png')} 
@@ -216,7 +216,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', top: 40, right: 0}} 
+            viewStyle={{position: 'absolute', top: 45, right: 0}} 
             imgStyle={{}}
             imgSrc={require('../../assets/imgs/CompassEBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/CompassEBtnOVR.png')} 
@@ -225,7 +225,7 @@ class Compass extends Component {
           />
 
           <CompassItem 
-            viewStyle={{position: 'absolute', bottom: 15, left: 52}} 
+            viewStyle={{position: 'absolute', bottom: 10, left: 52}} 
             imgStyle={{}}
             imgSrc={require('../../assets/imgs/CompassSBtn.png')} 
             imgSelectedSrc={require('../../assets/imgs/CompassSBtnOVR.png')} 
