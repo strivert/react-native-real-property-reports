@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 import ReactNative from 'react-native';
+import {
+  InnerPreviewLeft,
+  InnerPreviewRight
+} from './';
 
 const {
   Image,
@@ -31,10 +35,13 @@ class InnerPreview extends Component {
    */
   render() {    
     return (
-      <View>
-      	<Text>
-          HIHIHI Inner InnerPreview
-        </Text>
+      <View style={{flex:1, flexDirection: 'row' }}>
+        <View style={{width: 360}}>
+          <InnerPreviewLeft />
+        </View>
+        <View style={{flex: 1}}>
+          <InnerPreviewRight />
+        </View>
       </View>
     );
   }

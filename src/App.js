@@ -35,8 +35,8 @@ class App extends Component {
         <Router duration={0}>
           <Scene key="root" hideNavBar={true} hideTabBar={true} hideOnChildTabs={true}>
             <Scene key="setup" component={Setup} />
-            <Scene key="report" component={Report} initial={true} />
-            <Scene key="preview" component={Preview} />
+            <Scene key="report" component={Report} />
+            <Scene key="preview" component={Preview} initial={true} />
           </Scene>
         </Router>
     );
