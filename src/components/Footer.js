@@ -13,7 +13,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for Setup page
+ * Container component for Footer page
  */
 class Footer extends Component {
 
