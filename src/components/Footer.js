@@ -18,7 +18,7 @@ const {
 class Footer extends Component {
 
   /**
-    * Setup Container Constructor
+    * Footer Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
@@ -27,7 +27,7 @@ class Footer extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render Footer page
    * @return {jsxresult} result in jsx format
    */
   render() {    
