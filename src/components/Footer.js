@@ -19,7 +19,7 @@ class Footer extends Component {
 
   /**
     * Footer Container Constructor
-    * @param {props} props from parent component
+    * @param {props}  props from parent component
     * @return {void}
     */
   constructor(props){
