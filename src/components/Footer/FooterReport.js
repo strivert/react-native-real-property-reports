@@ -18,7 +18,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for FooterReport page
+ * Container component for Setup page
  */
 class FooterReport extends Component {
 
@@ -32,7 +32,7 @@ class FooterReport extends Component {
   }
 
   /**
-   * Render FooterReport page
+   * Render Setup page
    * @return {jsxresult} result in jsx format
    */
   render() {

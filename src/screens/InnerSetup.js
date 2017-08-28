@@ -36,13 +36,29 @@ class InnerSetup extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {clickedPage, reportEditBtnClicked, userEditBtnClicked} = this.props;    
+    const {clickedPage, reportEditBtnClicked, userEditBtnClicked} = this.props;
+    const {address, selectedAddressIndex} = this.props;
+    const {onSelectAddress, onDeleteAddress, onStoreTempAddress, onUpdateAddress} = this.props;
+    
     let leftPage=null, rightPage=null;
     if (clickedPage==='report'){
-      leftPage = <InnerSetupReviewLeft />;
+      leftPage =
+        <InnerSetupReviewLeft
+          address={address}
+          selectedAddressIndex={selectedAddressIndex}
+          reportEditBtnClicked={reportEditBtnClicked}
+          onSelectAddress={(index)=>onSelectAddress(index)}          
+          onDeleteAddress={()=>{
+            onDeleteAddress();
+          }}
+          onUpdateAddress={()=>onUpdateAddress()}
+        />;
       rightPage =
         <InnerSetupReviewRight
           reportEditBtnClicked={reportEditBtnClicked}
+          address={address}
+          selectedAddressIndex={selectedAddressIndex}
+          onStoreTempAddress={(tempAddress)=>onStoreTempAddress(tempAddress)}
         />;
     } else {
       leftPage = <InnerSetupUserLeft />;
@@ -65,8 +81,7 @@ class InnerSetup extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+let styles = StyleSheet.create({  
 });
 
 export default InnerSetup;

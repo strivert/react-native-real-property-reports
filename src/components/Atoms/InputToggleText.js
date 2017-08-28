@@ -41,7 +41,7 @@ class InputToggleText extends Component {
             <TextInput
               style={{height: textarea==='1'?80:40, borderColor: 'gray', borderWidth: 1}}
               underlineColorAndroid='transparent'
-              onChangeText={(text) => {}}
+              onChangeText={(text) => this.props.onChangeText(text)}
               value={value}
               multiline = {textarea==='1'?true:false}
               numberOfLines = {textarea==='1'?4:1}

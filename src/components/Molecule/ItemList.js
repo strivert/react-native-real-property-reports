@@ -40,7 +40,7 @@ export default class ItemList extends Component {
       value3Index: index
     })
 
-    this.props.handleChangeItem(value.label);
+    this.props.handleChangeItem(value.label, index);
   }
 
   componentWillReceiveProps(nextProps){
@@ -56,25 +56,30 @@ export default class ItemList extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    let {items} = this.props;
-    
+    let {items, defaultSelectedIndex} = this.props;
     return (
       <View style={styles.itemList}>
         <RadioForm animation={true}>
           {items.map((obj, i) => {            
             
-            let radioStyle = null;
+            let radioStyle = [];
 
             if( this.state.value3Index === i ) {
               if( i==0 )
                 radioStyle =[styles.radio, styles.bg, styles.radioFirst];
               else
                 radioStyle = [styles.radio, styles.bg];
-            }else{
-              if( i==0 )
-                radioStyle =[styles.radio, styles.radioFirst];
-              else
+            } else {
+              if( i=== 0 ) {
+                radioStyle = [styles.radio, styles.radioFirst];
+              }              
+              else {
                 radioStyle = [styles.radio];
+              }
+              // alert(this.state.value3Index);
+              if (defaultSelectedIndex!== undefined && defaultSelectedIndex === i) {
+                radioStyle.push(styles.bg);
+              }
             }
             
             let radioLabelStyle = (this.state.value3Index === i)?[styles.radioLabel, styles.bold]:styles.radioLabel;

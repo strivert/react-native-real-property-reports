@@ -18,7 +18,7 @@ const {
 } = ReactNative;
 
 /**
- * Container component for FooterSetup page
+ * Container component for Setup page
  */
 class FooterSetup extends Component {
 
@@ -31,9 +31,7 @@ class FooterSetup extends Component {
     super(props);
     this.state={
       reportBtnClicked: true,
-      userBtnClicked: false,
-      reportEditBtnClicked: false,
-      userEditBtnClicked: false
+      userBtnClicked: false
     }
   }
 
@@ -41,7 +39,8 @@ class FooterSetup extends Component {
    * Render Setup page
    * @return {jsxresult} result in jsx format
    */
-  render() {    
+  render() {
+    const {reportEditBtnClicked, userEditBtnClicked} = this.props;
     return (
       
       <View style={{flex:1, flexDirection: 'row'}}>
@@ -78,24 +77,15 @@ class FooterSetup extends Component {
 
         <View style={{flex:0.15, flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
           <GreenToggleBtn
-            clicked={(this.state.reportBtnClicked)?this.state.reportEditBtnClicked:this.state.userEditBtnClicked}
+            clicked={(this.state.reportBtnClicked)?reportEditBtnClicked:userEditBtnClicked}
             textClicked='Save'
             textUnClicked='Edit'
-            onPress={()=>{
+            onPress={() => {
               if ( this.state.reportBtnClicked ) {
-                this.setState({
-                  reportEditBtnClicked: !this.state.reportEditBtnClicked
-                },()=>{
-                  this.props.changeEditToggle(this.state.reportEditBtnClicked, this.state.userEditBtnClicked);
-                })
+                this.props.changeEditToggle(!reportEditBtnClicked, userEditBtnClicked);
               } else {
-                this.setState({
-                  userEditBtnClicked: !this.state.userEditBtnClicked
-                },()=>{
-                  this.props.changeEditToggle(this.state.reportEditBtnClicked, this.state.userEditBtnClicked);
-                })
+                this.props.changeEditToggle(reportEditBtnClicked, !userEditBtnClicked);
               }
-
             }}
           />
         </View>

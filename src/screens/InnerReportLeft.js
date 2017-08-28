@@ -40,24 +40,17 @@ class InnerReportLeft extends Component {
             data:[
               {
                 name: 'Asphalt shingles',
-                selected: '0',
-                selectedEndDataIndex:[
-                  0,
-                  1
-                ]
+                selected: '0'
               },
               {
                 name: 'Wood shingles / shakes',
-                selected: '0',
-                selectedEndDataIndex:[
-                  1
-                ]
+                selected: '0'
               }
             ],
             endData: [
-              {name: 'In good shape'},
-              {name: 'In relatively good shape'},
-              {name: 'Initial signs of wear beginning to show'}
+              {name: 'In good shape', selected: 0},
+              {name: 'In relatively good shape', selected: 1},
+              {name: 'Initial signs of wear beginning to show', selected: 0}
             ]
           },
 
@@ -67,24 +60,17 @@ class InnerReportLeft extends Component {
             data:[
               {
                 name: 'Slate',
-                selected: '0',
-                selectedEndDataIndex:[
-                  0,
-                  1
-                ]
+                selected: '0'
               },
               {
                 name: 'Metal',
-                selected: '0',
-                selectedEndDataIndex:[
-                  1
-                ]
+                selected: '0'
               }
             ],
             endData: [
-              {name: 'Wind'},
-              {name: 'Poor'},
-              {name: 'Repairs'}
+              {name: 'Wind', selected: 0},
+              {name: 'Poor', selected: 0},
+              {name: 'Repairs', selected: 0}
             ]
           },
 
@@ -94,24 +80,17 @@ class InnerReportLeft extends Component {
             data:[
               {
                 name: 'Slate',
-                selected: '0',
-                selectedEndDataIndex:[
-                  0,
-                  1
-                ]
+                selected: '0'
               },
               {
                 name: 'Metal',
-                selected: '0',
-                selectedEndDataIndex:[
-                  1
-                ]
+                selected: '0'
               }
             ],
             endData: [
-              {name: 'Wind'},
-              {name: 'Poor'},
-              {name: 'Repairs'}
+              {name: 'Wind', selected: 0},
+              {name: 'Poor', selected: 1},
+              {name: 'Repairs', selected: 0}
             ]
           }
 
@@ -124,24 +103,17 @@ class InnerReportLeft extends Component {
             data:[
               {
                 name: 'Metal open',
-                selected: '0',
-                selectedEndDataIndex:[
-                  0,
-                  1
-                ]
+                selected: '0'
               },
               {
                 name: 'Asphalt strip',
-                selected: '0',
-                selectedEndDataIndex:[
-                  1
-                ]
+                selected: '0'
               }
             ],
             endData: [
-              {name: 'Minor cracking'},
-              {name: 'Poor installation'},
-              {name: 'Repairs'}
+              {name: 'Minor cracking', selected: 0},
+              {name: 'Poor installation', selected: 1},
+              {name: 'Repairs', selected: 0}
             ]
           }
         ],
@@ -152,24 +124,17 @@ class InnerReportLeft extends Component {
             data:[
               {
                 name: 'Metal open',
-                selected: '0',
-                selectedEndDataIndex:[
-                  0,
-                  1
-                ]
+                selected: '0'
               },
               {
                 name: 'Asphalt strip',
-                selected: '0',
-                selectedEndDataIndex:[
-                  1
-                ]
+                selected: '0'
               }
             ],
             endData: [
-              {name: 'Minor cracking'},
-              {name: 'Poor installation'},
-              {name: 'Repairs'}
+              {name: 'Minor cracking', selected: 0},
+              {name: 'Poor installation', selected: 1},
+              {name: 'Repairs', selected: 0}
             ]
           }
         ]

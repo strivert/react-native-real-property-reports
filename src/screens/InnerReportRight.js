@@ -34,7 +34,7 @@ class InnerReportRight extends Component {
     super(props);
 
     this.state={
-      goDetail: true
+      goDetail: false
     }
   }
 

@@ -75,7 +75,7 @@ export default class DetailMultiSelectList extends Component {
    */
   render() {
     let {items, goDetail} = this.props;    
-
+    console.log(this.props);
     return (
       <View style={styles.itemList}>
         

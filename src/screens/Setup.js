@@ -3,6 +3,12 @@ import ReactNative from 'react-native';
 import {Header, Footer} from '../components';
 import {InnerSetup} from './';
 
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+
+import config from '../config/config';
+import * as addressActions from '../modules/address';
+
 const {
   Image,
   StyleSheet,
@@ -10,7 +16,8 @@ const {
   View,
   ScrollView,
   TouchableHighlight,
-  Linking
+  Linking,
+  Alert
 } = ReactNative;
 
 /**
@@ -29,6 +36,25 @@ class Setup extends Component {
       clickedPage: 'report',
       reportEditBtnClicked: false,
       userEditBtnClicked: false
+    };
+
+    this.tempAddress = {};
+  }
+
+  onUpdateAddress() {    
+    if ( Object.keys(this.tempAddress).length !== 0 ) {
+      this.setState({
+        reportEditBtnClicked: false,
+        userEditBtnClicked: false
+      }, ()=>{
+        this.props.AddressActions.updateAddress(this.tempAddress);
+        this.tempAddress = {};
+      });      
+    } else {
+      this.setState({
+        reportEditBtnClicked: false,
+        userEditBtnClicked: false
+      });
     }
   }
 
@@ -36,7 +62,7 @@ class Setup extends Component {
    * Render Setup page
    * @return {jsxresult} result in jsx format
    */
-  render() {    
+  render() {
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
       	<Header.Main
@@ -48,6 +74,36 @@ class Setup extends Component {
               clickedPage={this.state.clickedPage}
               reportEditBtnClicked={this.state.reportEditBtnClicked}
               userEditBtnClicked={this.state.userEditBtnClicked}
+              address={this.props.address}
+              selectedAddressIndex={this.props.selectedAddressIndex}
+              onSelectAddress={(index)=>{
+                this.setState({
+                  reportEditBtnClicked: false
+                }, ()=>this.props.AddressActions.setAddressIndex(index))                
+              }}
+              onDeleteAddress={()=>{
+                
+                Alert.alert(
+                  config.DEL_ADDRESS_TITLE,
+                  config.DEL_ADDRESS_CNT,
+                  [
+                    {text: 'Cancel', onPress: () => {} },
+                    {text: 'OK', onPress: () => { 
+
+                      this.setState({
+                        reportEditBtnClicked: false
+                      }, ()=>this.props.AddressActions.remove());
+
+                    }},
+                  ]
+                );
+              }}
+              onStoreTempAddress={(tempAddress)=>{
+                this.tempAddress = Object.assign({}, tempAddress);
+              }}
+              onUpdateAddress={()=>{
+                this.onUpdateAddress();
+              }}
             />
           </Image>
         </View>
@@ -55,13 +111,21 @@ class Setup extends Component {
           page='Setup'
           changePage={(innerPage)=>{
             this.setState({
-              clickedPage: innerPage
+              clickedPage: innerPage,
+              reportEditBtnClicked: false,
+              userEditBtnClicked: false
             })
           }}
+          reportEditBtnClicked={this.state.reportEditBtnClicked}
+          userEditBtnClicked={this.state.userEditBtnClicked}
           changeEditToggle={(reportEditBtnClicked, userEditBtnClicked)=>{
             this.setState({
               reportEditBtnClicked: reportEditBtnClicked,
               userEditBtnClicked: userEditBtnClicked
+            }, ()=>{
+              if (this.state.reportEditBtnClicked === false) {
+                this.onUpdateAddress();
+              }
             })
           }}
         />
@@ -74,4 +138,12 @@ let styles = StyleSheet.create({
   
 });
 
-export default Setup;
+export default connect(
+  (state) => ({
+    address: state.address.address,
+    selectedAddressIndex: state.address.selectedAddressIndex
+  }),
+  (dispatch) => ({
+    AddressActions: bindActionCreators(addressActions, dispatch)
+  })
+)(Setup);
