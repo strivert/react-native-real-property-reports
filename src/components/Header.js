@@ -27,7 +27,7 @@ class Header extends Component {
   }
 
   /**
-   * Render Setup page
+   * Render Header page
    * @return {jsxresult} result in jsx format
    */
   render() {    
