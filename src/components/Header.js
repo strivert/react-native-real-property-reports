@@ -18,7 +18,7 @@ const {
 class Header extends Component {
 
   /**
-    * Setup Container Constructor
+    * Header Container Constructor
     * @param {props} props from parent component
     * @return {void}
     */
