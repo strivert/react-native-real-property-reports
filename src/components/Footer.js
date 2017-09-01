@@ -27,7 +27,7 @@ class Footer extends Component {
   }
 
   /**
-   * Render Footer page
+   * Render Footer  page
    * @return {jsxresult} result in jsx format
    */
   render() {    
