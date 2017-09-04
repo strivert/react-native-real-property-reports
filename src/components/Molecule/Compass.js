@@ -132,8 +132,55 @@ class Compass extends Component {
     this.setState({
       selected: selected,
       selectedDirection: directionState
-    });
+    }, ()=>{this.props.handleChangeCompass(selected);});
+  }
 
+  componentWillReceiveProps(nextProps) {
+    let comapssDirection = {
+      'north': false,
+      'east': false,
+      'west': false,
+      'south': false,
+      'center': false,
+      'north_east': false,
+      'north_west': false,
+      'south_west': false,
+      'south_east': false
+    };
+    if (nextProps.direction !=='') {
+      let direction = nextProps.direction;     
+
+      let directionState = {};
+      let selected = '';
+
+      if (direction==='center') {
+        directionState = Object.assign({}, this.state.selectedDirection,{
+          'north': true,
+          'east': true,
+          'west': true,
+          'south': true,
+          'center': true,
+          'north_east': true,
+          'north_west': true,
+          'south_west': true,
+          'south_east': true
+        });   
+        selected = 'center';        
+      } else {
+        comapssDirection[direction] = true;
+        selected = direction;
+        directionState = Object.assign({}, this.state.selectedDirection, comapssDirection);
+      }
+      this.setState({
+        selected: selected,
+        selectedDirection: directionState
+      });
+    } else {
+      this.setState({
+        selected: "",
+        selectedDirection: Object.assign({}, this.state.selectedDirection, comapssDirection)
+      });      
+    }
   }
 
   componentDidMount() {

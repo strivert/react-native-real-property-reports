@@ -34,7 +34,7 @@ class InnerReportRight extends Component {
     super(props);
 
     this.state={
-      goDetail: false
+      goDetail: true
     }
   }
 
@@ -47,23 +47,9 @@ class InnerReportRight extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    let details = [
-      {"name": "Asphalt shingles"},
-      {"name": "Wood shingles / shakes"},
-      {"name": "Concrete / Clay tiles"},
-      {"name": "Slate"},
-      {"name": "Plastic / Fiberglass"},
-      {"name": "Metal"},
-      {"name": "One layer noted"},
-      {"name": "Horse riding"},
-      {"name": "Wildlife viewing"},
-      {"name": "Fishing"},
-      {"name": "Hunting"}
-    ];
-    let detailList = details.map((item, key)=>{
-      return {'label': item.name, value: key};
-    }); 
-
+    
+    let detailList = this.props.dataList;
+    const {location, floor, life, cost} = this.props;
     let reportRightTop = 
     (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -92,7 +78,7 @@ class InnerReportRight extends Component {
           <ScrollView>
             <DetailMultiSelectList
               items={detailList}
-              handleChangeItem = {()=>{}}
+              handleChangeItem = {(selectedArray)=>{this.props.handleChangeRightItem(selectedArray);}}
               goDetail={true}
               handleGoDetail={()=>this.handleGoDetail()}
             />
@@ -101,13 +87,15 @@ class InnerReportRight extends Component {
           <View>
             <View style={{flexDirection: 'row'}}>
               <Compass
-                direction='east'
+                direction={location}
+                handleChangeCompass={(val)=>{this.props.handleChangeCompass(val);}}
               />
               <Floor 
-                floor='first'
+                floor={floor}
+                handleChangeFloor={(val)=>{this.props.handleChangeFloor(val);}}
               />
               <FiveStep
-                selected='second'
+                selected={life}
                 stepText={{
                   'first': '< 3 yrs',
                   'second': '3-5 yrs',
@@ -115,10 +103,11 @@ class InnerReportRight extends Component {
                   'forth': '7-10 yrs',
                   'fifth': '10+ yrs'
                 }}
+                handleChangeFiveStep={(val)=>{this.props.handleChangeFiveStep(val, 'life');}}
                 initText='life expectancy'
               />
               <FiveStep
-                selected='third'
+                selected={cost}
                 stepText={{
                   'first': '$',
                   'second': '$$',
@@ -126,6 +115,7 @@ class InnerReportRight extends Component {
                   'forth': '$$$$',
                   'fifth': '$$$$$'
                 }}
+                handleChangeFiveStep={(val)=>{this.props.handleChangeFiveStep(val, 'cost');}}
                 initText='cost'
               />
             </View>

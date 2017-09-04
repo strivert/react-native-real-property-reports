@@ -40,9 +40,9 @@ export default class ItemListsWithTag extends Component {
     this.setState({
       listIndex: listIndex,
       value3Index: index
-    })
+    });
 
-    // this.props.handleChangeItem(value.label);
+    this.props.handleChangeItem(listIndex, index, value.label);
   }
 
   componentWillReceiveProps(nextProps){
@@ -73,7 +73,7 @@ export default class ItemListsWithTag extends Component {
               
               let radioStyle = null;
 
-              if( this.state.listIndex === listIndex && this.state.value3Index === i ) {
+              if( this.props.listIndex === listIndex && this.props.listSubIndex === i ) {
                 if( i==0 )
                   radioStyle =[styles.radio, styles.bg, styles.radioFirst];
                 else
@@ -85,7 +85,7 @@ export default class ItemListsWithTag extends Component {
                   radioStyle = [styles.radio];
               }
               
-              let radioLabelStyle = (this.state.listIndex === listIndex && this.state.value3Index === i)?[styles.radioLabel, styles.bold]:styles.radioLabel;
+              let radioLabelStyle = (this.props.listIndex === listIndex && this.props.listSubIndex === i)?[styles.radioLabel, styles.bold]:styles.radioLabel;
 
               let radioBtn = null;
               if (obj.radioBtnState === '0') {

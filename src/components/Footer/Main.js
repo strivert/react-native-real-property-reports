@@ -41,7 +41,11 @@ class Main extends Component {
     
     let renderCom = null;
     if (page==='Report') {
-      renderCom = <FooterReport />;
+      renderCom = 
+        <FooterReport 
+          pressReportFooterBtn={(bigCategory)=>{this.props.pressReportFooterBtn(bigCategory);}}
+          selectedBigCategory={this.props.selectedBigCategory}
+        />;
     } else if(page==='Setup') {
       renderCom =
         <FooterSetup

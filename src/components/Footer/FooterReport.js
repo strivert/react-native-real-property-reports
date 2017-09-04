@@ -36,6 +36,7 @@ class FooterReport extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
+    const {selectedBigCategory} = this.props;
     return (
       
       <View style={{flex:1, flexDirection: 'row'}}>
@@ -49,52 +50,52 @@ class FooterReport extends Component {
 
         <View style={{flex:0.7, flexDirection: 'row', justifyContent:'center', alignItems:'center', }}>
           <FooterCenterBtn
-            clicked={true}
+            clicked={'Roofing'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptRoofingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptRoofing.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Roofing');}}
           />
           <FooterCenterBtn
-            clicked={false}
+            clicked={'Exterior'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptExteriorOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptExterior.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Exterior');}}
           />
           <FooterCenterBtn
-            clicked={false}
+            clicked={'Structure'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptStructureOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptStructure.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Structure');}}
           />
           <FooterCenterBtn
-            clicked={false}
+            clicked={'Interior'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptInteriorOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptInterior.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Interior');}}
           />
           <FooterCenterBtn
-            clicked={false}
+            clicked={'Electrical'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptElectricalOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptElectrical.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Electrical');}}
           />
           <FooterCenterBtn
-            clicked={false}
+            clicked={'Plumbing'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptPlumbingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptPlumbing.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Plumbing');}}
           />
           <FooterCenterBtn
-            clicked={false}
+            clicked={'Cooling'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptCoolingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptCooling.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Cooling');}}
           />
           <FooterCenterBtn
-            clicked={false}
+            clicked={'Heating'===selectedBigCategory?true:false}
             imgSrcClicked={require('../../assets/imgs/BtnRptHeatingOVR.png')}
             imgSrcUnClicked={require('../../assets/imgs/BtnRptHeating.png')}
-            onPress={()=>{}}
+            onPress={()=>{this.props.pressReportFooterBtn('Heating');}}
           />
         </View>
 

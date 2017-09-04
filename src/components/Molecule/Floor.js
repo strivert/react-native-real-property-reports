@@ -98,12 +98,35 @@ class Floor extends Component {
     this.setState({
       selected: selected,
       selectedFloor: floorState
-    });
+    }, ()=>{this.props.handleChangeFloor(selected);});
 
   }
 
+  componentWillReceiveProps(nextProps) {
+    let initialFloor = {
+      'basement': false,
+      'first': false,
+      'second': false,
+      'third': false,
+      'forth': false
+    };
+    let floorState = {};
+    let selected = '';
+    if (nextProps.floor !=='') {
+      initialFloor[nextProps.floor] = true;
+      selected = nextProps.floor;
+      floorState = Object.assign({}, this.state.selectedFloor, initialFloor);    
+    } else {
+      floorState = Object.assign({}, this.state.selectedFloor, initialFloor);    
+    }
+    this.setState({
+      selected: selected,
+      selectedFloor: floorState
+    });
+  }
+
   componentDidMount() {
-    if (this.props.fllor !==''){
+    if (this.props.floor !==''){
       this.setFloor(this.props.floor);
     }
   }

@@ -32,6 +32,32 @@ export default class DetailMultiSelectList extends Component {
     }
   }  
 
+  componentDidMount() {
+    let value3Index = [];
+    this.props.items.map((item, index)=>{
+      if(item.selected === '1') {
+        value3Index.push(item.value);
+      }
+    });
+
+    this.setState({
+      value3Index: value3Index
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let value3Index = [];
+    nextProps.items.map((item, index)=>{
+      if(item.selected === '1') {
+        value3Index.push(item.value);
+      }
+    });
+
+    this.setState({
+      value3Index: value3Index
+    });    
+  }
+
   /**
    * Handles the event when a item is pressed
    * @param {str} value
@@ -59,14 +85,8 @@ export default class DetailMultiSelectList extends Component {
     }    
   }
 
-  setPropsItem(){
-    /*
-    let selectedStr = "";
-    this.state.value3Index.map((i,index)=>{
-      selectedStr += this.props.items[i].label +", ";
-    })    
-    this.props.handleChangeItem( selectedStr.slice(0, -2) );
-    */
+  setPropsItem() {
+    this.props.handleChangeItem( this.state.value3Index);
   }
 
   /**
@@ -75,7 +95,7 @@ export default class DetailMultiSelectList extends Component {
    */
   render() {
     let {items, goDetail} = this.props;    
-    console.log(this.props);
+    // console.log(this.props);
     return (
       <View style={styles.itemList}>
         

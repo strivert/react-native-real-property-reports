@@ -96,6 +96,38 @@ class FiveStep extends Component {
     this.setState({
       selected: selected,
       selectedStep: stepState
+    }, ()=>{this.props.handleChangeFiveStep(selected);});
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let initialStep = {      
+      'first': false,
+      'second': false,
+      'third': false,
+      'forth': false,
+      'fifth': false
+    };
+
+    let stepState = {};
+    let selected = '';
+
+    if (nextProps.selected !== '') {
+      for (let i in initialStep) {
+        if(i===nextProps.selected){
+          initialStep[i] = true;
+          break;
+        }
+        initialStep[i] = true;        
+      }
+      selected = nextProps.selected;
+    } else {
+      initialStep[nextProps.selected] = false;
+      selected = '';
+    }
+    stepState = Object.assign({}, this.state.selectedStep, initialStep);    
+    this.setState({
+      selected: selected,
+      selectedStep: stepState
     });
   }
 
