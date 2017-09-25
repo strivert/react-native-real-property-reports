@@ -37,11 +37,11 @@ class Main extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {page} = this.props;
+    const {page, goDetail} = this.props;
     
     let renderCom = null;
     if (page==='Report') {
-      renderCom = <HeaderReport />;
+      renderCom = <HeaderReport goDetail={goDetail} cancelDetail={()=>this.props.cancelDetail()} />;
     } else if(page==='Setup') {
       renderCom = <HeaderSetup />;
     } else if(page==='Preview') {

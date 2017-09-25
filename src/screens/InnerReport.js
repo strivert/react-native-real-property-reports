@@ -29,7 +29,9 @@ class InnerReport extends Component {
     super(props);
     this.state = {
       listIndex: 0,
-      listSubIndex: 0
+      listSubIndex: 0,
+      goDetail: true,
+      selectedGoDetailItemIndex: null
     }
   }
 
@@ -38,6 +40,8 @@ class InnerReport extends Component {
     this.setState({
       listIndex: listIndex,
       listSubIndex: listSubIndex
+    },()=>{
+      this.props.cancelDetail();
     });
   }
 
@@ -54,17 +58,20 @@ class InnerReport extends Component {
     }
   }
 
+  handleGoDetail(index) {
+    this.props.handleGoDetail(index);
+  }
+
   /**
    * Render InnerReport page
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {reportData} = this.props;
-    const {listIndex, listSubIndex} = this.state;
+    const {reportData, goDetail, selectedGoDetailItemIndex, isEdit} = this.props;
+    const {listIndex, listSubIndex } = this.state;
     if ( !reportData )
       return null;
     let endData = [];
-    let endDataSelected = [];
     let data = [];
 
     let location = '';
@@ -74,7 +81,7 @@ class InnerReport extends Component {
 
     let count = 0;
     for (var k in reportData) {
-      if (count === listIndex) {
+      if (count === listIndex && reportData[k][listSubIndex]) {
         data = reportData[k][listSubIndex].data;
         endData = reportData[k][listSubIndex].endData;
 
@@ -90,6 +97,14 @@ class InnerReport extends Component {
     data.map((item, index)=>{
       dataList[index] = {'label':item.name, 'value': index, 'selected': item.selected};
     });
+    console.log(selectedGoDetailItemIndex);
+    let endDataList = [];
+    endData.map((item, index)=>{
+      if (selectedGoDetailItemIndex!==null && data[selectedGoDetailItemIndex].endDataSelected.indexOf(index) !== -1)
+        endDataList[index] = {'label':item.name, 'value': index, 'selected': '1'};
+      else
+        endDataList[index] = {'label':item.name, 'value': index, 'selected': '0'};
+    });
 
     return (
       <View style={{flex:1, flexDirection: 'row' }}>
@@ -97,8 +112,10 @@ class InnerReport extends Component {
           <InnerReportLeft 
             reportData = {reportData}
             handleChangeItem = {(listIndex, listSubIndex, label)=>{this.handleChangeItem(listIndex, listSubIndex, label)}}
+            handleLeftIcon = {(label, listSubIndex, listIndex, isDefaultCategory)=>{this.props.handleLeftIcon(label, listSubIndex, listIndex, isDefaultCategory)}}
             listIndex= {this.state.listIndex}
             listSubIndex= {this.state.listSubIndex}
+            isEdit={isEdit}
           />
         </View>
         <View style={{flex: 1}}>
@@ -108,10 +125,15 @@ class InnerReport extends Component {
             floor={floor}
             life={life}
             cost={cost}
+            goDetail={goDetail}
+            endDataList={endDataList}
+            isEdit={isEdit}
             handleChangeCompass={(val)=>{this.props.handleChangeCompass(listIndex, listSubIndex, val);}}
             handleChangeFloor={(val)=>{this.props.handleChangeFloor(listIndex, listSubIndex, val);}}
             handleChangeFiveStep={(val, type)=>{this.props.handleChangeFiveStep(listIndex, listSubIndex, val, type);}}
             handleChangeRightItem = {(selectedArray)=>{this.handleChangeRightItem(selectedArray)}}
+            handleGoDetail={(index)=>{this.handleGoDetail(index);}}
+            handleCreateItem={()=>{this.props.handleCreateItem(listIndex, listSubIndex);}}
           />
         </View>
       </View>

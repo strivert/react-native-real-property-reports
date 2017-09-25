@@ -41,13 +41,13 @@ class InnerReportLeft extends Component {
     let leftCnt = [];
     let itemListData = null;
 
-    const {reportData} = this.props;
+    const {reportData, isEdit} = this.props;
 
     let count = 0;
     for(var key in reportData) {
       itemListData = reportData[key].map((item,index)=>{
         //itemListData = item.map((obj, key)=>{
-          return {'label': item.name, value: index, radioBtnState: item.state}; //0: inital gray, 1: only blue, 2: checked blue, 3: checked blue with camera icon
+          return {'label': item.name, value: index, default: item.default, radioBtnState: item.state}; //0: inital gray, 1: only blue, 2: checked blue, 3: checked blue with camera icon
         //});        
       });
 
@@ -71,8 +71,10 @@ class InnerReportLeft extends Component {
             <ItemListsWithTag
               itemInfo={leftCnt}
               handleChangeItem = {(listIndex, listSubIndex, label)=>{this.props.handleChangeItem(listIndex, listSubIndex, label);}} 
+              handleLeftIcon = {(label, listSubIndex, listIndex, isDefaultCategory)=>{this.props.handleLeftIcon(label, listSubIndex, listIndex, isDefaultCategory)}}
               listSubIndex = {this.props.listSubIndex}
               listIndex = {this.props.listIndex}
+              isEdit={isEdit}
             />
           </ScrollView>
         </View>

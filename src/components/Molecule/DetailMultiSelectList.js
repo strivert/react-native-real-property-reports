@@ -94,7 +94,7 @@ export default class DetailMultiSelectList extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    let {items, goDetail} = this.props;    
+    let {items, goDetail, isEdit} = this.props;    
     // console.log(this.props);
     return (
       <View style={styles.itemList}>
@@ -134,18 +134,30 @@ export default class DetailMultiSelectList extends Component {
                       <Text style={radioLabelStyle}>{obj.label}</Text>
                     </View>
                     {
-                      (goDetail && selectedIndex!==-1) &&
+                      (goDetail && selectedIndex!==-1 && isEdit === false) &&
                         
                           <View style={{flex:0.25, alignItems: 'flex-end'}}>
                             <TextBtn
                               imgSrc={require('../../assets/imgs/BTN_Blue_130x30.png')}
                               style={{marginRight: 10}}
-                              onPress={()=>this.props.handleGoDetail()}
+                              onPress={()=>this.props.handleGoDetail(i)}
                             >
                               Details
                             </TextBtn>
                           </View>
                         
+                    }
+
+                    {(isEdit) &&
+                      <View style={{flex:0.25, alignItems: 'flex-end'}}>
+                        <TextBtn
+                          imgSrc={require('../../assets/imgs/BTN_Blue_130x30.png')}
+                          style={{marginRight: 10}}
+                          onPress={()=>this.props.handleGoDetail(i)}
+                        >
+                          Edit
+                        </TextBtn>
+                      </View>
                     }
                   </View>
                 </TouchableWithoutFeedback>

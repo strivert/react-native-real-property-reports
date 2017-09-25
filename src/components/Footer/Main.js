@@ -37,7 +37,7 @@ class Main extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {page} = this.props;
+    const {page, isEdit} = this.props;
     
     let renderCom = null;
     if (page==='Report') {
@@ -45,6 +45,8 @@ class Main extends Component {
         <FooterReport 
           pressReportFooterBtn={(bigCategory)=>{this.props.pressReportFooterBtn(bigCategory);}}
           selectedBigCategory={this.props.selectedBigCategory}
+          handleEditReport={()=>this.props.handleEditReport()}
+          isEdit={isEdit}
         />;
     } else if(page==='Setup') {
       renderCom =

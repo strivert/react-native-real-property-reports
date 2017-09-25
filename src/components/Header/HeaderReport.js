@@ -3,7 +3,8 @@ import ReactNative from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import {
   HeaderCenterBtn,
-  BarCircularBtn
+  BarCircularBtn,
+  TextBtn
 } from '../Atoms';
 
 const {
@@ -35,12 +36,22 @@ class HeaderReport extends Component {
    * Render Setup page
    * @return {jsxresult} result in jsx format
    */
-  render() {    
+  render() {
+    const {goDetail} = this.props;
+
     return (      
       <View style={{flex:1, flexDirection: 'row'}}>
 
         <View style={{flex:0.2, justifyContent:'center', alignItems:'flex-start', marginLeft:30}}>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/helpBtn.png')} onPress={()=>{}} style={{width:40, height:42}} />
+          {
+            goDetail?
+              <BarCircularBtn imgSrc={require('../../assets/imgs/helpBtn.png')} onPress={()=>{}} style={{width:40, height:42}} />
+            :
+              <TextBtn
+                imgSrc={require('../../assets/imgs/backBtnNew.png')}
+                onPress={()=>{this.props.cancelDetail()}}
+              />
+          }
         </View>
 
         <View style={{flex:0.6, flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>

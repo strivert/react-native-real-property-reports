@@ -9,6 +9,7 @@ const HIGHLIGHT_SELECT_CATEGORY = 'report/HIGHLIGHT_SELECT_CATEGORY';
 const CREATE_ITEM = 'report/CREATE_ITEM';
 const UPDATE_ITEM = 'report/UPDATE_ITEM';
 const SELECT_ITEM = 'report/SELECT_ITEM';	
+const SELECT_DETAIL_ITEM = 'report/SELECT_DETAIL_ITEM';  
 
 const CREATE_END_ITEM = 'report/CREATE_END_ITEM';
 const UPDATE_END_ITEM = 'report/UPDATE_END_ITEM';
@@ -20,10 +21,14 @@ const UPDATE_LOCATION = 'report/UPDATE_LOCATION';
 const UPDATE_FLOOR = 'report/UPDATE_FLOOR';
 const UPDATE_LIFE = 'report/UPDATE_LIFE';
 const UPDATE_COST = 'report/UPDATE_COST';
+
+const SET_ALL_REPORT = 'report/SET_ALL_REPORT';
 // action creators
-export const createCategory = createAction(CREATE_CATEGORY); 
-export const removeCategory = createAction(REMOVE_CATEGORY); // 
+export const createCategory = createAction(CREATE_CATEGORY); // listIndex, listSubIndex, label, copiedObject(child:Roofing->Roofing->[3])
+export const removeCategory = createAction(REMOVE_CATEGORY); // listIndex, listSubIndex
 export const selectItem = createAction(SELECT_ITEM);  // listIndex, listSubIndex, selectedArray
+export const selectDetailItem = createAction(SELECT_DETAIL_ITEM);  // listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray
+export const createItem = createAction(CREATE_ITEM);  // listIndex, listSubIndex, copiedObject(parent:Roofing->Roofing)
 
 export const selectBigCategory = createAction(SELECT_BIG_CATEGORY); // bigCategory
 
@@ -32,6 +37,96 @@ export const updateFloor = createAction(UPDATE_FLOOR); // listIndex, listSubInde
 export const updateLife = createAction(UPDATE_LIFE); // listIndex, listSubIndex, life
 export const updateCost = createAction(UPDATE_COST); // listIndex, listSubIndex, cost
 
+export const setAllReport = createAction(SET_ALL_REPORT); // all_report
+/*
+let SQLite = require('react-native-sqlite-storage')
+
+
+function openCB() {
+
+}
+
+function errorCB() {
+}
+
+function composeSectionName(sectionName) {
+  let temp = sectionName.toLowerCase();
+  return temp.charAt(0).toUpperCase() + temp.slice(1);
+}
+
+let sectionObj = {Roofing:{}, Exterior:{}, Structure:{}, Interior:{}, Electrical:{}, Plumbing:{}, Cooling:{}, Heating:{}};
+
+let db = SQLite.openDatabase({name: 'test.db', createFromLocation: "~FortReport.db", location: 'Library'}, ()=>{
+  console.log(sectionObj);
+}, ()=>{
+
+});
+db.transaction((tx) => {
+  tx.executeSql('SELECT * FROM FR_CATEGORY_NAMES', [], (tx, results) => {
+      
+      var len = results.rows.length;
+      for (let i = 0; i < len; i++) {
+        let row = results.rows.item(i);
+        let sectionName = composeSectionName(row.CN_SECTION);
+        
+        if (!(sectionName in sectionObj)) {
+          sectionObj[sectionName] = {};
+        }
+
+        if (!sectionObj[sectionName].hasOwnProperty(row.CN_GROUP)) {
+          sectionObj[sectionName][row.CN_GROUP] = [];
+        }
+
+        let sItem = {
+          name: row.CN_CATEGORY,
+          state: "0",
+          data: [],
+          endData: [],
+          location: '',
+          floor: '',
+          life: '',
+          cost: ''
+        }
+        
+        tx.executeSql('SELECT * FROM FR_ITEM_SELECTIONS where IS_SECTION="'+sectionName+'" and IS_CATEGORY="'+row.CN_CATEGORY+'"', [], (tx, resultss) => {
+          let lenn = resultss.rows.length;
+          for (let ii = 0; ii < len; ii++) {
+            let roww = resultss.rows.item(ii);
+
+            if (roww) {
+              if ( roww.IS_ITEM === "Description" ) {
+                sItem.data.push({
+                  name: roww.IS_SELECTION,
+                  selected: '0',
+                  endDataSelected: [],
+                  default: true
+                });
+              } else if (roww.IS_ITEM === "Observation") {
+                sItem.endData.push({
+                  name: roww.IS_SELECTION
+                });
+              }
+            }
+          }
+          sectionObj[sectionName][row.CN_GROUP].push(sItem);  
+
+          if( i==154){
+            console.log(sectionObj);
+          }
+          
+        });
+        
+      }
+    });    
+});
+*/
+
+
+const initialState={
+  'selectedBigCategory': 'Roofing'
+}
+
+/*
 const initialState={
   'selectedBigCategory': 'Roofing',
   'Roofing': {
@@ -43,58 +138,82 @@ const initialState={
           {
             name: 'Asphalt shingles',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Wood shingles / shakes',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Concrete / Clay tiles',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Slate',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Plastic / Fiberglass',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'One layer noted',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Two plus layers noted',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Vendor advises of a recent upgrade',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },          
           {
             name: 'Low slope',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
           {name: 'In good shape'},
           {name: 'In relatively good shape'},
-          {name: 'Initial signs of wear beginning to show'}
+          {name: 'Initial signs of wear beginning to show'},
+          {name: 'Nearing the end of natural life expectancy'},
+          {name: 'Fragile requiring near future replacement'},
+          {name: 'Very old requiring immediate replacement'},
+          {name: 'Shrinkage showing cracking/clawing or curling'},
+          {name: 'Wind/Wildlife damage with some torn tabs'},
+          {name: 'Leaking'},
+          {name: 'Poor installation practices'},
+          {name: 'Moss and organics accelerate deterioration'},
+          {name: 'Suspect moisture penetrating the building envelope'},
+          {name: 'Evaluate further and repair'},
+          {name: 'Repairs required to avoid leaking'},
+          {name: 'Keep trees & bushes trimmed away to prevent wind damage'},
+          {name: 'Re-install using appropriate roofing system'},
+          {name: 'Insurance companies may not consider insurability'}
         ],
         location: '',
         floor: '',
@@ -109,38 +228,59 @@ const initialState={
           {
             name: 'Built-up inverted with tar & gravel',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Roll roofing rubberized membrane',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Single ply',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Vendor advises of a recent upgrade',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Flat roofing materials should be used on a Low slope',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Low slope: Shingle use inappropriate in this application',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
           {name: 'In good shape'},
           {name: 'In relatively good shape'},
-          {name: 'Nearing the end of natural life'}
+          {name: 'Nearing the end of natural life expectancy'},
+          {name: 'Fragile requiring near future replacement'},
+          {name: 'Very old requiring immediate replacement'},
+          {name: 'Shrinkage showing cracking/clawing or curling'},
+          {name: 'Alligatoring and blistering indicate advanced wear'},
+          {name: 'Gravel or ballast is wearing thin exposing membrane'},
+          {name: 'Drainage is poor causing ponding and organics'},
+          {name: 'Equipment pads or sleepers are pooryly installed'},
+          {name: 'Low slopes should not use shingles'},
+          {name: 'Suspect moisture penetrating the building envelope'},
+          {name: 'Repairs required to avoid leaking'},
+          {name: 'Install appropriate materials'},
+          {name: 'Re-install using appropriate roofing system'},
+          {name: 'Insurance companies may not consider insurability'},
+          {name: 'Condominium corporations responsibility'},
+          {name: 'Initial signs of wear beginning to show'}
         ],
         location: '',
         floor: '',
@@ -154,43 +294,57 @@ const initialState={
           {
             name: 'Asphalt',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Wood shingles / shakes',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Concrete / Clay tiles',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Slate',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Plastic / Fiberglass',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Copper',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
-          {name: 'Wind'},
-          {name: 'Poor'},
-          {name: 'Repairs'}
+          {name: 'In good shape'},
+          {name: 'In relatively good shape'},
+          {name: 'Initial signs of wear beginning to show'},
+          {name: 'Fragile requiring near future replacement'},
+          {name: 'Very old requiring immediate replacement'},
+          {name: 'Shrinkage showing cracking/clawing or curling'},
+          {name: 'Wind/Wildlife damage with some tabs torn'},
+          {name: 'Poor installation practices'},
+          {name: 'Suspect moisture penetrating the building envelope'},
+          {name: 'Repairs required to avoid leaking'}
         ],
         location: '',
         floor: '',
@@ -204,43 +358,57 @@ const initialState={
           {
             name: 'Asphalt',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Wood shingles / shakes',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Concrete / Clay tiles',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Slate',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Plastic / Fiberglass',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Copper',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
-          {name: 'Wind'},
-          {name: 'Poor'},
-          {name: 'Repairs'}
+          {name: 'In good shape'},
+          {name: 'In relatively good shape'},
+          {name: 'Initial signs of wear beginning to show'},
+          {name: 'Fragile requiring near future replacement'},
+          {name: 'Very old requiring immediate replacement'},
+          {name: 'Shrinkage showing cracking/clawing or curling'},
+          {name: 'Wind/Wildlife damage with some tabs torn'},
+          {name: 'Poor installation practices'},
+          {name: 'Suspect moisture penetrating the building envelope'},
+          {name: 'Repairs required to avoid leaking'}
         ],
         location: '',
         floor: '',
@@ -254,43 +422,56 @@ const initialState={
           {
             name: 'Asphalt',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Wood shingles / shakes',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Concrete / Clay tiles',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Slate',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Plastic / Fiberglass',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Copper',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
-          {name: 'Wind'},
-          {name: 'Poor'},
-          {name: 'Repairs'}
+          {name: 'In good shape'},
+          {name: 'In relatively good shape'},
+          {name: 'Initial signs of wear beginning to show'},
+          {name: 'Fragile requiring near future replacement'},
+          {name: 'Very old requiring immediate replacement'},
+          {name: 'Shrinkage showing cracking/clawing or curling'},
+          {name: 'Wind/Wildlife damage with some tabs torn'},
+          {name: 'Poor installation practices'},
+          {name: 'Repairs required to avoid leaking'}
         ],
         location: '',
         floor: '',
@@ -308,23 +489,31 @@ const initialState={
           {
             name: 'Metal open valley',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Asphalt strip open valley',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Closed valley',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
-          {name: 'Minor cracking'},
-          {name: 'Poor installation'},
-          {name: 'Repairs'}
+          {name: 'In good shape'},
+          {name: 'In relatively good shape'},
+          {name: 'Minor cracking indicate initial signs of wear'},
+          {name: 'More advanced wear than remaining roof'},
+          {name: 'Existing corrosion / holes indicate advanced wear'},
+          {name: 'Poor installation practices'},                    
+          {name: 'Suspect moisture penetrating the building envelope'},
+          {name: 'Repairs required to avoid leaking'}
         ],
         location: '',
         floor: '',
@@ -338,18 +527,23 @@ const initialState={
           {
             name: 'Typical',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Elevated ridge vent',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
-          {name: 'Minor cracking'},
-          {name: 'Poor installation'},
-          {name: 'Repairs'}
+          {name: 'In good shape'},
+          {name: 'In relatively good shape'},
+          {name: 'Minor cracking indicate initial signs of wear'},
+          {name: 'Major cracking / splitting are signs of advanced wear'},
+          {name: 'Poor installation practices'},
+          {name: 'Repairs required to avoid leaking'}
         ],
         location: '',
         floor: '',
@@ -363,33 +557,50 @@ const initialState={
           {
             name: 'Gutter from sloped roof',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Facia from sloped roof',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Flat roof from sloped roof',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Wall flashing to a sloped roof',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Bay window underside',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
-          {name: 'Minor cracking'},
-          {name: 'Poor installation'},
-          {name: 'Repairs'}
+          {name: 'Caulking has lost elasticity and is beginning to crack'},
+          {name: 'Caulking is brittle and showing major cracking'},
+          {name: 'Caulking is missing'},
+          {name: 'Metal is warped and will or has become loose'},
+          {name: 'Metal has minor deterioration with corrosion and holes'},
+          {name: 'Major deterioration'},
+          {name: 'Drip edge installation is inadequate'},
+          {name: 'Drip edge is missing'},
+          {name: 'Drip edge required to extend shrinking shingles to gutter'},
+          {name: 'Ice shielding is missing'},
+          {name: 'Ice shielding installation is inadequate'},
+          {name: 'Counter-flashing installation is inadequate'},
+          {name: 'Counter-flashing is missing'},
+          {name: 'Evaluate further & repair'},
+          {name: 'Suspect moisture penetrating the building envelope'},
         ],
         location: '',
         floor: '',
@@ -403,32 +614,38 @@ const initialState={
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Asphalt',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Tar',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Pre-cast concrete',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Natural stone',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -448,42 +665,50 @@ const initialState={
           {
             name: 'Wood siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Wood shingle siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Vinyl siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Stucco siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Asphalt shingle siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Insulbrick / asphalt siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Asbestos tile siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -503,22 +728,26 @@ const initialState={
           {
             name: 'Roof vent',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Turbine roof vent',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Ridge vent',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Plumbing waste vant',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -538,27 +767,32 @@ const initialState={
           {
             name: 'Flush mount',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'High neck curb mount',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Multi-Paneled vault',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Solarium panels',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Roof access hatch',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -578,17 +812,20 @@ const initialState={
           {
             name: 'Masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Chinmney saddle',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -610,17 +847,20 @@ const initialState={
           {
             name: 'Masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Chimney saddle',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -644,42 +884,50 @@ const initialState={
           {
             name: 'Below grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Alumnium',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Galvanized Steel',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Copper',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Plastic',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Built-in gutter system',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Flat roof with scuppers',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -699,32 +947,38 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Galvanized steel',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'open Facia',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'open Soffit',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Trim',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -744,14 +998,64 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Brick masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Block masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stucco',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stucco with wood trim',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood siding',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood shingles',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plywood/hardboard',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Board&batten',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal siding',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -769,14 +1073,52 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Brick',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Block masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cement parging over base material',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wall siding exte3nds down to grade',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Foamboard',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Painted concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Laminated with artificial stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -794,14 +1136,64 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Brick',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Block masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Gabion basket',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Corrugated metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Sea wall',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Planter / Sill cap',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -821,14 +1213,82 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Fixed',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Operable',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Bay or Bow',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Solarium',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Garden',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Skylight',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Clerestory',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Type / Material / Glazing are found in the "interior" section',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Retrofitted with old wood frames clad over in metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Appear to be in relatively good shape',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'New Windows installed in original wood frame',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Maintained poorly',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Sills',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -846,14 +1306,52 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Hinged',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Storm',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'French doors',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Sliding doors',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Vinyl',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Glass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -871,14 +1369,64 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Brick steps',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Stone steps',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal steps',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood steps',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Vinyl',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Glass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete steps',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Door',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -898,14 +1446,70 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Plastic composite decking with wood framing',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Composite',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Treehouse',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'None',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Columns',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Planter',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -923,14 +1527,46 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plastic',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Glass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -948,14 +1584,28 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Stone',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Brick masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete tile',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -973,14 +1623,46 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Stone',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Brick masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Asphalt',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stairs',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete tile',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -998,14 +1680,40 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Concrete (formed)',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Concrete (precast)',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone Veneer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Tile Veneer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1025,14 +1733,40 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Concrete floor',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Structural floor',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cantilevered',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Gravel floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Dirt floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Asphalt floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1052,12 +1786,32 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Vinyl',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Glass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Composite',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1075,14 +1829,28 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Wood frame with siding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Block masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Brick veneer wood frame',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1100,14 +1868,40 @@ const initialState={
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Asphalt',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Brick / Masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Gravel',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Parking pad',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1129,52 +1923,62 @@ const initialState={
           {
             name: 'Generally flat',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Slopes away from structure',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Slopes towards structure',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Ravine with a rear walk-out',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Reverse ravine sloping towards front',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Inaccessible due to snow',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Incomplete',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Sprinkler system',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Rear ravine with level / flat frontage',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Trees / Foilage',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1194,42 +1998,50 @@ const initialState={
           {
             name: 'Generally flat',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Slopes away from structure',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Slopes towards structure',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Ravine with a rear walk-out',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Reverse ravine sloping towards front',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Wood retainer',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal retainer',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Stone / Masonry retainer',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1249,27 +2061,32 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Plastic',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Stone',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1289,42 +2106,50 @@ const initialState={
           {
             name: 'In-ground',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'In-ground concrete',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'In-ground liner',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'In-ground pre-manufactured',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above ground',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above ground permanant(fixed)',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above ground pre-manufactured',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Fountain / Pond',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1344,37 +2169,44 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Glass',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Open frame',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Closed frame',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Attached to main structure',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Stand Alone',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1390,20 +2222,64 @@ const initialState={
     ]
   },
   'Structure': {
-    'Gutters': [
+    'Foundations': [
       {
-        name: 'Gutters',
+        name: 'Foundations Overview',
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Poured concrete',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Masonry block',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Hollow masonry block',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Brick',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Piers / posts',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Grade beams',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Condominium corporations responsibility - Not inspected',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1417,18 +2293,320 @@ const initialState={
         cost: ''
       },
       {
-        name: 'Soffit & Facia',
+        name: 'Footings',
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Masonry',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Brick',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Steel',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Basement/Crawl space',
+        state: "0",
+        data:[
+          {
+            name: 'Concrete slab-on-grade',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Open earth',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete crawl space',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Open earth crawl space',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Gravel',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Crawl space area is inaccessible',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Slab-on-grade construction. No basement',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Leakage',
+        state: "0",
+        data:[
+          {
+            name: 'Efflorescence',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stains',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Water',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Silt',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Peeling paint',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Delaminating drywall/wood panel',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Loose tiles',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Prior repairs',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Mildew/mold',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Odors',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Elevated moisture readings',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Monitor for any ongoing activity',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Repair accordingly',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'crack(s) noted',
+        state: "0",
+        data:[
+          {
+            name: 'Vertical crack',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Horizontal crack',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Transitional old to new building joint',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Masonry step crack',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Cold cellar / cantina',
+        state: "0",
+        data:[
+          {
+            name: 'Efflorescence',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stains',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Water',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Silt',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Peeling paint',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Loose tiles',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Prior repairs',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Mildew/mold',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Odors',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'In relatively good shape',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Poor thermal division',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1442,20 +2620,40 @@ const initialState={
         cost: ''
       }
     ],
-    'Guttersss': [
+    'Framing': [
       {
-        name: 'Gutters',
+        name: 'Floor (framing)',
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Joists',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Trusses',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Older sub-structure exists beneath renovations',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1469,18 +2667,777 @@ const initialState={
         cost: ''
       },
       {
-        name: 'Soffit & Facia',
+        name: 'Sills (framing)',
         state: "0",
         data:[
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Composite',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Exterior grading',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Beams (framing)',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Steel',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Laminated wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Unknown-covered',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Columns/Posts (framing)',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Combined/multiple wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Steel',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Brick masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Block masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Joists / Trusses (framing)',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Steel',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Laminated wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Sub-flooring (framing)',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Steel metal decking',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plastics used',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Stairwell (framing)',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood / Metal hybrid',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Masonry/Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Cantilevers (framing)',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Removed requiring repair at wall entry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      }
+    ],
+    'Walls': [
+      {
+        name: 'Walls - Overview',
+        state: "0",
+        data:[
+          {
+            name: 'Wood frame with Brick veneer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood frame with Siding',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Solid masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Solid stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Natural Log',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Post & Beam',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Brick veneer with adjacent siding',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood frame with faux masonry or stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood frame with stone veneer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Precast formed panels',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'ICF insulated concrete form',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Condominium corporations responsibility - Not inspected',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Columns / Posts',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Solid Masonry Wall',
+        state: "0",
+        data:[
+          {
+            name: 'Brick & Block',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Clay brick',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete brick',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Brick Veneer Wall',
+        state: "0",
+        data:[
+          {
+            name: 'Brick & framework',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Clay brick',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete brick',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Columns / posts',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Framework Wall',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Straw',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Unknown',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Columns / Posts',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Log Post & Beam',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Straw',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Lintels / Arches',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Sills',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Archway',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      }
+    ],
+    'Roofing': [
+      {
+        name: 'Roof Rafters',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Trusses',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Open Web Joists',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'No access to attic or roof structure',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Roof Trusses',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Trusses',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Open Web Joists',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Roof Sheathing',
+        state: "0",
+        data:[
+          {
+            name: 'Plywood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Particleboard',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Solid spaced planks',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Spaced planks',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Party (divide) Walls',
+        state: "0",
+        data:[
+          {
+            name: 'Masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood (with Drywall)',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'No separations between attics',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Knee Walls',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Masonry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Inaccessible',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1496,20 +3453,58 @@ const initialState={
     ]
   },
   'Interior': {
-    'Gutters': [
+    'Finishes': [
       {
-        name: 'Gutters',
+        name: 'Floors',
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Hardwood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Softwood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Carpet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Resilient / Laminate',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Ceramic tile',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Marble / Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Other',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1523,18 +3518,313 @@ const initialState={
         cost: ''
       },
       {
-        name: 'Soffit & Facia',
+        name: 'Walls',
+        state: "0",
+        data:[
+          {
+            name: 'Drywall / Plaster',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood panelling',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Brick / Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Other',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Baseboard',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Ceilings',
+        state: "0",
+        data:[
+          {
+            name: 'Drywall / Plaster',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Acoustic tile',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Doors',
+        state: "0",
+        data:[
+          {
+            name: 'Interior',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cold cellar or Cantina',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Sliding glass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Storm',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Garage man door',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Exterior',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Cabinetry / Counter',
+        state: "0",
+        data:[
+          {
+            name: 'Wood cabinet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Composite cabinet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal cabinet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood counter',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Composite counter',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete counter',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Glass counter',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Granite/Marble counter',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Kitchen',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Washroom',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Utility',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Exterior',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      }
+    ],
+    'Stairs': [
+      {
+        name: 'Stairs',
         state: "0",
         data:[
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Metal',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Concrete',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Masonry/Stone',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Railing',
+        state: "0",
+        data:[
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Glass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal/glass combination',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1548,20 +3838,88 @@ const initialState={
         cost: ''
       }
     ],
-    'Guttersss': [
+    'Windows': [
       {
-        name: 'Gutters',
+        name: 'Windows Overview',
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Vinyl',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fibreglass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood core with a Metal or Vinyl exterior',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fixed',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Casement',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Double Hung',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Sliding',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Awning',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Jalousie',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Single glazed',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Double glazed',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1575,18 +3933,1084 @@ const initialState={
         cost: ''
       },
       {
-        name: 'Soffit & Facia',
+        name: 'Window Type / Material',
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Casement',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Sliding',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Double hung',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Awning',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Jalousie',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fixed',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Vinyl',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Metal',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fiberglass',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood core with Metal or Vinyl exterior',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Window Glazing',
+        state: "0",
+        data:[
+          {
+            name: 'Single',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Double',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Triple',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Storms',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Window & Storm',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Skylight/Solarium',
+        state: "0",
+        data:[
+          {
+            name: 'Leaking',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fixed skylight',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Operable skylight',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Solarium',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Condensation',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      }
+    ],
+    'Insulation': [
+      {
+        name: 'Attic Insulation',
+        state: "0",
+        data:[
+          {
+            name: 'Glass fibre',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Mineral wool',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cellulose',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Spray foam',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Vermiculite',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Rigid board',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood shavings',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'No access to attic space(s)',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Basement Insulation',
+        state: "0",
+        data:[
+          {
+            name: 'Batt',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Foam',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Board',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Generally missing throughout',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Crawl space',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Inadequate',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Wall Insulation',
+        state: "0",
+        data:[
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Glass fibre',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Mineral wool',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cellulose',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Spray foam',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Vermiculite',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Rigid board',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wood shavings',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Inaadequate',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      }
+    ],
+    'Venitlation & Moisture Barrier': [
+      {
+        name: 'Attic Venting',
+        state: "0",
+        data:[
+          {
+            name: 'Roof vent',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Soffit vent',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Facia vent',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Gable vent',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Ridge vent',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Power vent',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Inadequate',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'In good shape',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Poor connections',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cathedral',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'General throughout',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'No access to attic spaces',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Basement Venting',
+        state: "0",
+        data:[
+          {
+            name: 'Basement',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Crawl space',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Inadequate',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      }
+    ],
+    'Safety & Appliances': [
+      {
+        name: 'Safety System',
+        state: "0",
+        data:[
+          {
+            name: 'Smoke detectors',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Carbon monoxide detectors',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Heat sensors',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Sprinkler system',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fire separation is inadequate',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Electrical surge protector',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fire shutters',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Fire escape',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Appliances',
+        state: "0",
+        data:[
+          {
+            name: 'Stove',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Refrigerator',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Dishwasher',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wall Oven',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Stove Exhaust Fan',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Central Vacuum',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Clothes Washer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Clothes Dryer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Microwave-Built-in',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wine cooler',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Freezer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Elevator',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Not tested',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Missing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      }
+    ],
+    'Rooms': [
+      {
+        name: 'Kitchen',
+        state: "0",
+        data:[
+          {
+            name: 'Countertops',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cabinets (Upper)',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cabinets (Lower)',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Skins',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Faucet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Hardware',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wall',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Ceiling',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Backsplash',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Electrical',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plumbing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'In good shape'},
+          {name: 'Recently updated gutters'},
+          {name: 'Discharge clearance needs improvement'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Washroom',
+        state: "0",
+        data:[
+          {
+            name: 'Countertops',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cabinets (Upper)',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Cabinets (Lower)',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Skins',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Faucet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Hardware',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Bath Tub',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Tile Enclosure',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Toilet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Wall',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Ceiling',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Electrical',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plumbing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Bedroom',
+        state: "0",
+        data:[
+          {
+            name: 'Floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Walls',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Ceiling',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Closet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Door',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Hardware',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Window',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Trim',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Electrical',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plumbing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Living / Familiy',
+        state: "0",
+        data:[
+          {
+            name: 'Floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Walls',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Ceiling',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Closet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Door',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Hardware',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Window',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Trim',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Electrical',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plumbing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Study',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Utility',
+        state: "0",
+        data:[
+          {
+            name: 'Floor',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Walls',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Ceiling',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Closet',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Door',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Hardware',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Window',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Trim',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Electrical',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Plumbing',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Laundry',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Foyer',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1602,20 +5026,22 @@ const initialState={
     ]
   },
   'Electrical': {
-    'Gutters': [
+    'Distribution': [
       {
-        name: 'Gutters',
+        name: 'Branch Wiring',
         state: "0",
         data:[
           {
-            name: 'Below grade gutter',
+            name: 'Fuese (Main disconnect)',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Above grade gutter discharge',
+            name: 'Breaker(Main disconnect)',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1629,18 +5055,47 @@ const initialState={
         cost: ''
       },
       {
-        name: 'Soffit & Facia',
+        name: 'Knob & Tube',
         state: "0",
         data:[
           {
-            name: 'Wood',
+            name: 'Activity',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
-            name: 'Aluminum',
+            name: 'Activitiy in majority of structure',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
+          }
+        ],
+        endData: [
+          {name: 'Recently updated'},
+          {name: 'In relatively good shape'},
+          {name: 'Print & small repairs are needed'}
+        ],
+        location: '',
+        floor: '',
+        life: '',
+        cost: ''
+      },
+      {
+        name: 'Aluminum',
+        state: "0",
+        data:[
+          {
+            name: 'Activity',
+            selected: '0',
+            endDataSelected: [],
+            default: true
+          },
+          {
+            name: 'Activitiy in majority of structure',
+            selected: '0',
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1662,12 +5117,14 @@ const initialState={
           {
             name: 'Below grade gutter',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1687,12 +5144,14 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1716,12 +5175,14 @@ const initialState={
           {
             name: 'Below grade gutter',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1741,12 +5202,14 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1768,12 +5231,14 @@ const initialState={
           {
             name: 'Below grade gutter',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1793,12 +5258,14 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1822,12 +5289,14 @@ const initialState={
           {
             name: 'Below grade gutter',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1847,12 +5316,14 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1874,12 +5345,14 @@ const initialState={
           {
             name: 'Below grade gutter',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1899,12 +5372,14 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1928,12 +5403,14 @@ const initialState={
           {
             name: 'Below grade gutter',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1953,12 +5430,14 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -1980,12 +5459,14 @@ const initialState={
           {
             name: 'Below grade gutter',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Above grade gutter discharge',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -2005,12 +5486,14 @@ const initialState={
           {
             name: 'Wood',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           },
           {
             name: 'Aluminum',
             selected: '0',
-            endDataSelected: []
+            endDataSelected: [],
+            default: true
           }
         ],
         endData: [
@@ -2026,15 +5509,38 @@ const initialState={
     ]
   }
 }
+*/
 
 // reducers
 export default handleActions({
-  [CREATE_CATEGORY]: (state, action) => {
-    return state;
+  [CREATE_CATEGORY]: (state, action) => { // listIndex, listSubIndex, label, copiedObject
+    const {listIndex, listSubIndex, label, copiedObject} = action.payload;
+    let updateState = Object.assign({}, state);
+    
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count === listIndex) {
+        updateState[state.selectedBigCategory][k].push(copiedObject);
+      }
+      count++;
+    }
+
+    return updateState;
   },
 
-  [REMOVE_CATEGORY]: (state, action) => {
-    return state;
+  [REMOVE_CATEGORY]: (state, action) => { // listIndex, listSubIndex
+    const {listIndex, listSubIndex} = action.payload;
+    let updateState = Object.assign({}, state);
+    
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count === listIndex) {
+        updateState[state.selectedBigCategory][k].splice(listSubIndex, 1);
+      }
+      count++;
+    }
+
+    return updateState;
   },
 
   [HIGHLIGHT_SELECT_CATEGORY]: (state, action) => {
@@ -2042,7 +5548,21 @@ export default handleActions({
   },
 
   [CREATE_ITEM]: (state, action) => {
-    return state;
+    const{ listIndex, listSubIndex, copiedObject} = action.payload;
+    let updateState = Object.assign({}, state);
+    
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count === listIndex) {
+        // updateState[state.selectedBigCategory][k] = Object.assign({}, copiedObject);
+        console.log("----------------");
+        console.log(updateState[state.selectedBigCategory][k]);
+        console.log("***************");
+      }
+      count++;
+    }
+
+    return updateState;
   },
 
   [UPDATE_ITEM]: (state, action) => {
@@ -2056,23 +5576,26 @@ export default handleActions({
   	let count = 0; let selectedCount = 0;
   	for(var k in updateState[state.selectedBigCategory]) {
   	  if ( count === listIndex) {
-	    updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
-	      if(selectedArray.includes(index)){
-	      	selectedCount++;
-	      	updateState[state.selectedBigCategory][k][listSubIndex].data[index].selected = '1';
-	      } else {
-	      	updateState[state.selectedBigCategory][k][listSubIndex].data[index].selected = '0';
-	      }
-		});
-	    
-		if ( selectedCount === 0 ) {
-		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
-		} else if ( selectedCount === 1 ) {
-		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
-		} else {
-		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
-		}
+  	    updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+  	      if(selectedArray.includes(index)){
+  	      	selectedCount++;
+  	      	updateState[state.selectedBigCategory][k][listSubIndex].data[index].selected = '1';
+  	      } else {
+  	      	updateState[state.selectedBigCategory][k][listSubIndex].data[index].selected = '0';
+            updateState[state.selectedBigCategory][k][listSubIndex].data[index].endDataSelected = [];
+  	      }
 
+          selectedCount += item.endDataSelected.length;
+
+    		});
+    	    
+    		if ( selectedCount === 0 ) {
+    		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+    		} else if ( selectedCount === 1 ) {
+    		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+    		} else {
+    		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+    		}
   	  }
   	  count++;
   	}
@@ -2080,6 +5603,35 @@ export default handleActions({
     return updateState;
   },
 
+  [SELECT_DETAIL_ITEM]: (state, action) => { // listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray
+    const {listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray} = action.payload;
+    console.log(selectedArray);
+    let updateState = Object.assign({}, state);
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count === listIndex) {
+        updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+          if (selectedGoDetailItemIndex === index) {
+            updateState[state.selectedBigCategory][k][listSubIndex].data[index].endDataSelected = selectedArray;
+          }
+          selectedCount += item.endDataSelected.length;
+          selectedCount += item.selected;
+        });
+
+        if ( selectedCount === 0 ) {
+          updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+        } else if ( selectedCount === 1 ) {
+          updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+        } else {
+          updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+        }
+      }
+      count++;
+    }
+    
+    return updateState;
+  },
   [CREATE_END_ITEM]: (state, action) => {
     return state;
   },
@@ -2153,5 +5705,8 @@ export default handleActions({
   	}
 
     return updateState;
+  },
+  [SET_ALL_REPORT]: (state, action) => {
+    return action.payload;
   }
 }, initialState);

@@ -21,12 +21,12 @@ export default configureStore = (onComplete) => {
   }
 
   return store;
-}; 
+};
 */
+
 
 export default configureStore = (onComplete) => {
   const store = createStore(reducer, applyMiddleware(thunk));
   onComplete();
   return store;
 };
-

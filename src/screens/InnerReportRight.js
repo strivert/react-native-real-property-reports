@@ -17,7 +17,8 @@ const {
   View,
   ScrollView,
   TouchableHighlight,
-  Linking
+  Linking,
+  TouchableOpacity
 } = ReactNative;
 
 /**
@@ -33,13 +34,13 @@ class InnerReportRight extends Component {
   constructor(props){
     super(props);
 
-    this.state={
-      goDetail: true
-    }
   }
 
-  handleGoDetail() {
-    alert('');
+  handleGoDetail(index) {
+    this.props.handleGoDetail(index);
+  }
+
+  handleSelectDetail() {
   }
 
   /**
@@ -50,17 +51,32 @@ class InnerReportRight extends Component {
     
     let detailList = this.props.dataList;
     const {location, floor, life, cost} = this.props;
+    const {goDetail, endDataList, isEdit} = this.props;
     let reportRightTop = 
     (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <View style={{flexDirection: 'row', marginLeft: 20}}>
-          <View>
-            <Image source={require('../assets/imgs/Blue-waving-flag-iconSM.png')} style={{opacity: 0.2}} />
-          </View>
-          <View>
-            <Text style={{fontStyle: 'italic', marginTop: 10, marginLeft: 10}}>remove highlight</Text>
-          </View>
-        </View>
+        {
+          isEdit ?
+            <View style={{flexDirection: 'row', marginBottom: 20}}>
+              <View>
+                <TouchableOpacity onPress={()=>{this.props.handleCreateItem();}}>
+                  <Image source={require('../assets/imgs/plusButtonSmall.png')} style={{marginTop: 5}} />
+                </TouchableOpacity>
+              </View>
+              <View>
+                <Text style={{fontWeight: 'bold', fontSize: 20, marginTop: 7, marginLeft: 10}}>Add New Item</Text>
+              </View>
+            </View>            
+          :
+            <View style={{flexDirection: 'row'}}>
+              <View>
+                <Image source={require('../assets/imgs/Blue-waving-flag-iconSM.png')} style={{opacity: 0.2}} />
+              </View>
+              <View>
+                <Text style={{fontStyle: 'italic', marginTop: 10, marginLeft: 10}}>remove highlight</Text>
+              </View>
+            </View>
+        }
         <View>
           <Image source={require('../assets/imgs/addressBoxBG.png')} style={{width: 320, height: 40, resizeMode: 'stretch', justifyContent: 'center', paddingLeft: 20, paddingRight: 50}}>
             <Text>123 Smaple Ss dfs df sdf sd fsdf </Text>
@@ -69,7 +85,7 @@ class InnerReportRight extends Component {
       </View>
     );
 
-    let renderCnt = (this.state.goDetail)?
+    let renderCnt = (goDetail)?
       (
         <View style={{flex:1}}>
           
@@ -80,7 +96,8 @@ class InnerReportRight extends Component {
               items={detailList}
               handleChangeItem = {(selectedArray)=>{this.props.handleChangeRightItem(selectedArray);}}
               goDetail={true}
-              handleGoDetail={()=>this.handleGoDetail()}
+              handleGoDetail={(index)=>this.handleGoDetail(index)}
+              isEdit={isEdit}
             />
           </ScrollView>
 
@@ -128,10 +145,10 @@ class InnerReportRight extends Component {
           {reportRightTop}
           <ScrollView>
             <DetailMultiSelectList
-              items={detailList}
-              handleChangeItem = {()=>{}}
+              items={endDataList}
+              handleChangeItem = {(selectedArray)=>{this.props.handleChangeRightItem(selectedArray);}}
               goDetail={false}
-              handleGoDetail={()=>this.handleGoDetail()}
+              isEdit={isEdit}
             />
           </ScrollView>
           <View style={{height: 150}}>

@@ -43,7 +43,7 @@ export default class ItemListsWithTag extends Component {
     });
 
     this.props.handleChangeItem(listIndex, index, value.label);
-  }
+  }  
 
   componentWillReceiveProps(nextProps){
     if( nextProps.new != this.props.new ){
@@ -59,7 +59,7 @@ export default class ItemListsWithTag extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    let {itemInfo} = this.props;
+    let {itemInfo, isEdit} = this.props;
 
     let returnList = null;
     returnList = itemInfo.map((listItem, listIndex) => {
@@ -78,6 +78,9 @@ export default class ItemListsWithTag extends Component {
                   radioStyle =[styles.radio, styles.bg, styles.radioFirst];
                 else
                   radioStyle = [styles.radio, styles.bg];
+
+                if (isEdit)
+                  radioStyle.push(styles.bgEdit);
               }else{
                 if( i==0 )
                   radioStyle =[styles.radio, styles.radioFirst];
@@ -85,7 +88,7 @@ export default class ItemListsWithTag extends Component {
                   radioStyle = [styles.radio];
               }
               
-              let radioLabelStyle = (this.props.listIndex === listIndex && this.props.listSubIndex === i)?[styles.radioLabel, styles.bold]:styles.radioLabel;
+              let radioLabelStyle = (this.props.listIndex === listIndex && this.props.listSubIndex === i)?[styles.radioLabel, styles.bold]:[styles.radioLabel];
 
               let radioBtn = null;
               if (obj.radioBtnState === '0') {
@@ -98,23 +101,63 @@ export default class ItemListsWithTag extends Component {
                 radioBtn = <Image source={require('../../assets/imgs/blueCheckMarkPhotoSmall.png')} />
               }
 
-              return (
-                <TouchableOpacity onPress={this.onPress.bind(this, obj, i, listIndex)} key={`list_${i}`}>
-                  <View key={i} style={radioStyle}>
-                    <RadioButton key={i} style={{}}>
-                      <View key={i} style={styles.list}>
-                      {/*  You can set RadioButtonLabel before RadioButtonInput */}
-                        <View style={{flex:0.1, justifyContent:'center', paddingLeft: 10}}>
-                          {radioBtn}
+              if (isEdit) {
+                if (obj.default === true) {
+                  radioBtn = 
+                    <TouchableOpacity onPress={()=>{this.props.handleLeftIcon(obj.label, i, listIndex, obj.default);}}>
+                      <Image source={require('../../assets/imgs/plusButtonSmall.png')}>
+                      </Image>
+                    </TouchableOpacity>;
+                } else {
+                  radioBtn = 
+                    <TouchableOpacity onPress={()=>{this.props.handleLeftIcon(obj.label, i, listIndex, obj.default);}}>
+                      <Image source={require('../../assets/imgs/minusButtonSmall.png')}>
+                      </Image>
+                    </TouchableOpacity>;
+                }
+                radioLabelStyle.push(styles.noMargin);
+              }
+
+              
+              return isEdit ?
+                (
+                  <TouchableOpacity key={`list_${i}`}>
+                    <View key={i} style={radioStyle}>
+                      <RadioButton key={i} style={{}}>
+                        <View key={i} style={styles.list}>
+                        {/*  You can set RadioButtonLabel before RadioButtonInput */}
+                          <View style={{flex:0.2, justifyContent:'center', paddingLeft: 10}}>                            
+                            {radioBtn}                            
+                          </View>
+                          <View style={{flex:0.8}}>
+                            <TouchableOpacity onPress={this.onPress.bind(this, obj, i, listIndex)}>
+                              <Text style={radioLabelStyle}>{obj.label}</Text>                    
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                        <View style={{flex:0.9}}>
-                          <Text style={radioLabelStyle}>{obj.label}</Text>                    
+                      </RadioButton>                
+                    </View>
+                  </TouchableOpacity>
+                )
+              :
+                (
+                  <TouchableOpacity onPress={this.onPress.bind(this, obj, i, listIndex)} key={`list_${i}`}>
+                    <View key={i} style={radioStyle}>
+                      <RadioButton key={i} style={{}}>
+                        <View key={i} style={styles.list}>
+                        {/*  You can set RadioButtonLabel before RadioButtonInput */}
+                          <View style={{flex:0.1, justifyContent:'center', paddingLeft: 10}}>
+                            {radioBtn}
+                          </View>
+                          <View style={{flex:0.9}}>
+                            <Text style={radioLabelStyle}>{obj.label}</Text>                    
+                          </View>
                         </View>
-                      </View>
-                    </RadioButton>                
-                  </View>
-                </TouchableOpacity>
-              )
+                      </RadioButton>                
+                    </View>
+                  </TouchableOpacity>
+                )
+              
             })}
           </RadioForm>
           
@@ -157,6 +200,9 @@ var styles = StyleSheet.create({
   bg: {
     backgroundColor:'#00aced'
   },
+  bgEdit: {
+    backgroundColor:'#f7f7f7'
+  },
   radioLabel: {
     fontSize: 18, 
     color: 'black', 
@@ -167,5 +213,8 @@ var styles = StyleSheet.create({
   },
   bold: {
     fontFamily: 'Roboto-Bold'
+  },
+  noMargin: {
+    marginLeft: 0
   }
 });

@@ -36,7 +36,7 @@ class FooterReport extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {selectedBigCategory} = this.props;
+    const {selectedBigCategory, isEdit} = this.props;
     return (
       
       <View style={{flex:1, flexDirection: 'row'}}>
@@ -100,12 +100,22 @@ class FooterReport extends Component {
         </View>
 
         <View style={{flex:0.15, flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
-          <GreenToggleBtn
-            clicked={false}
-            textClicked='Save'
-            textUnClicked='Edit'
-            onPress={()=>{}}
-          />
+          {
+            !isEdit ?
+              <GreenToggleBtn
+                clicked={false}
+                textClicked='Save'
+                textUnClicked='Edit'
+                onPress={()=>{this.props.handleEditReport();}}
+              />
+            :
+              <GreenToggleBtn
+                clicked={true}
+                textClicked='Save'
+                textUnClicked='Edit'
+                onPress={()=>{alert('OKOK');}}
+              />
+          }
         </View>
 
       </View>
