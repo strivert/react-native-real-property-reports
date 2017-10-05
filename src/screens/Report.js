@@ -19,6 +19,8 @@ const {
   Linking
 } = ReactNative;
 
+var ImagePicker = require('react-native-image-picker');
+
 /**
  * Container component for Report page
  */
@@ -34,7 +36,11 @@ class Report extends Component {
     this.state= {
       goDetail: true,
       selectedGoDetailItemIndex: null,
-      isEdit: false
+      isEdit: false,
+      isCameraPicVisible: false,
+      isCategoryNoteVisible: false,
+      listIndex: 0,
+      listSubIndex: 0,
     };
   }
 
@@ -64,23 +70,99 @@ class Report extends Component {
    */
   render() {
     const {report, selectedBigCategory} = this.props;
-    const {goDetail, selectedGoDetailItemIndex, isEdit} = this.state;
+    const {goDetail, selectedGoDetailItemIndex, isEdit, isCameraPicVisible, isCategoryNoteVisible} = this.state;
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
       	<Header.Main
           page='Report'
           goDetail={goDetail}
           cancelDetail={()=>this.cancelDetail()}
+          onCategoryNoteToggle={()=>{
+            this.setState({
+              isCategoryNoteVisible: !this.state.isCategoryNoteVisible
+            });
+          }}
+          onDisableCameraPicVisible={()=>{
+            this.setState({
+              isCameraPicVisible: !this.state.isCameraPicVisible
+            });
+          }}
+          onFromPickerImage={()=>{
+            var options = {
+              title: 'Select Avatar',
+              storageOptions: {
+                skipBackup: true,
+                path: 'images'
+              }
+            };
+            ImagePicker.launchImageLibrary(options, (response)  => {
+              // Same code as in above section!
+              let source = { uri: response.data };
+
+              if (response.data) {
+                this.props.reportActions.addImage({listIndex: this.state.listIndex, listSubIndex: this.state.listSubIndex, res: response.data});
+              }
+
+            });
+          }}
         />
      	  <View style={{flex:1}}>
           <Image source={require('../assets/imgs/mainBackground.png')}>
             <InnerReport 
               reportData = {report[selectedBigCategory]}
               selectedBigCategory={selectedBigCategory}
+              sectionNote={report[`${selectedBigCategory}-notes`]}
               goDetail={goDetail}
               selectedGoDetailItemIndex={selectedGoDetailItemIndex}
               isEdit={isEdit}
               handleGoDetail={(index)=>this.handleGoDetail(index)}
+              isCameraPicVisible={isCameraPicVisible}
+              isCategoryNoteVisible={isCategoryNoteVisible}
+              onCategoryNoteToggle={()=>{
+                this.setState({
+                  isCategoryNoteVisible: !this.state.isCategoryNoteVisible
+                });
+              }}
+              onSaveCategoryNote={(listIndex, listSubIndex, categoryNote)=>{
+                this.setState({
+                  isCategoryNoteVisible: false
+                }, ()=>{
+                  this.props.reportActions.saveCategoryNote({listIndex: listIndex, listSubIndex: listSubIndex, categoryNote: categoryNote});
+                });                
+              }}
+              onDelCategoryNote={(listIndex, listSubIndex)=>{
+                this.setState({
+                  isCategoryNoteVisible: false
+                }, ()=>{
+                  this.props.reportActions.delCategoryNote({listIndex: listIndex, listSubIndex: listSubIndex});
+                });
+              }}
+              onDelSectionNote={()=>{
+                this.props.reportActions.delSectionNote({selectedBigCategory:selectedBigCategory});
+              }}
+              onSaveSectionNote={(sectionNote)=>{
+                this.props.reportActions.saveSectionNote({selectedBigCategory:selectedBigCategory, sectionNote: sectionNote});
+              }}
+              setListIndexSubIndex={(listIndex, listSubIndex)=>{
+                this.setState({
+                  listIndex: listIndex,
+                  listSubIndex: listSubIndex,
+                })
+              }}
+              onDelImages={(listIndex, listSubIndex, imageIndex)=>{
+                this.props.reportActions.delImage({listIndex: listIndex, listSubIndex: listSubIndex, imageIndex: imageIndex});
+              }}
+              onSaveImage={(listIndex, listSubIndex, imageIndex, res)=>{
+                this.props.reportActions.saveImage({listIndex: listIndex, listSubIndex: listSubIndex, imageIndex: imageIndex, res: res});
+              }}
+              onAddImage={(listIndex, listSubIndex, res)=>{
+                this.props.reportActions.addImage({listIndex: listIndex, listSubIndex: listSubIndex, res: res});
+              }}
+              onDisableCameraPicVisible={()=>{
+                this.setState({
+                  isCameraPicVisible: !this.state.isCameraPicVisible
+                });
+              }}
               cancelDetail={()=>{
                 this.setState({
                   isEdit:false

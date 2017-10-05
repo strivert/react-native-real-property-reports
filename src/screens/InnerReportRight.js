@@ -7,7 +7,8 @@ import {
   DetailMultiSelectList,
   Compass,
   Floor,
-  FiveStep
+  FiveStep,
+  CameraPic
 } from '../components/Molecule';
 
 const {
@@ -87,9 +88,9 @@ class InnerReportRight extends Component {
 
     let renderCnt = (goDetail)?
       (
-        <View style={{flex:1}}>
-          
+        <View style={{flex:1}}>          
           {reportRightTop}
+          
 
           <ScrollView>
             <DetailMultiSelectList
@@ -100,7 +101,6 @@ class InnerReportRight extends Component {
               isEdit={isEdit}
             />
           </ScrollView>
-
           <View>
             <View style={{flexDirection: 'row'}}>
               <Compass

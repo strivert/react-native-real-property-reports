@@ -61,9 +61,23 @@ class HeaderReport extends Component {
         </View>
 
         <View style={{flex:0.2, flexDirection: 'row', justifyContent:'flex-end', alignItems:'center', marginRight: 30}}>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/pencilBtn.png')} onPress={()=>{}} style={{marginRight:20}}/>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/paperclipBtn.png')} onPress={()=>{}} style={{marginRight:20}}/>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/PhotoBtn.png')} onPress={()=>{}} />
+          <BarCircularBtn imgSrc={require('../../assets/imgs/pencilBtn.png')} 
+            onPress={()=>{
+              this.props.onCategoryNoteToggle();
+            }}
+            style={{marginRight:20}}
+          />
+          <BarCircularBtn imgSrc={require('../../assets/imgs/paperclipBtn.png')}
+            onPress={()=>{
+              this.props.onFromPickerImage();
+            }} 
+            style={{marginRight:20}}
+          />
+          <BarCircularBtn imgSrc={require('../../assets/imgs/PhotoBtn.png')} 
+            onPress={()=>{
+              this.props.onDisableCameraPicVisible();
+            }} 
+          />
         </View>
 
       </View>

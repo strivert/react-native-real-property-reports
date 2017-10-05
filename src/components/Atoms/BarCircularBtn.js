@@ -33,7 +33,7 @@ class BarCircularBtn extends Component {
   render() {
     const {imgSrc, style} = this.props;    
     return (
-      <TouchableOpacity onPress={()=>{}}>
+      <TouchableOpacity onPress={()=>{this.props.onPress()}}>
         <Image source={imgSrc} style={style} />
       </TouchableOpacity>
     );

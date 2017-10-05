@@ -5,6 +5,10 @@ import {
   InnerReportRight
 } from './';
 
+import {
+  CameraPic, Notes, CategoryNotes
+} from '../components/Molecule';
+
 const {
   Image,
   StyleSheet,
@@ -31,7 +35,8 @@ class InnerReport extends Component {
       listIndex: 0,
       listSubIndex: 0,
       goDetail: true,
-      selectedGoDetailItemIndex: null
+      selectedGoDetailItemIndex: null,
+      isSectionNoteVisible: false
     }
   }
 
@@ -42,6 +47,7 @@ class InnerReport extends Component {
       listSubIndex: listSubIndex
     },()=>{
       this.props.cancelDetail();
+      this.props.setListIndexSubIndex(listIndex, listSubIndex);
     });
   }
 
@@ -54,6 +60,8 @@ class InnerReport extends Component {
       this.setState({
         listIndex: 0,
         listSubIndex: 0
+      }, ()=>{
+        this.props.setListIndexSubIndex(0, 0);
       });
     }
   }
@@ -68,9 +76,11 @@ class InnerReport extends Component {
    */
   render() {
     const {reportData, goDetail, selectedGoDetailItemIndex, isEdit} = this.props;
-    const {listIndex, listSubIndex } = this.state;
+    const {listIndex, listSubIndex, isSectionNoteVisible } = this.state;
+    const {isCameraPicVisible, sectionNote, selectedBigCategory, isCategoryNoteVisible} = this.props;
     if ( !reportData )
       return null;
+
     let endData = [];
     let data = [];
 
@@ -78,10 +88,16 @@ class InnerReport extends Component {
     let floor = '';
     let life = '';
     let cost = '';
+    let notes = '';
+    let categoryName = '';
+
+    let images = [];
 
     let count = 0;
     for (var k in reportData) {
       if (count === listIndex && reportData[k][listSubIndex]) {
+        categoryName = reportData[k][listSubIndex].name;
+
         data = reportData[k][listSubIndex].data;
         endData = reportData[k][listSubIndex].endData;
 
@@ -89,6 +105,10 @@ class InnerReport extends Component {
         floor = reportData[k][listSubIndex].floor;
         life = reportData[k][listSubIndex].life;
         cost = reportData[k][listSubIndex].cost;
+
+        notes = reportData[k][listSubIndex].notes;
+
+        images = reportData[k][listSubIndex].images;
       }
       count++;
     }
@@ -97,7 +117,7 @@ class InnerReport extends Component {
     data.map((item, index)=>{
       dataList[index] = {'label':item.name, 'value': index, 'selected': item.selected};
     });
-    console.log(selectedGoDetailItemIndex);
+    
     let endDataList = [];
     endData.map((item, index)=>{
       if (selectedGoDetailItemIndex!==null && data[selectedGoDetailItemIndex].endDataSelected.indexOf(index) !== -1)
@@ -107,12 +127,17 @@ class InnerReport extends Component {
     });
 
     return (
-      <View style={{flex:1, flexDirection: 'row' }}>
+      <View style={{flex:1, flexDirection: 'row' }}>        
         <View style={{width: 360}}>
           <InnerReportLeft 
             reportData = {reportData}
             handleChangeItem = {(listIndex, listSubIndex, label)=>{this.handleChangeItem(listIndex, listSubIndex, label)}}
             handleLeftIcon = {(label, listSubIndex, listIndex, isDefaultCategory)=>{this.props.handleLeftIcon(label, listSubIndex, listIndex, isDefaultCategory)}}
+            onVisibleSectionNote={()=>{
+              this.setState({
+                isSectionNoteVisible: true
+              })
+            }}
             listIndex= {this.state.listIndex}
             listSubIndex= {this.state.listSubIndex}
             isEdit={isEdit}
@@ -136,6 +161,75 @@ class InnerReport extends Component {
             handleCreateItem={()=>{this.props.handleCreateItem(listIndex, listSubIndex);}}
           />
         </View>
+        {
+          isCategoryNoteVisible &&
+          <View>
+            <CategoryNotes
+              categoryNote={notes}
+              categoryName={categoryName}
+              onSaveCategoryNote={
+                (categoryNote)=>{
+                  this.props.onSaveCategoryNote(
+                    this.state.listIndex,
+                    this.state.listSubIndex,
+                    categoryNote
+                  );
+                }
+              }
+              onDisableCategoryNoteVisible = {()=>{
+                this.props.onCategoryNoteToggle();
+              }}
+              onDelCategoryNote={()=>{              
+                this.props.onDelCategoryNote(this.state.listIndex, this.state.listSubIndex);
+              }}
+
+            />
+          </View>
+        }
+        {
+          isSectionNoteVisible && 
+          <View>
+            <Notes
+              sectionNote={sectionNote}
+              sectionName={selectedBigCategory}
+              onSaveSectionNote={
+                (sectionNote)=>{
+                  this.setState({
+                    isSectionNoteVisible: false
+                  }, ()=>{
+                    this.props.onSaveSectionNote(sectionNote);
+                  });                  
+                }
+              }
+              onDisableSectionNoteVisible = {()=>{
+                this.setState({
+                  isSectionNoteVisible: false
+                });
+              }}
+              onDelSectionNote={()=>{
+                this.setState({
+                  isSectionNoteVisible: false
+                }, ()=>{
+                  this.props.onDelSectionNote();
+                });
+              }}
+            />
+          </View>
+        }
+        {
+          isCameraPicVisible &&
+          <View>
+            <CameraPic 
+              propImages={images}
+              onDelImages={(imageIndex)=>{this.props.onDelImages(listIndex, listSubIndex, imageIndex);}}
+              onSaveImage={(imageIndex, res)=>{this.props.onSaveImage(listIndex, listSubIndex, imageIndex, res);}}
+              onAddImage={(res)=>{this.props.onAddImage(listIndex, listSubIndex, res);}}
+              onDisableCameraPicVisible = {()=>{
+                this.props.onDisableCameraPicVisible();
+              }}
+            />
+          </View>
+        }
       </View>
     );
   }

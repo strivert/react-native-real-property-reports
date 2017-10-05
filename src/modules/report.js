@@ -23,6 +23,17 @@ const UPDATE_LIFE = 'report/UPDATE_LIFE';
 const UPDATE_COST = 'report/UPDATE_COST';
 
 const SET_ALL_REPORT = 'report/SET_ALL_REPORT';
+
+const DEL_IMAGE = 'report/DEL_IMAGE';
+const SAVE_IMAGE = 'report/SAVE_IMAGE';
+const ADD_IMAGE = 'report/ADD_IMAGE';
+
+const SAVE_SECTION_NOTE = 'report/SAVE_SECTION_NOTE';
+const DEL_SECTION_NOTE = 'report/DEL_SECTION_NOTE';
+
+const SAVE_CATEGORY_NOTE = 'report/SAVE_CATEGORY_NOTE';
+const DEL_CATEGORY_NOTE = 'report/DEL_CATEGORY_NOTE';
+
 // action creators
 export const createCategory = createAction(CREATE_CATEGORY); // listIndex, listSubIndex, label, copiedObject(child:Roofing->Roofing->[3])
 export const removeCategory = createAction(REMOVE_CATEGORY); // listIndex, listSubIndex
@@ -38,6 +49,17 @@ export const updateLife = createAction(UPDATE_LIFE); // listIndex, listSubIndex,
 export const updateCost = createAction(UPDATE_COST); // listIndex, listSubIndex, cost
 
 export const setAllReport = createAction(SET_ALL_REPORT); // all_report
+
+export const delImage = createAction(DEL_IMAGE); // listIndex, listSubIndex, imageIndex
+export const saveImage = createAction(SAVE_IMAGE); // listIndex, listSubIndex, imageIndex, res
+export const addImage = createAction(ADD_IMAGE); // listIndex, listSubIndex, res
+
+export const saveSectionNote = createAction(SAVE_SECTION_NOTE); // selectedBigCategory, sectionNote
+export const delSectionNote = createAction(DEL_SECTION_NOTE); // selectedBigCategory
+
+export const saveCategoryNote = createAction(SAVE_CATEGORY_NOTE); // listIndex, listSubIndex, categoryNote
+export const delCategoryNote = createAction(DEL_CATEGORY_NOTE); // listIndex, listSubIndex
+
 /*
 let SQLite = require('react-native-sqlite-storage')
 
@@ -5519,7 +5541,7 @@ export default handleActions({
     
     let count = 0; let selectedCount = 0;
     for(var k in updateState[state.selectedBigCategory]) {
-      if ( count === listIndex) {
+      if ( count == listIndex) {
         updateState[state.selectedBigCategory][k].push(copiedObject);
       }
       count++;
@@ -5534,7 +5556,7 @@ export default handleActions({
     
     let count = 0; let selectedCount = 0;
     for(var k in updateState[state.selectedBigCategory]) {
-      if ( count === listIndex) {
+      if ( count == listIndex) {
         updateState[state.selectedBigCategory][k].splice(listSubIndex, 1);
       }
       count++;
@@ -5553,7 +5575,7 @@ export default handleActions({
     
     let count = 0; let selectedCount = 0;
     for(var k in updateState[state.selectedBigCategory]) {
-      if ( count === listIndex) {
+      if ( count == listIndex) {
         // updateState[state.selectedBigCategory][k] = Object.assign({}, copiedObject);
         console.log("----------------");
         console.log(updateState[state.selectedBigCategory][k]);
@@ -5575,7 +5597,7 @@ export default handleActions({
 
   	let count = 0; let selectedCount = 0;
   	for(var k in updateState[state.selectedBigCategory]) {
-  	  if ( count === listIndex) {
+  	  if ( count == listIndex) {
   	    updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
   	      if(selectedArray.includes(index)){
   	      	selectedCount++;
@@ -5585,17 +5607,19 @@ export default handleActions({
             updateState[state.selectedBigCategory][k][listSubIndex].data[index].endDataSelected = [];
   	      }
 
-          selectedCount += item.endDataSelected.length;
+          selectedCount += parseInt(item.endDataSelected.length);
 
     		});
     	    
-    		if ( selectedCount === 0 ) {
-    		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
-    		} else if ( selectedCount === 1 ) {
-    		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
-    		} else {
-    		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
-    		}
+        if ( updateState[state.selectedBigCategory][k][listSubIndex].images.length == 0 ) {
+      		if ( selectedCount == 0 ) {
+      		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+      		} else if ( selectedCount == 1 ) {
+      		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+      		} else {
+      		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+      		}
+        }
   	  }
   	  count++;
   	}
@@ -5604,27 +5628,30 @@ export default handleActions({
   },
 
   [SELECT_DETAIL_ITEM]: (state, action) => { // listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray
+
     const {listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray} = action.payload;
-    console.log(selectedArray);
+    // console.log(selectedArray);
     let updateState = Object.assign({}, state);
 
     let count = 0; let selectedCount = 0;
     for(var k in updateState[state.selectedBigCategory]) {
-      if ( count === listIndex) {
+      if ( count == listIndex) {
         updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
-          if (selectedGoDetailItemIndex === index) {
+          if (selectedGoDetailItemIndex == index) {
             updateState[state.selectedBigCategory][k][listSubIndex].data[index].endDataSelected = selectedArray;
           }
-          selectedCount += item.endDataSelected.length;
-          selectedCount += item.selected;
+          selectedCount += parseInt(item.endDataSelected.length);
+          selectedCount += parseInt(item.selected);
         });
 
-        if ( selectedCount === 0 ) {
-          updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
-        } else if ( selectedCount === 1 ) {
-          updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
-        } else {
-          updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+        if ( updateState[state.selectedBigCategory][k][listSubIndex].images.length == 0 ) {
+          if ( selectedCount == 0 ) {
+            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+          } else if ( selectedCount == 1 ) {
+            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+          } else {
+            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+          }
         }
       }
       count++;
@@ -5656,7 +5683,7 @@ export default handleActions({
 
   	let count = 0; let selectedCount = 0;
   	for(var k in updateState[state.selectedBigCategory]) {
-  	  if ( count === listIndex) {
+  	  if ( count == listIndex) {
 	    updateState[state.selectedBigCategory][k][listSubIndex].location = location;
   	  }
   	  count++;
@@ -5670,7 +5697,7 @@ export default handleActions({
 
   	let count = 0; let selectedCount = 0;
   	for(var k in updateState[state.selectedBigCategory]) {
-  	  if ( count === listIndex) {
+  	  if ( count == listIndex) {
 	    updateState[state.selectedBigCategory][k][listSubIndex].floor = floor;
   	  }
   	  count++;
@@ -5684,7 +5711,7 @@ export default handleActions({
 
   	let count = 0; let selectedCount = 0;
   	for(var k in updateState[state.selectedBigCategory]) {
-  	  if ( count === listIndex) {
+  	  if ( count == listIndex) {
 	    updateState[state.selectedBigCategory][k][listSubIndex].life = life;
   	  }
   	  count++;
@@ -5698,7 +5725,7 @@ export default handleActions({
 
   	let count = 0; let selectedCount = 0;
   	for(var k in updateState[state.selectedBigCategory]) {
-  	  if ( count === listIndex) {
+  	  if ( count == listIndex) {
 	    updateState[state.selectedBigCategory][k][listSubIndex].cost = cost;
   	  }
   	  count++;
@@ -5708,5 +5735,108 @@ export default handleActions({
   },
   [SET_ALL_REPORT]: (state, action) => {
     return action.payload;
+  },
+  [DEL_IMAGE]: (state, action) => {
+    const {listIndex, listSubIndex, imageIndex} = action.payload;
+    let updateState = Object.assign({}, state);
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count == listIndex) {
+        updateState[state.selectedBigCategory][k][listSubIndex].images.splice(imageIndex, 1);
+        
+        if ( updateState[state.selectedBigCategory][k][listSubIndex].images.length == 0 ) {
+          updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+            selectedCount += parseInt(item.endDataSelected.length);
+            selectedCount += parseInt(item.selected);
+          });
+          
+          if ( selectedCount == 0 ) {
+            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+          } else if ( selectedCount == 1 ) {
+            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+          } else {
+            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+          }
+        }
+      }
+      count++;
+    }
+    
+    return updateState;
+  },
+  [SAVE_IMAGE]: (state, action) => {
+    const {listIndex, listSubIndex, imageIndex, res} = action.payload;
+    let updateState = Object.assign({}, state);
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count == listIndex) {
+      updateState[state.selectedBigCategory][k][listSubIndex].images[imageIndex].drawImage = res;
+      }
+      count++;
+    }
+    
+    return updateState;
+  },
+  [ADD_IMAGE]: (state, action) => {
+    const {listIndex, listSubIndex, res} = action.payload;
+    let updateState = Object.assign({}, state);
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count == listIndex) {
+        updateState[state.selectedBigCategory][k][listSubIndex].images.push({
+          'backImage': res,
+          'drawImage': ''
+        });
+        updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '3';        
+      }
+      count++;
+    }
+    
+    return updateState;
+  },
+  [SAVE_SECTION_NOTE]: (state, action) => {
+    const {selectedBigCategory, sectionNote} = action.payload;
+    let sectionNoteKey = `${selectedBigCategory}-notes`;
+    return update(state, {
+      [sectionNoteKey]: {$set: sectionNote}
+    });
+  },
+  [DEL_SECTION_NOTE]: (state, action) => {
+    const {selectedBigCategory} = action.payload;
+    let sectionNoteKey = `${selectedBigCategory}-notes`;
+    return update(state, {
+      [sectionNoteKey]: {$set: ''}
+    });
+  },
+  [SAVE_CATEGORY_NOTE]: (state, action) => {
+    const {listIndex, listSubIndex, categoryNote} = action.payload;
+    let updateState = Object.assign({}, state);
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count == listIndex) {
+      updateState[state.selectedBigCategory][k][listSubIndex].notes = categoryNote;
+      }
+      count++;
+    }
+
+    return updateState;
+  },
+  [DEL_CATEGORY_NOTE]: (state, action) => {
+    const {listIndex, listSubIndex} = action.payload;
+    let updateState = Object.assign({}, state);
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState[state.selectedBigCategory]) {
+      if ( count == listIndex) {
+      updateState[state.selectedBigCategory][k][listSubIndex].notes = '';
+      }
+      count++;
+    }
+
+    return updateState;
   }
 }, initialState);

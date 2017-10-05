@@ -41,7 +41,19 @@ class Main extends Component {
     
     let renderCom = null;
     if (page==='Report') {
-      renderCom = <HeaderReport goDetail={goDetail} cancelDetail={()=>this.props.cancelDetail()} />;
+      renderCom = <HeaderReport
+        goDetail={goDetail}
+        cancelDetail={()=>this.props.cancelDetail()} 
+        onDisableCameraPicVisible={()=>{
+          this.props.onDisableCameraPicVisible();
+        }}
+        onCategoryNoteToggle={()=>{
+          this.props.onCategoryNoteToggle();
+        }}
+        onFromPickerImage={()=>{
+          this.props.onFromPickerImage();
+        }}
+      />;
     } else if(page==='Setup') {
       renderCom = <HeaderSetup />;
     } else if(page==='Preview') {

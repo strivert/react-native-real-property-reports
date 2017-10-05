@@ -4,6 +4,9 @@ import DetailMultiSelectList from './DetailMultiSelectList';
 import Compass from './Compass';
 import Floor from './Floor';
 import FiveStep from './FiveStep';
+import CameraPic from './CameraPic';
+import Notes from './Notes';
+import CategoryNotes from './CategoryNotes';
 
 export {
   ItemList,
@@ -11,5 +14,8 @@ export {
   DetailMultiSelectList,
   Compass,
   Floor,
-  FiveStep
+  FiveStep,
+  CameraPic,
+  Notes,
+  CategoryNotes
 }

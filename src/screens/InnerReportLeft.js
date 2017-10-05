@@ -64,6 +64,7 @@ class InnerReportLeft extends Component {
           <TextBtn
             imgSrc={require('../assets/imgs/BTN_Blue_Large.png')}
             style={{height: 40, resizeMode: 'stretch', margin: 10}}
+            onPress={()=>{this.props.onVisibleSectionNote();}}
           >
             Overview Notes
           </TextBtn>
