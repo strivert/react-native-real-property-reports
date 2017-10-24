@@ -53,9 +53,22 @@ class Main extends Component {
         onFromPickerImage={()=>{
           this.props.onFromPickerImage();
         }}
+        selectBigCategoryForPreview={()=>{
+          this.props.selectBigCategoryForPreview();          
+        }}
       />;
     } else if(page==='Setup') {
-      renderCom = <HeaderSetup />;
+      renderCom = <HeaderSetup
+        onDisableCameraPicVisible={()=>{
+          this.props.onDisableCameraPicVisible();
+        }}
+        onFromPickerImage={()=>{
+          this.props.onFromPickerImage();
+        }}
+        selectBigCategoryForPreview={()=>{
+          this.props.selectBigCategoryForPreview();          
+        }}
+      />;
     } else if(page==='Preview') {
       renderCom = <HeaderPreview />;
     }

@@ -6,7 +6,8 @@ import {
 import {
   ItemList
 } from '../components/Molecule';
-
+import { Actions } from 'react-native-router-flux';
+import EStyleSheet from 'react-native-extended-stylesheet';
 const {
   Image,
   StyleSheet,
@@ -31,13 +32,17 @@ class InnerSetupReviewLeft extends Component {
     super(props);
   }
 
+  shouldComponentUpdate(nextProps, nextState){
+    return (JSON.stringify(nextProps) != JSON.stringify(this.props));
+  }
+
   /**
    * Render Setup page
    * @return {jsxresult} result in jsx format
    */
   render() {
     const {address, selectedAddressIndex, reportEditBtnClicked} = this.props;
-    const {onSelectAddress, onDeleteAddress, onUpdateAddress} = this.props;
+    const {onSelectAddress, onDeleteAddress, onUpdateAddress, onNewAddress} = this.props;
     /*
     let itemData = 
     [
@@ -60,13 +65,13 @@ class InnerSetupReviewLeft extends Component {
       <View style={{flex: 1}}>
         {(reportEditBtnClicked) ? (
         	<View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-            <TextBtn imgSrc={require('../assets/imgs/BTN_Green_Small.png')}>New</TextBtn>
+            <TextBtn imgSrc={require('../assets/imgs/BTN_Green_Small.png')} onPress={()=>onNewAddress()}>New</TextBtn>
             <TextBtn imgSrc={require('../assets/imgs/BTN_Blue_Small.png')} onPress={()=>onUpdateAddress()}>Save</TextBtn>
             <TextBtn imgSrc={require('../assets/imgs/BTN_Red_Small.png')} onPress={()=>onDeleteAddress()}>Delete</TextBtn>
           </View> )
         : (
           <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-            <TextBtn imgSrc={require('../assets/imgs/BTN_Green_Small.png')}>New</TextBtn>
+            <TextBtn imgSrc={require('../assets/imgs/BTN_Green_Small.png')} onPress={()=>onNewAddress()}>New</TextBtn>
           </View>
         )}
         
@@ -74,13 +79,16 @@ class InnerSetupReviewLeft extends Component {
           <TextBtn
             imgSrc={require('../assets/imgs/BTN_Blue_Large.png')}
             style={{height:50, resizeMode: 'stretch'}}
+            onPress={()=>{
+              Actions.report();
+            }}
           >
             Start Report
           </TextBtn>
         </View>
 
         
-        <View style={{flex: 0.89}}>
+        <View style={styles.scrollLeftHeight}>
           <ScrollView>            
             <ItemList
               items={itemData}
@@ -91,10 +99,16 @@ class InnerSetupReviewLeft extends Component {
         </View>
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between', margin: 10}}>
-          <TextBtn imgSrc={require('../assets/imgs/BTN_Grey_Small.png')}>ISN</TextBtn>
+          <TextBtn 
+            imgSrc={require('../assets/imgs/BTN_Grey_Small.png')}
+            onPress={()=>{}}
+          >
+            ISN
+          </TextBtn>
           <TextBtn
             imgSrc={require('../assets/imgs/BtnBlue1.png')}
             style={{height:30, width: 230, resizeMode: 'stretch'}}
+            onPress={()=>{}}
           >
             Send Client Confirmation
           </TextBtn>
@@ -104,8 +118,15 @@ class InnerSetupReviewLeft extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+let styles = EStyleSheet.create({
+  scrollLeftHeight: {
+    flex: 0.89
+  },
+  '@media (max-height: 719)': {
+    scrollLeftHeight: {
+      flex: 0.55
+    }
+  }
 });
 
 export default InnerSetupReviewLeft;

@@ -6,7 +6,11 @@ import {
 } from './';
 
 import {
-  CameraPic, Notes, CategoryNotes
+  CameraPic,
+  Notes,
+  CategoryNotes,
+  Limitations,
+  NewItem
 } from '../components/Molecule';
 
 const {
@@ -36,7 +40,8 @@ class InnerReport extends Component {
       listSubIndex: 0,
       goDetail: true,
       selectedGoDetailItemIndex: null,
-      isSectionNoteVisible: false
+      isSectionNoteVisible: false,
+      isAddNewItemVisible: false
     }
   }
 
@@ -75,9 +80,9 @@ class InnerReport extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {reportData, goDetail, selectedGoDetailItemIndex, isEdit} = this.props;
-    const {listIndex, listSubIndex, isSectionNoteVisible } = this.state;
-    const {isCameraPicVisible, sectionNote, selectedBigCategory, isCategoryNoteVisible} = this.props;
+    const {reportData, goDetail, selectedGoDetailItemIndex, isEdit, addressName} = this.props;
+    const {listIndex, listSubIndex, isSectionNoteVisible, isAddNewItemVisible } = this.state;
+    const {isCameraPicVisible, sectionNote, selectedBigCategory, isCategoryNoteVisible, isLimitationNoteVisible} = this.props;
     if ( !reportData )
       return null;
 
@@ -90,8 +95,10 @@ class InnerReport extends Component {
     let cost = '';
     let notes = '';
     let categoryName = '';
+    let limitations = [];
 
     let images = [];
+    let highlight = false;
 
     let count = 0;
     for (var k in reportData) {
@@ -109,6 +116,8 @@ class InnerReport extends Component {
         notes = reportData[k][listSubIndex].notes;
 
         images = reportData[k][listSubIndex].images;
+        limitations = reportData[k][listSubIndex].limitations;
+        highlight = reportData[k][listSubIndex].highlight;
       }
       count++;
     }
@@ -153,14 +162,58 @@ class InnerReport extends Component {
             goDetail={goDetail}
             endDataList={endDataList}
             isEdit={isEdit}
+            addressName={addressName}
+            highlight={highlight}
+            handleChangeHighlight={(val)=>{this.props.handleChangeHighlight(val);}}
             handleChangeCompass={(val)=>{this.props.handleChangeCompass(listIndex, listSubIndex, val);}}
             handleChangeFloor={(val)=>{this.props.handleChangeFloor(listIndex, listSubIndex, val);}}
             handleChangeFiveStep={(val, type)=>{this.props.handleChangeFiveStep(listIndex, listSubIndex, val, type);}}
             handleChangeRightItem = {(selectedArray)=>{this.handleChangeRightItem(selectedArray)}}
             handleGoDetail={(index)=>{this.handleGoDetail(index);}}
-            handleCreateItem={()=>{this.props.handleCreateItem(listIndex, listSubIndex);}}
+            handleCreateItem={()=>{
+              this.setState({
+                isAddNewItemVisible: !this.state.isAddNewItemVisible
+              });
+              /*
+              this.props.handleCreateItem(listIndex, listSubIndex);
+              */
+            }}
           />
         </View>
+
+        {
+          isAddNewItemVisible && 
+          <View>
+            <NewItem
+              onDisableNewItemVisible={()=>{
+                this.setState({
+                  isAddNewItemVisible: !this.state.isAddNewItemVisible
+                });
+              }}
+              onSaveNewItem={(text)=>{
+                this.setState({
+                  isAddNewItemVisible: !this.state.isAddNewItemVisible
+                }, ()=>{
+                  this.props.onSaveNewItem(listIndex, listSubIndex, text);
+                });                
+              }}
+            />
+          </View>
+        }
+
+        {
+          isLimitationNoteVisible &&
+          <View>
+            <Limitations
+              onLimitationNote={()=>{this.props.onLimitationNote();}}
+              limitationPropData={limitations}
+              setLimitation={(limitations)=>{
+                this.props.setLimitation(limitations);
+              }}
+            />
+          </View>          
+        }
+
         {
           isCategoryNoteVisible &&
           <View>

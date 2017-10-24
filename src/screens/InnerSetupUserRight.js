@@ -17,6 +17,8 @@ const {
   Switch
 } = ReactNative;
 
+import EStyleSheet from 'react-native-extended-stylesheet';
+
 /**
  * Container component for UserRight of Setup screen
  */
@@ -48,16 +50,16 @@ class InnerSetupUserRight extends Component {
   render() {    
     let mode = (this.props.userEditBtnClicked)?'0':'1';
     return (
-      <View style={{flex:1, padding:10, paddingLeft: 40, paddingRight: 40, paddingBottom: 70}}>
+      <View style={styles.container}>
         <ScrollView>          
           <View style={{flexDirection: 'row'}}>
-            <View style={{flex:0.5, marginRight: 15}}>            
+            <View style={styles.userInfo}>
                 <Text style={{color:'gray', fontWeight:'bold'}}>User Information</Text>
                 <InputToggleText label='First Name'  value='' mode={mode} />
                 <InputToggleText label='Last Name'  value='' mode={mode} />
                 <InputToggleText label='Work Phone'  value='' mode={mode} />
             </View>
-            <View style={{flex:0.5, marginTop:15}}>
+            <View style={styles.logoImg}>
               <Image source={require('../assets/imgs/sampleLogo.png')} />
             </View>
           </View>
@@ -127,8 +129,27 @@ class InnerSetupUserRight extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+let styles = EStyleSheet.create({
+  container: {
+    flex:1, padding:10, paddingLeft: 40, paddingRight: 40, paddingBottom: 70
+  },
+  userInfo: {
+    flex: 0.5, marginRight: 15
+  },
+  logoImg: {
+    flex: 0.5, marginTop: 15
+  },
+  '@media (max-height: 719)': {
+    container: {
+      paddingBottom: 250
+    },
+    userInfo: {
+      flex: 0.45
+    },
+    logoImg: {
+      flex: 0.55
+    }
+  }  
 });
 
 export default InnerSetupUserRight;

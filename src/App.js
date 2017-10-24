@@ -4,12 +4,18 @@ import {ActionConst, Scene, Router} from 'react-native-router-flux';
 import {
   Setup,
   Report,
-  Preview
+  Preview,
+  Intro
 } from './screens'
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as reportActions from './modules/report';
+import * as reportSeedActions from './modules/reportSeed';
+import EStyleSheet from 'react-native-extended-stylesheet';
+
+EStyleSheet.build({
+});
 
 let SQLite = require('react-native-sqlite-storage')
 
@@ -35,9 +41,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const {report} = this.props;
-    if (report.Roofing === undefined) {
-      let sectionObj = {'selectedBigCategory': 'Roofing', Roofing:{}, Exterior:{}, Structure:{}, Interior:{}, Electrical:{}, Plumbing:{}, Cooling:{}, Heating:{}};
+    const {report, address} = this.props;
+    
+    //if (!report.hasOwnProperty('reportData') && report.reportData[0].Roofing === undefined) {
+    if (!report.hasOwnProperty('reportData')) {
+      let sectionObj = {
+        'selectedBigCategory': 'Roofing', Roofing:{}, Exterior:{}, Structure:{}, Interior:{}, Electrical:{}, Plumbing:{}, Cooling:{}, Heating:{}
+      };
 
       let db = SQLite.openDatabase({name: 'test.db', createFromLocation: "~FortReport.db", location: 'Library'}, ()=>{
         console.log(sectionObj);
@@ -45,8 +55,8 @@ class App extends Component {
 
       });
       db.transaction((tx) => {
-        tx.executeSql('SELECT * FROM FR_CATEGORY_NAMES', [], (tx, results) => {
-            
+        tx.executeSql('SELECT * FROM FR_CATEGORY_NAMES', [], (tx, results) => {           
+          
             var len = results.rows.length;
             for (let i = 0; i < len; i++) {
               let row = results.rows.item(i);
@@ -75,6 +85,7 @@ class App extends Component {
                 cost: '',
                 default: true,
                 notes: '',
+                highlight: false,
                 images: [
                   /*
                   {
@@ -86,7 +97,8 @@ class App extends Component {
                     'drawImage': ''
                   }
                   */
-                ],                
+                ],
+                limitations: []
               }
               
               tx.executeSql('SELECT * FROM FR_ITEM_SELECTIONS where IS_SECTION="'+sectionName+'" and IS_CATEGORY="'+row.CN_CATEGORY+'"', [], (tx, resultss) => {
@@ -112,12 +124,15 @@ class App extends Component {
                 sectionObj[sectionName][row.CN_GROUP].push(sItem);  
 
                 if( i==(len-1)){
-                  this.props.reportActions.setAllReport(sectionObj);
+                  this.props.reportActions.setAllReport({sectionObj: sectionObj, length: address.address.length});
+                  this.props.reportSeedActions.saveReportSeed({sectionObj: sectionObj});
                 }
                 
               });
               
             }
+          
+
           });    
       });
     }
@@ -131,7 +146,8 @@ class App extends Component {
     return (
         <Router duration={0}>
           <Scene key="root" hideNavBar={true} hideTabBar={true} hideOnChildTabs={true}>
-            <Scene key="setup" component={Setup} initial={true} />
+            <Scene key="intro" component={Intro} initial={true} />
+            <Scene key="setup" component={Setup}  />
             <Scene key="report" component={Report} />
             <Scene key="preview" component={Preview} />
           </Scene>
@@ -148,9 +164,11 @@ let styles = StyleSheet.create({
 
 export default connect(
   (state) => ({
-    report: state.report
+    report: state.report,
+    address: state.address
   }),
   (dispatch) => ({
-    reportActions: bindActionCreators(reportActions, dispatch)
+    reportActions: bindActionCreators(reportActions, dispatch),
+    reportSeedActions: bindActionCreators(reportSeedActions, dispatch)
   })
 )(App);

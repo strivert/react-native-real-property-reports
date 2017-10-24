@@ -18,6 +18,7 @@ const {
   Linking,
   TextInput
 } = ReactNative;
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 /**
  * Container component for Left of Report page
@@ -31,6 +32,10 @@ class InnerReportLeft extends Component {
     */
   constructor(props) {
     super(props);
+  }
+
+  shouldComponentUpdate(nextProps, nextState){
+    return (JSON.stringify(nextProps) != JSON.stringify(this.props));
   }
 
   /**
@@ -59,7 +64,7 @@ class InnerReportLeft extends Component {
     }
 
     return (
-      <View style={{flex: 1, marginBottom: 140}}>
+      <View style={styles.container}>
         <View>
           <TextBtn
             imgSrc={require('../assets/imgs/BTN_Blue_Large.png')}
@@ -84,8 +89,15 @@ class InnerReportLeft extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+let styles = EStyleSheet.create({
+  container: {
+    flex: 1, marginBottom: 140
+  },
+  '@media (max-height: 719)': {
+    container: {
+      marginBottom: 300
+    }
+  }
 });
 
 export default InnerReportLeft;

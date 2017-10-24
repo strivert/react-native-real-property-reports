@@ -46,6 +46,8 @@ class Main extends Component {
           pressReportFooterBtn={(bigCategory)=>{this.props.pressReportFooterBtn(bigCategory);}}
           selectedBigCategory={this.props.selectedBigCategory}
           handleEditReport={()=>this.props.handleEditReport()}
+          onLimitationNote={()=>this.props.onLimitationNote()}
+          handleSaveUpdatedReport={()=>this.props.handleSaveUpdatedReport()}
           isEdit={isEdit}
         />;
     } else if(page==='Setup') {
@@ -61,7 +63,10 @@ class Main extends Component {
           }}
         />;
     } else if(page==='Preview') {
-      renderCom = <FooterPreview />;
+      renderCom = <FooterPreview
+        pressPreviewFooterBtn={(bigCategory)=>{this.props.pressPreviewFooterBtn(bigCategory);}}
+        selectedBigCategory={this.props.selectedBigCategory}
+        />;
     }
     return (
       <View>

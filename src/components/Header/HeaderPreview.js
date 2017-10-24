@@ -40,7 +40,12 @@ class HeaderPreview extends Component {
       <View style={{flex:1, flexDirection: 'row'}}>
 
         <View style={{flex:0.2, justifyContent:'center', alignItems:'flex-start', marginLeft:30}}>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/helpBtn.png')} onPress={()=>{}} style={{width:40, height:42}} />
+          <BarCircularBtn
+            imgSrc={require('../../assets/imgs/helpBtn.png')}
+            onPress={()=>{
+              Linking.openURL('http://www.fortreports.com/').catch(err => console.error('An error occurred', err));
+            }}
+            style={{width:40, height:42}} />
         </View>
 
         <View style={{flex:0.6, flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>

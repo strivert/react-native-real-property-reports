@@ -7,11 +7,26 @@ const REMOVE = 'address/REMOVE';
 const UPDATE_ADDRESS = 'address/UPDATE_ADDRESS';
 const SET_ADDRESS_INDEX = 'address/SET_ADDRESS_INDEX';
 
+const DEL_IMAGE = 'address/DEL_IMAGE';
+const SAVE_IMAGE = 'address/SAVE_IMAGE';
+const ADD_IMAGE = 'address/ADD_IMAGE';
+
+const DEL_SIGNATURE = 'address/DEL_SIGNATURE';
+const SAVE_SIGNATURE = 'address/SAVE_SIGNATURE';
+
+const SAVE_NEW = 'address/SAVE_NEW';
+
 // action creators
 export const create = createAction(CREATE); // reportName
 export const remove = createAction(REMOVE); // 
 export const updateAddress = createAction(UPDATE_ADDRESS); // updateAddressObject
 export const setAddressIndex = createAction(SET_ADDRESS_INDEX); // index
+export const delImage = createAction(DEL_IMAGE); // 
+export const saveImage = createAction(SAVE_IMAGE); // imageIndex, res
+export const addImage = createAction(ADD_IMAGE); // res
+export const delSignature = createAction(DEL_SIGNATURE); // 
+export const saveSignature = createAction(SAVE_SIGNATURE); // 
+export const saveNew = createAction(SAVE_NEW); // 
 
 // seed state
 const seed = {
@@ -30,7 +45,10 @@ const seed = {
   ud2: '',	// (212) 555-5555
   ud3: '',	// email
   ud4: '',	// weather
-  ud5: ''		// direction
+  ud5: '',	// direction
+  images: [],
+  inspectorSignature: '',
+  clientSignature: ''
 }
 
 // initial states
@@ -53,7 +71,10 @@ const initialState = {
       ud2: '(212) 555-5555',  // 
       ud3: 'iii@iii.com',  // email
       ud4: 'Sunny',  // weather
-      ud5: 'North'   // direction
+      ud5: 'North',  // direction,
+      images: [],
+      inspectorSignature: '',
+      clientSignature: ''
     },
     {
       reportName: 'WIND-876 Bloor st',
@@ -71,7 +92,11 @@ const initialState = {
       ud2: '(212) 555-3232',  // 
       ud3: 'asdf@asdf.com',  // email
       ud4: 'Cloudy',  // weather
-      ud5: 'West'   // direction
+      ud5: 'West',  // direction,
+      images: [        
+      ],
+      inspectorSignature: '',
+      clientSignature: ''
     },
     {
       reportName: 'Harry St',
@@ -89,7 +114,11 @@ const initialState = {
       ud2: '(212) 555-3232',  // 
       ud3: 'asdf@asdf.com',  // email
       ud4: 'Cloudy',  // weather
-      ud5: 'West'   // direction
+      ud5: 'South',  // direction,
+      images: [
+      ],
+      inspectorSignature: '',
+      clientSignature: ''
     }
   ]
 };
@@ -97,22 +126,30 @@ const initialState = {
 // reducers
 export default handleActions({
   [CREATE]: (state, action) => {
-    let updateState = Object.assign({}, seed);
-    updateState['reportName'] = action.payload; // reportName
+    const {title} = action.payload;
+    let newSeed = Object.assign({}, seed);
+    newSeed.reportName = title;   
+
     return update(state, {
-      address: {
-        [state.address.length]: {$set: updateState}
-      }
+      address: { $push: [newSeed]}
     });
   },
 
   [REMOVE]: (state, action) => {
-    return update(state, {
-      address: {
-        $splice: [[state.selectedAddressIndex, 1]]  // index
-      },
-      selectedAddressIndex: {$set: 0}
-    });
+    if ((state.address.length-1) == state.selectedAddressIndex) {
+      return update(state, {
+        address: {
+          $splice: [[state.selectedAddressIndex, 1]]  // index
+        },
+        selectedAddressIndex: {$set: 0}
+      });  
+    } else {
+      return update(state, {
+        address: {
+          $splice: [[state.selectedAddressIndex, 1]]  // index
+        }
+      });
+    }
   },
 
   [UPDATE_ADDRESS]: (state, action) => {
@@ -128,5 +165,128 @@ export default handleActions({
     return update(state, {
       selectedAddressIndex: {$set: action.payload}  // index
     });
+  },
+  [DEL_IMAGE]: (state, action) => {
+    const {imageIndex} = action.payload;
+    const {selectedAddressIndex} = state;
+    
+    // return updateState;
+    return update(state, {
+      address: {
+        [selectedAddressIndex]: {
+          images: {
+            $splice: [[imageIndex, 1]]
+          }
+        }
+      }
+    });
+  },
+  [SAVE_IMAGE]: (state, action) => {
+    const {imageIndex, res} = action.payload;
+    const {selectedAddressIndex} = state;
+    
+    return update(state, {
+      address: {
+        [selectedAddressIndex]: {
+          images: {
+            // [imageIndex]: {
+            [0]: {
+              drawImage: {$set: res}
+            }
+          }
+        }
+      }
+    });
+  },
+  [ADD_IMAGE]: (state, action) => {
+    const {res} = action.payload;
+    const {selectedAddressIndex} = state;
+    /*
+    return update(state, {
+      address: {
+        [selectedAddressIndex]: {
+          images: {
+            $push: [{
+              'backImage': res,
+              'drawImage': ''
+            }]            
+          }
+        }
+      }
+    });
+    */
+    if(state.address[selectedAddressIndex]['images'][0]){
+      return update(state, {
+        address: {
+          [selectedAddressIndex]: {
+            images: {
+              [0]: {
+                'backImage': {$set: res},
+                'drawImage': {$set: ''},
+              }
+            }
+          }
+        }
+      });
+    } else {
+      return update(state, {
+        address: {
+          [selectedAddressIndex]: {
+            images: {
+              $push: [{
+                'backImage': res,
+                'drawImage': ''
+              }]            
+            }
+          }
+        }
+      });
+    }
+      
+  },
+  [SAVE_SIGNATURE]: (state, action) => {
+    const {type, res} = action.payload;
+    const {selectedAddressIndex} = state;
+
+    if (type == 'inspector') {
+      return update(state, {
+        address: {
+          [selectedAddressIndex]: {
+            inspectorSignature: {$set: res}
+          }
+        }
+      });
+    } else {
+      return update(state, {
+        address: {
+          [selectedAddressIndex]: {
+            clientSignature: {$set: res}
+          }
+        }
+      });
+    }
+
+    
+  },
+  [DEL_SIGNATURE]: (state, action) => {
+    const {type} = action.payload;
+    const {selectedAddressIndex} = state;
+    if (type == 'inspector') {
+      return update(state, {
+        address: {
+          [selectedAddressIndex]: {
+            inspectorSignature: {$set: ''}
+          }
+        }
+      });
+    } else {
+      return update(state, {
+        address: {
+          [selectedAddressIndex]: {
+            clientSignature: {$set: ''}
+          }
+        }
+      });
+    }
   }
 }, initialState);

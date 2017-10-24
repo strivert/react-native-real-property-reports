@@ -42,7 +42,7 @@ class FooterReport extends Component {
       <View style={{flex:1, flexDirection: 'row'}}>
 
         <View style={{flex:0.15, flexDirection: 'row', justifyContent:'flex-start', alignItems:'center', marginLeft: 30}}>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/visibilityBtn.png')} onPress={()=>{}}/>
+          <BarCircularBtn imgSrc={require('../../assets/imgs/visibilityBtn.png')} onPress={()=>{ this.props.onLimitationNote(); }}/>
           <Text style={{color: 'white', fontSize: 20, marginLeft:10, fontWeight: 'bold'}}>
             Limitations
           </Text>
@@ -113,7 +113,7 @@ class FooterReport extends Component {
                 clicked={true}
                 textClicked='Save'
                 textUnClicked='Edit'
-                onPress={()=>{alert('OKOK');}}
+                onPress={()=>{this.props.handleSaveUpdatedReport();}}
               />
           }
         </View>

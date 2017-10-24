@@ -12,7 +12,7 @@ import {
 } from '../utils/utils';
 import config from '../config/config';
 import update from 'react-addons-update';
-
+import EStyleSheet from 'react-native-extended-stylesheet';
 const {
   Image,
   StyleSheet,
@@ -43,8 +43,10 @@ class InnerPreviewLeft extends Component {
     this.state={
       enteredEmail: '',
       emails:[
+      /*
       'email1@email.com',
       'email2@email.com'
+      */
       ]
     }
   }
@@ -93,7 +95,7 @@ class InnerPreviewLeft extends Component {
 
     return (
       <View style={{flex: 1}}>
-        <View style={{margin: 10, marginTop: 40}}>
+        <View style={styles.leftTop}>
           <TextBtn
             imgSrc={require('../assets/imgs/BTN_Blue_Large.png')}
             style={{height: 50, resizeMode: 'stretch'}}
@@ -126,7 +128,7 @@ class InnerPreviewLeft extends Component {
           </Image>          
         </View>
 
-        <View style={{flex: 0.8}}>
+        <View style={styles.leftScroll}>
           <ScrollView>
             <View style={{/*borderWidth: 1, */borderColor: '#d6d3d3', margin: 2}}>
             {
@@ -166,8 +168,21 @@ class InnerPreviewLeft extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+let styles = EStyleSheet.create({
+  leftScroll: {
+    flex: 0.8
+  },
+  leftTop: {
+    margin: 10, marginTop: 40
+  },
+  '@media (max-height: 719)': {
+    leftScroll: {
+      flex: 0.35
+    },
+    leftTop: {
+      marginTop: 10
+    }
+  }
 });
 
 export default InnerPreviewLeft;

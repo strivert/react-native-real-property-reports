@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ReactNative from 'react-native';
-
+import EStyleSheet from 'react-native-extended-stylesheet';
 const {
   Image,
   StyleSheet,
@@ -35,11 +35,11 @@ class FooterCenterBtn extends Component {
     const innerText = this.props.children;
     return (
       (clicked)?
-        (<View style={{marginLeft: 5, marginRight: 5}}>
+        (<View style={styles.centerBtn}>
           <Image source={imgSrcClicked} style={style} />
         </View>)
       :
-        (<View style={{marginLeft: 5, marginRight: 5}}>
+        (<View style={styles.centerBtn}>
           <TouchableOpacity onPress={()=>this.props.onPress()}>
             <Image source={imgSrcUnClicked} style={style} />                      
           </TouchableOpacity>
@@ -50,8 +50,15 @@ class FooterCenterBtn extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+let styles = EStyleSheet.create({
+  cameraModal: {
+    marginLeft: 5, marginRight: 5
+  },
+  '@media (max-height: 719)': {
+    cameraModal: {
+      marginLeft: 1, marginRight: 1
+    }
+  }
 });
 
 export default FooterCenterBtn;

@@ -9,7 +9,8 @@ import Camera from 'react-native-camera';
 import RNFS from 'react-native-fs'
 
 import update from 'react-addons-update';
-import config from '../../config/config';
+
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 import {
   AppRegistry,
@@ -18,14 +19,12 @@ import {
   Text,
   TouchableHighlight,
   View,
-  Image,
-  Alert
+  Image
 } from 'react-native';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 import SignatureCapture from 'react-native-signature-capture';
 import { captureRef, captureScreen } from "react-native-view-shot";
-import EStyleSheet from 'react-native-extended-stylesheet';
 
 import {
   TextBtn
@@ -40,7 +39,7 @@ var ImagePicker = require('react-native-image-picker');
 /**
  * High Level Container
  */
-class CameraPic extends Component {
+class AddressCamera extends Component {
 
   /**
     * App Container Constructor
@@ -135,7 +134,7 @@ class CameraPic extends Component {
 
   showSwiper() {
     const {isDraw, selectedIndex} = this.state;
-    console.log(selectedIndex);
+    // console.log(selectedIndex);
     const {propImages} = this.props;
     return propImages.map((item, index)=>{
       return (
@@ -240,7 +239,7 @@ class CameraPic extends Component {
 
     const myAlbumPath = RNFS.PicturesDirectoryPath;
     let imageLocation = myAlbumPath+'/'+'filename'+new Date().getTime().toString()+'.png';
-    // alert(imageLocation);
+    alert(imageLocation);
     // RNFS.mkdir(myAlbumPath).then(()=>{
       RNFS.writeFile(imageLocation, img64Str, 'base64').then((success) => {
        // alert('FILE WRITTEN!');
@@ -342,7 +341,7 @@ class CameraPic extends Component {
             onDisableCameraPicVisible();            
           }}
           >
-            <View style={styles.cameraModal}>
+            <View style={styles.addressModal}>
               <View style={{flex: 1}}>
               {
                 isAfterTake && 
@@ -494,17 +493,6 @@ class CameraPic extends Component {
                       imgSrc={require('../../assets/imgs/PhotoControlBtnBlue.png')}
                       style={{height: 34, resizeMode: 'stretch', margin: 10}}
                       onPress={()=>{
-                        if (imageLength >=4 ){
-                          Alert.alert(
-                            config.PIC_LIMIT_TITLE,
-                            config.PIC_LIMIT_CNT,
-                            [
-                              {text: 'OK', onPress: () => { } }
-                            ]
-                          )
-                          return;
-                        }
-
                         this.setState({
                           isAfterTake: false,
                           isCamera: true
@@ -514,48 +502,7 @@ class CameraPic extends Component {
                       Camera
                     </TextBtn>
                   </View>
-                }
-
-                {/*
-                  (isAfterTake) && 
-                  <TouchableHighlight style={{width: 50}}
-                    onPress={() => {
-                      this.setState({
-                        isCamera: true,
-                        isAfterTake: false
-                      })
-                    } } >
-                      <Text>Go Camera</Text>
-                  </TouchableHighlight>
-                  */
-                }
-
-
-                {
-                  /*
-                  <TouchableHighlight style={{width: 50, marginLeft: 10}}
-                    onPress={() => {
-                      this.setState({
-                        isCamera: !this.state.isCamera
-                      });
-                    } } >
-                      <Text>Camera</Text>
-                  </TouchableHighlight>
-                  */
-                }
-
-                {
-                  /*
-                  <TouchableHighlight style={{width: 50, marginLeft: 10}}
-                    onPress={() => {
-                      this.fromPicker();
-                    } } >
-                      <Text>FromPicker</Text>
-                  </TouchableHighlight>
-                  */
-                }
-
-                
+                }                
 
               </View>
             </View>
@@ -564,7 +511,6 @@ class CameraPic extends Component {
     );
   }
 }
-
 
 const styles = EStyleSheet.create({
   container: {
@@ -604,17 +550,16 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#92BBD9',
   },
-  cameraModal: {
-    flex: 1, borderRadius: 10, width: 797,
-    height: 550, position: 'absolute', right: 0,
-    top: 20, padding: 40, paddingTop: 60,
-    paddingBottom: 0, backgroundColor: 'black'
+  addressModal: {
+    flex: 1, borderRadius: 10, width: 797, height: 550,
+    position: 'absolute', right: 0, top: 20,
+    padding: 40, paddingTop: 60, paddingBottom: 0, backgroundColor: 'black'
   },
   '@media (max-height: 719)': {
-    cameraModal: {
+    addressModal: {
       width: 657, height: 400, top: 0
     }
   }
 });
 
-export default CameraPic;
+export default AddressCamera;

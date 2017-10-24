@@ -40,18 +40,35 @@ class HeaderSetup extends Component {
       <View style={{flex:1, flexDirection: 'row'}}>
 
         <View style={{flex: 0.2, justifyContent: 'center', alignItems: 'flex-start', marginLeft: 30}}>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/helpBtn.png')} onPress={()=>{}} style={{width:40, height:42}} />
+          <BarCircularBtn
+            imgSrc={require('../../assets/imgs/helpBtn.png')}
+            onPress={()=>{
+              Linking.openURL('http://www.fortreports.com/').catch(err => console.error('An error occurred', err));
+            }}
+            style={{width:40, height:42}} />
         </View>
 
         <View style={{flex: 0.6, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           <HeaderCenterBtn clicked={true} imgSrc={require('../../assets/imgs/mainBtnBkgHvr.png')}>SET-UP</HeaderCenterBtn>
           <HeaderCenterBtn clicked={false} onPress={()=>{Actions.report()}}>REPORT</HeaderCenterBtn>
-          <HeaderCenterBtn clicked={false} onPress={()=>{Actions.preview()}}>PREVIEW</HeaderCenterBtn>
+          <HeaderCenterBtn clicked={false} onPress={()=>{
+            this.props.selectBigCategoryForPreview();
+            Actions.preview();
+          }}>PREVIEW</HeaderCenterBtn>
         </View>
 
         <View style={{flex: 0.2, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 30}}>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/paperclipBtn.png')} onPress={()=>{}} style={{marginRight:20}}/>
-          <BarCircularBtn imgSrc={require('../../assets/imgs/PhotoBtn.png')} onPress={()=>{}} />
+          <BarCircularBtn imgSrc={require('../../assets/imgs/paperclipBtn.png')} 
+            onPress={()=>{
+              this.props.onFromPickerImage();
+            }} 
+            style={{marginRight:20}}
+          />
+          <BarCircularBtn imgSrc={require('../../assets/imgs/PhotoBtn.png')} 
+            onPress={()=>{
+              this.props.onDisableCameraPicVisible();
+            }} 
+          />
         </View>
 
       </View>

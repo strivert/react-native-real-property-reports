@@ -3,6 +3,7 @@ import ReactNative from 'react-native';
 import {
   InputToggleText
 } from '../components/Atoms';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 const {
   Image,
@@ -11,6 +12,7 @@ const {
   View,
   ScrollView,
   TouchableHighlight,
+  TouchableOpacity,
   Linking
 } = ReactNative;
 
@@ -44,7 +46,10 @@ class InnerSetupReviewRight extends Component {
         ud2: '',  // (212) 555-5555
         ud3: '',  // email
         ud4: '',  // weather
-        ud5: ''
+        ud5: '',
+        images: [],
+        inspectorSignature: '',
+        clientSignature: ''
       }
     }
   }
@@ -55,6 +60,11 @@ class InnerSetupReviewRight extends Component {
       data: Object.assign({}, address[selectedAddressIndex])
     });
   }
+  /*
+  shouldComponentUpdate(nextProps, nextState){
+    return (JSON.stringify(nextProps) != JSON.stringify(this.props));
+  }
+  */
 
   componentWillReceiveProps (nextProps) {
     const {address, selectedAddressIndex} = nextProps;
@@ -71,6 +81,16 @@ class InnerSetupReviewRight extends Component {
     }, ()=>{
       this.props.onStoreTempAddress(updateState);
     })
+  }
+
+  dispImage(arrObj, styleObj) {
+    let obj = 
+      arrObj['drawImage'] !='' ?
+        (<Image source={{uri: `data:image/png;base64,${arrObj.drawImage}`}} style={styleObj} />)
+      :
+        (<Image source={{uri: `data:image/png;base64,${arrObj.backImage}`}} style={styleObj} />);
+
+    return obj;
   }
 
   /**
@@ -96,7 +116,10 @@ class InnerSetupReviewRight extends Component {
       ud2,  // phone number
       ud3,  // email
       ud4,  // weather
-      ud5   // direction
+      ud5,  // direction
+      images,
+      inspectorSignature,
+      clientSignature
     } = this.state.data;
 
     return (
@@ -104,14 +127,25 @@ class InnerSetupReviewRight extends Component {
         <ScrollView>
           
           <View style={{flexDirection: 'row'}}>
-            <View style={{flex:0.5, marginRight: 15}}>            
+            <View style={styles.clientLeftWidth}>
             	  <Text style={{color:'gray', fontWeight:'bold'}}>Client Information</Text>
                 <InputToggleText label='First Name'  value={firstName} mode={mode} onChangeText={(text)=>this.onChangeText('firstName', text)} />
                 <InputToggleText label='Last Name'  value={lastName} mode={mode} onChangeText={(text)=>this.onChangeText('lastName', text)} />
                 <InputToggleText label='Phone Number'  value={ud2} mode={mode} onChangeText={(text)=>this.onChangeText('ud2', text)} />
             </View>
-            <View style={{flex:0.5, marginTop:15}}>
-              <Image source={require('../assets/imgs/This_Old_Houseedited.jpg')} />
+            <View style={styles.clientRightWidth}>
+              <TouchableOpacity 
+                onPress={()=>{
+                  this.props.onDisableCameraPicVisible();
+                }}
+              >
+                <Image source={require('../assets/imgs/This_Old_House.jpeg')}>
+                  {
+                    images.length > 0 &&
+                    this.dispImage(images[0], {width: 290, height: 200, resizeMode: 'stretch'})
+                  }
+                </Image>
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -163,18 +197,40 @@ class InnerSetupReviewRight extends Component {
             <Text style={{fontStyle:'italic'}}>optional: inserted below your Legal, Terms and Conditions</Text>
           </View>
 
-          <View style={{flexDirection: 'row'}}>
-            <View style={{flex:0.5, marginRight: 15}}>
-              <Image source={require('../assets/imgs/sampleInspecterSignature.png')} />
-              <Text style={{textAlign:'center'}}>Inspector</Text>
+          <View style={{flexDirection: 'row', marginTop: 20}}>
+            <View style={styles.signLeftWidth}>
+              <TouchableOpacity
+                onPress={()=>{
+                  this.props.onDisableSignatureVisible('inspector');
+                }}
+              >
+                <Image source={require('../assets/imgs/sampleInspecterSignature.png')}>
+                  {
+                    inspectorSignature !='' && 
+                    <Image source={{uri: `data:image/png;base64,${inspectorSignature}`}} style={{width: 276, height: 194, resizeMode: 'stretch'}} />
+                  }
+                </Image>
+              </TouchableOpacity>  
+              <Text style={{textAlign: 'center', marginTop: 5}}>Inspector</Text>
             </View>
-            <View style={{flex:0.5}}>
-              <Image source={require('../assets/imgs/sampleInspecterSignature.png')} />
-              <Text style={{textAlign:'center'}}>Client</Text>
+            <View style={styles.signRightWidth}>
+              <TouchableOpacity
+                onPress={()=>{
+                  this.props.onDisableSignatureVisible('client');
+                }}
+              >
+                <Image source={require('../assets/imgs/sampleInspecterSignature.png')}>
+                  {
+                    clientSignature !='' && 
+                    <Image source={{uri: `data:image/png;base64,${clientSignature}`}} style={{width: 276, height: 194, resizeMode: 'stretch'}} />
+                  }
+                </Image>
+              </TouchableOpacity>
+              <Text style={{textAlign: 'center', marginTop: 5}}>Client</Text>
             </View>
           </View>
 
-          <View>
+          <View style={styles.legalHeight}>
             <Text style={{fontSize:24}}>Legal, Terms and Conditions</Text>            
           </View>
 
@@ -184,8 +240,39 @@ class InnerSetupReviewRight extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+const styles = EStyleSheet.create({
+  legalHeight: {
+    height: 'auto'
+  },
+  clientLeftWidth: {
+    flex:0.5, marginRight: 15
+  },
+  clientRightWidth: {
+    flex:0.5, marginTop:15
+  },
+  signLeftWidth: {
+    flex:0.5, marginRight: 15
+  },
+  signRightWidth: {
+    flex:0.5
+  },
+  '@media (max-height: 719)': {
+    legalHeight: {
+      height: 250
+    },
+    clientLeftWidth: {
+      flex:0.43
+    },
+    clientRightWidth: {
+      flex:0.57
+    },
+    signLeftWidth: {
+      flex: 0.48, marginRight: 5, marginLeft: -10
+    },
+    signRightWidth: {
+      flex: 0.52
+    },
+  }
 });
 
 export default InnerSetupReviewRight;

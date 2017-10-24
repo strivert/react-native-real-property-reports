@@ -22,6 +22,8 @@ const {
   TouchableOpacity
 } = ReactNative;
 
+import EStyleSheet from 'react-native-extended-stylesheet';
+
 /**
  * Container component for Right of Report page
  */
@@ -37,11 +39,51 @@ class InnerReportRight extends Component {
 
   }
 
+  shouldComponentUpdate(nextProps, nextState){
+    return (JSON.stringify(nextProps) != JSON.stringify(this.props));
+  }
+
   handleGoDetail(index) {
     this.props.handleGoDetail(index);
   }
 
   handleSelectDetail() {
+  }
+
+  renderHighLight() {
+    const {highlight} = this.props;
+
+    if (highlight) {
+      return (
+        <TouchableOpacity onPress={()=>{
+          this.props.handleChangeHighlight(false);
+        }}>
+          <View style={{flexDirection: 'row'}}>
+            <View>
+              <Image source={require('../assets/imgs/Blue-waving-flag-iconSM.png')}/>
+            </View>
+            <View>
+              <Text style={{fontStyle: 'italic', marginTop: 15, marginLeft: 10}}>remove highlight</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity onPress={()=>{
+          this.props.handleChangeHighlight(true);
+        }}>
+          <View style={{flexDirection: 'row'}}>
+            <View>
+              <Image source={require('../assets/imgs/Blue-waving-flag-iconSM.png')} style={{opacity: 0.2}} />
+            </View>
+            <View>
+              <Text style={{fontStyle: 'italic', marginTop: 15, marginLeft: 10}}>highlight item</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      );      
+    }
   }
 
   /**
@@ -51,8 +93,8 @@ class InnerReportRight extends Component {
   render() {
     
     let detailList = this.props.dataList;
-    const {location, floor, life, cost} = this.props;
-    const {goDetail, endDataList, isEdit} = this.props;
+    const {location, floor, life, cost, highlight} = this.props;
+    const {goDetail, endDataList, isEdit, addressName} = this.props;
     let reportRightTop = 
     (
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -60,7 +102,13 @@ class InnerReportRight extends Component {
           isEdit ?
             <View style={{flexDirection: 'row', marginBottom: 20}}>
               <View>
-                <TouchableOpacity onPress={()=>{this.props.handleCreateItem();}}>
+                <TouchableOpacity 
+                  onPress={()=>{
+                    if(goDetail) {
+                      this.props.handleCreateItem();
+                    }
+                  }}
+                >
                   <Image source={require('../assets/imgs/plusButtonSmall.png')} style={{marginTop: 5}} />
                 </TouchableOpacity>
               </View>
@@ -69,18 +117,11 @@ class InnerReportRight extends Component {
               </View>
             </View>            
           :
-            <View style={{flexDirection: 'row'}}>
-              <View>
-                <Image source={require('../assets/imgs/Blue-waving-flag-iconSM.png')} style={{opacity: 0.2}} />
-              </View>
-              <View>
-                <Text style={{fontStyle: 'italic', marginTop: 10, marginLeft: 10}}>remove highlight</Text>
-              </View>
-            </View>
+            this.renderHighLight()
         }
         <View>
-          <Image source={require('../assets/imgs/addressBoxBG.png')} style={{width: 320, height: 40, resizeMode: 'stretch', justifyContent: 'center', paddingLeft: 20, paddingRight: 50}}>
-            <Text>123 Smaple Ss dfs df sdf sd fsdf </Text>
+          <Image source={require('../assets/imgs/addressBoxBG.png')} style={{width: 320, height: 40, resizeMode: 'stretch', justifyContent: 'center', paddingLeft: 20, marginRight: 50}}>
+            <Text>{addressName}</Text>
           </Image>
         </View>
       </View>
@@ -101,7 +142,7 @@ class InnerReportRight extends Component {
               isEdit={isEdit}
             />
           </ScrollView>
-          <View>
+          <View style={styles.ctrlPan}>
             <View style={{flexDirection: 'row'}}>
               <Compass
                 direction={location}
@@ -151,7 +192,7 @@ class InnerReportRight extends Component {
               isEdit={isEdit}
             />
           </ScrollView>
-          <View style={{height: 150}}>
+          <View style={styles.tmpPan}>
           </View>
         </View>
       )
@@ -164,8 +205,21 @@ class InnerReportRight extends Component {
   }
 }
 
-let styles = StyleSheet.create({
-  
+let styles = EStyleSheet.create({
+  ctrlPan: {
+    height: 'auto'
+  },
+  tmpPan: {
+    height: 150
+  },
+  '@media (max-height: 719)': {
+    ctrlPan: {
+      height: 330
+    },
+    tmpPan: {
+      height: 300
+    }
+  }
 });
 
 export default InnerReportRight;

@@ -34,6 +34,11 @@ const DEL_SECTION_NOTE = 'report/DEL_SECTION_NOTE';
 const SAVE_CATEGORY_NOTE = 'report/SAVE_CATEGORY_NOTE';
 const DEL_CATEGORY_NOTE = 'report/DEL_CATEGORY_NOTE';
 
+const SET_LIMITATION = 'report/SET_LIMITATION';
+const SET_HIGHLIGHT = 'report/SET_HIGHLIGHT';
+
+const CREATE_PARENT_REPORT = 'report/CREATE_PARENT_REPORT';
+
 // action creators
 export const createCategory = createAction(CREATE_CATEGORY); // listIndex, listSubIndex, label, copiedObject(child:Roofing->Roofing->[3])
 export const removeCategory = createAction(REMOVE_CATEGORY); // listIndex, listSubIndex
@@ -48,7 +53,7 @@ export const updateFloor = createAction(UPDATE_FLOOR); // listIndex, listSubInde
 export const updateLife = createAction(UPDATE_LIFE); // listIndex, listSubIndex, life
 export const updateCost = createAction(UPDATE_COST); // listIndex, listSubIndex, cost
 
-export const setAllReport = createAction(SET_ALL_REPORT); // all_report
+export const setAllReport = createAction(SET_ALL_REPORT); // sectionObj, length
 
 export const delImage = createAction(DEL_IMAGE); // listIndex, listSubIndex, imageIndex
 export const saveImage = createAction(SAVE_IMAGE); // listIndex, listSubIndex, imageIndex, res
@@ -59,6 +64,10 @@ export const delSectionNote = createAction(DEL_SECTION_NOTE); // selectedBigCate
 
 export const saveCategoryNote = createAction(SAVE_CATEGORY_NOTE); // listIndex, listSubIndex, categoryNote
 export const delCategoryNote = createAction(DEL_CATEGORY_NOTE); // listIndex, listSubIndex
+
+export const setLimitation = createAction(SET_LIMITATION); // 
+export const setHighlight = createAction(SET_HIGHLIGHT); // 
+export const createParentReport = createAction(CREATE_PARENT_REPORT); // 
 
 /*
 let SQLite = require('react-native-sqlite-storage')
@@ -145,7 +154,7 @@ db.transaction((tx) => {
 
 
 const initialState={
-  'selectedBigCategory': 'Roofing'
+  // 'selectedBigCategory': 'Roofing'
 }
 
 /*
@@ -5536,128 +5545,271 @@ const initialState={
 // reducers
 export default handleActions({
   [CREATE_CATEGORY]: (state, action) => { // listIndex, listSubIndex, label, copiedObject
-    const {listIndex, listSubIndex, label, copiedObject} = action.payload;
+    const {selectedAddressIndex, listIndex, listSubIndex, label, copiedObject} = action.payload;
     let updateState = Object.assign({}, state);
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+    let changeJson = {};
     
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-        updateState[state.selectedBigCategory][k].push(copiedObject);
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+        }
+        // updateState.reportData[selectedAddressIndex][selectedBigCategory][k].push(copiedObject);
+        changeJson[k] = {$push: [copiedObject]};
       }
       count++;
     }
 
-    return updateState;
+    // return updateState;
+
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+
   },
 
   [REMOVE_CATEGORY]: (state, action) => { // listIndex, listSubIndex
-    const {listIndex, listSubIndex} = action.payload;
+    const {selectedAddressIndex, listIndex, listSubIndex} = action.payload;
     let updateState = Object.assign({}, state);
-    
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+    let changeJson = {};
+
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-        updateState[state.selectedBigCategory][k].splice(listSubIndex, 1);
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+        }
+        // updateState.reportData[selectedAddressIndex][selectedBigCategory][k].splice(listSubIndex, 1);
+        changeJson[k] = {$splice: [[listSubIndex, 1]]};
       }
       count++;
     }
 
-    return updateState;
+    // return updateState;
+
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+
   },
 
   [HIGHLIGHT_SELECT_CATEGORY]: (state, action) => {
     return state;
   },
-
+  [CREATE_PARENT_REPORT]: (state,action) => {    
+    const {oneReport} = action.payload;
+    return update(state, {
+      'reportData': {
+         $push: [oneReport] 
+      }      
+    });
+  },
   [CREATE_ITEM]: (state, action) => {
-    const{ listIndex, listSubIndex, copiedObject} = action.payload;
+    const{ selectedAddressIndex, listIndex, listSubIndex, newValue} = action.payload;    
     let updateState = Object.assign({}, state);
+    let changeJson = {};
+
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+    // console.log(selectedAddressIndex, selectedBigCategory);
     
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {        
+        changeJson[k] = {};
+        changeJson[k][listSubIndex] = {'data':{
+          $push:[{
+            name: newValue,
+            selected: '0',
+            endDataSelected: [],
+            default: false
+          }] 
+        }};        
+      }
+      count++;
+    }
+    // console.log(changeJson);
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+    /*
+    const{ selectedAddressIndex, listIndex, listSubIndex, copiedObject} = action.payload;
+    let updateState = Object.assign({}, state);
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+    
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-        // updateState[state.selectedBigCategory][k] = Object.assign({}, copiedObject);
+        // updateState.reportData[selectedAddressIndex][selectedBigCategory][k] = Object.assign({}, copiedObject);
         console.log("----------------");
-        console.log(updateState[state.selectedBigCategory][k]);
+        console.log(updateState.reportData[selectedAddressIndex][selectedBigCategory][k]);
         console.log("***************");
       }
       count++;
     }
 
     return updateState;
+    */
   },
 
   [UPDATE_ITEM]: (state, action) => {
     return state;
   },
 
-  [SELECT_ITEM]: (state, action) => {	// listIndex, listSubIndex, selectedArray
-  	const {listIndex, listSubIndex, selectedArray} = action.payload;
+  [SELECT_ITEM]: (state, action) => {	// listIndex, listSubIndex, selectedArray        
+    
+  	const {selectedAddressIndex, listIndex, listSubIndex, selectedArray} = action.payload;    
   	let updateState = Object.assign({}, state);
+    let changeJson = {};
 
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+    // console.log(selectedAddressIndex, selectedBigCategory);
+    
   	let count = 0; let selectedCount = 0;
-  	for(var k in updateState[state.selectedBigCategory]) {
+  	for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
   	  if ( count == listIndex) {
-  	    updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+        selectedCount += parseInt(updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].limitations.length);
+        console.log(parseInt(updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].limitations.length));
+  	    updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+          if( !changeJson.hasOwnProperty(k) ) {
+            changeJson[k] = {};
+            changeJson[k][listSubIndex] = {'data':{}};
+          }
+
   	      if(selectedArray.includes(index)){
   	      	selectedCount++;
-  	      	updateState[state.selectedBigCategory][k][listSubIndex].data[index].selected = '1';
+  	      	// updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data[index].selected = '1';            
+            if( !changeJson[k][listSubIndex]['data'].hasOwnProperty(index) ) {
+              changeJson[k][listSubIndex]['data'][index] = {selected:{}};
+            }
+            changeJson[k][listSubIndex]['data'][index]['selected'] = {$set: '1'};
   	      } else {
-  	      	updateState[state.selectedBigCategory][k][listSubIndex].data[index].selected = '0';
-            updateState[state.selectedBigCategory][k][listSubIndex].data[index].endDataSelected = [];
+  	      	// updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data[index].selected = '0';
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data[index].endDataSelected = [];
+            if( !changeJson[k][listSubIndex]['data'].hasOwnProperty(index) ) {
+              changeJson[k][listSubIndex]['data'][index] = {selected:{}};
+            }
+            changeJson[k][listSubIndex]['data'][index]['selected'] = {$set: '0'};
+            changeJson[k][listSubIndex]['data'][index]['endDataSelected'] = {$set: []};
   	      }
 
           selectedCount += parseInt(item.endDataSelected.length);
 
     		});
     	    
-        if ( updateState[state.selectedBigCategory][k][listSubIndex].images.length == 0 ) {
+        if ( updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].images.length == 0 ) {
       		if ( selectedCount == 0 ) {
-      		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+      		  // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '0';
+            changeJson[k][listSubIndex]['state'] = {$set: '0'};
       		} else if ( selectedCount == 1 ) {
-      		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+      		  // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '1';
+            changeJson[k][listSubIndex]['state'] = {$set: '1'};
       		} else {
-      		  updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+      		  // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '2';
+            changeJson[k][listSubIndex]['state'] = {$set: '2'};
       		}
         }
+          
   	  }
   	  count++;
   	}
+    // console.log(changeJson);
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
     
-    return updateState;
+    /*
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: {
+            'Flashings': {
+              [0] :  {
+                'state' : {$set: '1'},
+                'data': {
+                  [0]: {
+                    'selected': {$set: '1'}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }      
+    });
+    */
   },
 
   [SELECT_DETAIL_ITEM]: (state, action) => { // listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray
 
-    const {listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray} = action.payload;
+    const {selectedAddressIndex, listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray} = action.payload;
     // console.log(selectedArray);
     let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-        updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {'data':{}};
+        }
+        selectedCount += parseInt(updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].limitations.length);
+        updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
           if (selectedGoDetailItemIndex == index) {
-            updateState[state.selectedBigCategory][k][listSubIndex].data[index].endDataSelected = selectedArray;
+            if( !changeJson[k][listSubIndex]['data'].hasOwnProperty(index) ) {
+              changeJson[k][listSubIndex]['data'][index] = {};
+            }
+            changeJson[k][listSubIndex]['data'][index]['endDataSelected'] = {$set: selectedArray};
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data[index].endDataSelected = selectedArray;
           }
-          selectedCount += parseInt(item.endDataSelected.length);
+          selectedCount += parseInt(selectedArray.length);
           selectedCount += parseInt(item.selected);
         });
-
-        if ( updateState[state.selectedBigCategory][k][listSubIndex].images.length == 0 ) {
+        // console.log(selectedCount);
+        if ( updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].images.length == 0 ) {
           if ( selectedCount == 0 ) {
-            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '0';
+            changeJson[k][listSubIndex]['state'] = {$set: '0'};
           } else if ( selectedCount == 1 ) {
-            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '1';
+            changeJson[k][listSubIndex]['state'] = {$set: '1'};
           } else {
-            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '2';
+            changeJson[k][listSubIndex]['state'] = {$set: '2'};
           }
         }
       }
       count++;
     }
     
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
   [CREATE_END_ITEM]: (state, action) => {
     return state;
@@ -5672,171 +5824,407 @@ export default handleActions({
   },
 
   [SELECT_BIG_CATEGORY]: (state, action) => { //bigCategory
+    const {selectedAddressIndex, bigCategory} = action.payload;
+
   	return update(state, {
-      selectedBigCategory: {$set: action.payload}
+      'reportData': {
+        [selectedAddressIndex]: {
+          selectedBigCategory: {$set: bigCategory}
+        }
+      }      
     });
   },
 
   [UPDATE_LOCATION]: (state, action) => {
-  	const {listIndex, listSubIndex, location} = action.payload;
+  	const {selectedAddressIndex, listIndex, listSubIndex, location} = action.payload;
   	let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
   	let count = 0; let selectedCount = 0;
-  	for(var k in updateState[state.selectedBigCategory]) {
+  	for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
   	  if ( count == listIndex) {
-	    updateState[state.selectedBigCategory][k][listSubIndex].location = location;
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['location'] = {$set: location};
+	    // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].location = location;
   	  }
   	  count++;
   	}
 
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
   [UPDATE_FLOOR]: (state, action) => {
-    const {listIndex, listSubIndex, floor} = action.payload;
+    const {selectedAddressIndex, listIndex, listSubIndex, floor} = action.payload;
   	let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
   	let count = 0; let selectedCount = 0;
-  	for(var k in updateState[state.selectedBigCategory]) {
+  	for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
   	  if ( count == listIndex) {
-	    updateState[state.selectedBigCategory][k][listSubIndex].floor = floor;
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['floor'] = {$set: floor};
+	    // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].floor = floor;
   	  }
   	  count++;
   	}
     
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
   [UPDATE_LIFE]: (state, action) => {
-  	const {listIndex, listSubIndex, life} = action.payload;
+  	const {selectedAddressIndex, listIndex, listSubIndex, life} = action.payload;
   	let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
   	let count = 0; let selectedCount = 0;
-  	for(var k in updateState[state.selectedBigCategory]) {
+  	for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
   	  if ( count == listIndex) {
-	    updateState[state.selectedBigCategory][k][listSubIndex].life = life;
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['life'] = {$set: life};
+	     // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].life = life;
   	  }
   	  count++;
   	}
     
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
   [UPDATE_COST]: (state, action) => {
-  	const {listIndex, listSubIndex, cost} = action.payload;
+  	const {selectedAddressIndex, listIndex, listSubIndex, cost} = action.payload;
   	let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
   	let count = 0; let selectedCount = 0;
-  	for(var k in updateState[state.selectedBigCategory]) {
+  	for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
   	  if ( count == listIndex) {
-	    updateState[state.selectedBigCategory][k][listSubIndex].cost = cost;
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['cost'] = {$set: cost};
+	     // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].cost = cost;
   	  }
   	  count++;
   	}
 
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
   [SET_ALL_REPORT]: (state, action) => {
-    return action.payload;
+    const {sectionObj, length} = action.payload;
+    let reportState = [];
+    for(let k=0; k<length; k++) {
+      reportState.push(sectionObj);
+    }
+
+    return {'reportData':reportState};
   },
   [DEL_IMAGE]: (state, action) => {
-    const {listIndex, listSubIndex, imageIndex} = action.payload;
+    const {selectedAddressIndex, listIndex, listSubIndex, imageIndex} = action.payload;
     let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-        updateState[state.selectedBigCategory][k][listSubIndex].images.splice(imageIndex, 1);
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['images'] = {$splice: [[imageIndex, 1]]};
+        // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].images.splice(imageIndex, 1);
         
-        if ( updateState[state.selectedBigCategory][k][listSubIndex].images.length == 0 ) {
-          updateState[state.selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+        if ( (updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].images.length -1 ) == 0 ) {
+          updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
             selectedCount += parseInt(item.endDataSelected.length);
             selectedCount += parseInt(item.selected);
           });
-          
+
           if ( selectedCount == 0 ) {
-            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '0';
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '0';
+            changeJson[k][listSubIndex]['state'] = {$set: '0'};
           } else if ( selectedCount == 1 ) {
-            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '1';
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '1';
+            changeJson[k][listSubIndex]['state'] = {$set: '1'};
           } else {
-            updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '2';
-          }
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '2';
+            changeJson[k][listSubIndex]['state'] = {$set: '2'};
+          }          
         }
       }
       count++;
     }
     
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
-  [SAVE_IMAGE]: (state, action) => {
-    const {listIndex, listSubIndex, imageIndex, res} = action.payload;
+  [SET_HIGHLIGHT]: (state, action) => {
+    const {selectedAddressIndex, listIndex, listSubIndex, highlight} = action.payload;
     let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-      updateState[state.selectedBigCategory][k][listSubIndex].images[imageIndex].drawImage = res;
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['highlight'] = {$set: highlight};
       }
       count++;
     }
     
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
-  [ADD_IMAGE]: (state, action) => {
-    const {listIndex, listSubIndex, res} = action.payload;
+  [SAVE_IMAGE]: (state, action) => {
+    const {selectedAddressIndex, listIndex, listSubIndex, imageIndex, res} = action.payload;
     let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
 
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-        updateState[state.selectedBigCategory][k][listSubIndex].images.push({
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['images'] = {[imageIndex]: {drawImage: {$set: res}}};
+        // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].images[imageIndex].drawImage = res;
+      }
+      count++;
+    }
+    
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+  },
+  [ADD_IMAGE]: (state, action) => {
+    const {selectedAddressIndex, listIndex, listSubIndex, res} = action.payload;
+    let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['images'] = {$push: [{
+          'backImage': res,
+          'drawImage': ''
+        }]};
+        changeJson[k][listSubIndex]['state'] = {$set: '3'};
+        /*
+        updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].images.push({
           'backImage': res,
           'drawImage': ''
         });
-        updateState[state.selectedBigCategory][k][listSubIndex]['state'] = '3';        
+        updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '3';        
+        */
       }
       count++;
     }
     
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
   [SAVE_SECTION_NOTE]: (state, action) => {
-    const {selectedBigCategory, sectionNote} = action.payload;
+    const {selectedAddressIndex, selectedBigCategory, sectionNote} = action.payload;
     let sectionNoteKey = `${selectedBigCategory}-notes`;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [sectionNoteKey]: {$set: sectionNote}
+        }
+      }      
+    });
+    /*
     return update(state, {
       [sectionNoteKey]: {$set: sectionNote}
     });
+    */
   },
   [DEL_SECTION_NOTE]: (state, action) => {
-    const {selectedBigCategory} = action.payload;
+    const {selectedAddressIndex, selectedBigCategory} = action.payload;
     let sectionNoteKey = `${selectedBigCategory}-notes`;
+    /*
     return update(state, {
       [sectionNoteKey]: {$set: ''}
     });
+    */
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [sectionNoteKey]: {$set: ''}
+        }
+      }      
+    });
   },
   [SAVE_CATEGORY_NOTE]: (state, action) => {
-    const {listIndex, listSubIndex, categoryNote} = action.payload;
+    const {selectedAddressIndex, listIndex, listSubIndex, categoryNote, selectedBigCategory} = action.payload;
     let updateState = Object.assign({}, state);
+    let changeJson = {};
 
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-      updateState[state.selectedBigCategory][k][listSubIndex].notes = categoryNote;
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['notes'] = {$set: categoryNote};
+        // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].notes = categoryNote;
       }
       count++;
     }
 
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
   [DEL_CATEGORY_NOTE]: (state, action) => {
-    const {listIndex, listSubIndex} = action.payload;
+    const {selectedAddressIndex, listIndex, listSubIndex, selectedBigCategory} = action.payload;
     let updateState = Object.assign({}, state);
+    let changeJson = {};
 
     let count = 0; let selectedCount = 0;
-    for(var k in updateState[state.selectedBigCategory]) {
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
       if ( count == listIndex) {
-      updateState[state.selectedBigCategory][k][listSubIndex].notes = '';
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['notes'] = {$set: ''};
+        // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].notes = '';
       }
       count++;
     }
 
-    return updateState;
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+  },
+  [SET_LIMITATION]: (state, action) => {
+    const {selectedAddressIndex, listIndex, listSubIndex, selectedBigCategory, limitations} = action.payload;
+    let updateState = Object.assign({}, state);
+    let changeJson = {};
+
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {};
+        }
+        changeJson[k][listSubIndex]['limitations'] = {$set: limitations};
+
+        if ( (updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].images.length) == 0 ) {
+          updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+            selectedCount += parseInt(item.endDataSelected.length);
+            selectedCount += parseInt(item.selected);
+          });
+          selectedCount += parseInt(limitations.length);
+
+          if ( selectedCount == 0 ) {
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '0';
+            changeJson[k][listSubIndex]['state'] = {$set: '0'};
+          } else if ( selectedCount == 1 ) {
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '1';
+            changeJson[k][listSubIndex]['state'] = {$set: '1'};
+          } else {
+            // updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex]['state'] = '2';
+            changeJson[k][listSubIndex]['state'] = {$set: '2'};
+          }          
+        }
+
+      }
+      count++;
+    }
+
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   }
 }, initialState);

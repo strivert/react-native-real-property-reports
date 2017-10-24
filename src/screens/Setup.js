@@ -20,6 +20,11 @@ const {
   Alert
 } = ReactNative;
 
+import * as previewActions from '../modules/preview';
+import * as reportActions from '../modules/report';
+
+var ImagePicker = require('react-native-image-picker');
+
 /**
  * Container component for Setup page
  */
@@ -35,7 +40,8 @@ class Setup extends Component {
     this.state={
       clickedPage: 'report',
       reportEditBtnClicked: false,
-      userEditBtnClicked: false
+      userEditBtnClicked: false,
+      isAddressCameraVisible: false
     };
 
     this.tempAddress = {};
@@ -47,7 +53,7 @@ class Setup extends Component {
         reportEditBtnClicked: false,
         userEditBtnClicked: false
       }, ()=>{
-        this.props.AddressActions.updateAddress(this.tempAddress);
+        this.props.addressActions.updateAddress(this.tempAddress);
         this.tempAddress = {};
       });      
     } else {
@@ -63,10 +69,40 @@ class Setup extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
+    const {address, reportParent, selectedAddressIndex, reportSeed} = this.props;
+    const selectedBigCategory = reportParent.hasOwnProperty('reportData')?reportParent.reportData[selectedAddressIndex].selectedBigCategory : 'Roofing';
+    const {isAddressCameraVisible} = this.state;
+
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
       	<Header.Main
           page='Setup'
+          selectBigCategoryForPreview={()=>{
+            this.props.previewActions.selectBigCategory({bigCategory: selectedBigCategory });
+          }}
+          onDisableCameraPicVisible={()=>{
+            this.setState({
+              isAddressCameraVisible: !this.state.isAddressCameraVisible
+            });
+          }}
+          onFromPickerImage={()=>{
+            var options = {
+              title: 'Select Avatar',
+              storageOptions: {
+                skipBackup: true,
+                path: 'images'
+              }
+            };
+            ImagePicker.launchImageLibrary(options, (response)  => {
+              // Same code as in above section!
+              let source = { uri: response.data };
+
+              if (response.data) {
+                this.props.addressActions.addImage({res: response.data});
+              }
+
+            });
+          }}
         />
      	  <View style={{flex:1}}>
           <Image source={require('../assets/imgs/mainBackground.png')}>
@@ -76,27 +112,57 @@ class Setup extends Component {
               userEditBtnClicked={this.state.userEditBtnClicked}
               address={this.props.address}
               selectedAddressIndex={this.props.selectedAddressIndex}
+              isAddressCameraVisible = {isAddressCameraVisible}
+              onSaveNewAddress={(text)=>{
+                this.props.addressActions.create({title: text});
+                this.props.reportActions.createParentReport({oneReport: reportSeed});
+              }}
+              onDelSignature = {(type)=>{
+                this.props.addressActions.delSignature({type: type});
+              }}
+              onSaveSignature = {(type, res)=>{
+                this.props.addressActions.saveSignature({type: type, res: res});
+              }}
+              onAddImage={(res)=>{
+                this.props.addressActions.addImage({res: res});
+              }}
+              onSaveImage={(imageIndex, res)=>{
+                this.props.addressActions.saveImage({imageIndex: imageIndex, res: res});
+              }}
+              onDelImages={(imageIndex)=>{
+                this.props.addressActions.delImage({imageIndex: imageIndex});
+              }}
+              onDisableCameraPicVisible={()=>{
+                this.setState({
+                  isAddressCameraVisible: !this.state.isAddressCameraVisible
+                });
+              }}
               onSelectAddress={(index)=>{
                 this.setState({
                   reportEditBtnClicked: false
-                }, ()=>this.props.AddressActions.setAddressIndex(index))                
+                }, ()=>this.props.addressActions.setAddressIndex(index))                
               }}
               onDeleteAddress={()=>{
-                
-                Alert.alert(
-                  config.DEL_ADDRESS_TITLE,
-                  config.DEL_ADDRESS_CNT,
-                  [
-                    {text: 'Cancel', onPress: () => {} },
-                    {text: 'OK', onPress: () => { 
+                if(this.props.address.length == 1) {
 
-                      this.setState({
-                        reportEditBtnClicked: false
-                      }, ()=>this.props.AddressActions.remove());
+                } else {                
+                  Alert.alert(
+                    config.DEL_ADDRESS_TITLE,
+                    config.DEL_ADDRESS_CNT,
+                    [
+                      {text: 'Cancel', onPress: () => {} },
+                      {text: 'OK', onPress: () => { 
 
-                    }},
-                  ]
-                );
+                        this.setState({
+                          reportEditBtnClicked: false
+                        }, ()=>{
+                          this.props.addressActions.remove();
+                        });
+
+                      }},
+                    ]
+                  );
+                }
               }}
               onStoreTempAddress={(tempAddress)=>{
                 this.tempAddress = Object.assign({}, tempAddress);
@@ -141,9 +207,13 @@ let styles = StyleSheet.create({
 export default connect(
   (state) => ({
     address: state.address.address,
-    selectedAddressIndex: state.address.selectedAddressIndex
+    selectedAddressIndex: state.address.selectedAddressIndex,
+    reportParent: state.report,
+    reportSeed: state.reportSeed
   }),
   (dispatch) => ({
-    AddressActions: bindActionCreators(addressActions, dispatch)
+    addressActions: bindActionCreators(addressActions, dispatch),
+    reportActions: bindActionCreators(reportActions, dispatch),
+    previewActions: bindActionCreators(previewActions, dispatch)
   })
 )(Setup);

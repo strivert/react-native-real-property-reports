@@ -7,8 +7,9 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 
 import * as reportActions from '../modules/report';
+import * as previewActions from '../modules/preview';
 import update from 'react-addons-update';
-
+import config from '../config/config';
 const {
   Image,
   StyleSheet,
@@ -16,7 +17,8 @@ const {
   View,
   ScrollView,
   TouchableHighlight,
-  Linking
+  Linking,
+  Alert
 } = ReactNative;
 
 var ImagePicker = require('react-native-image-picker');
@@ -39,6 +41,7 @@ class Report extends Component {
       isEdit: false,
       isCameraPicVisible: false,
       isCategoryNoteVisible: false,
+      isLimitationNoteVisible: false,
       listIndex: 0,
       listSubIndex: 0,
     };
@@ -69,8 +72,15 @@ class Report extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {report, selectedBigCategory} = this.props;
-    const {goDetail, selectedGoDetailItemIndex, isEdit, isCameraPicVisible, isCategoryNoteVisible} = this.state;
+    const {address, reportParent, reportSeed} = this.props;
+    const {selectedAddressIndex} = address;
+
+    const selectedBigCategory = reportParent.hasOwnProperty('reportData') ? reportParent.reportData[selectedAddressIndex].selectedBigCategory : 'Roofing';
+    const report = reportParent.hasOwnProperty('reportData') ? reportParent.reportData[selectedAddressIndex] : {};
+
+    const addressName = address.address[selectedAddressIndex]['reportName'];    
+
+    const {goDetail, selectedGoDetailItemIndex, isEdit, isCameraPicVisible, isCategoryNoteVisible, isLimitationNoteVisible} = this.state;
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
       	<Header.Main
@@ -88,6 +98,31 @@ class Report extends Component {
             });
           }}
           onFromPickerImage={()=>{
+            let reportData = report[selectedBigCategory];
+            let listIndex = this.state.listIndex;
+            let listSubIndex = this.state.listSubIndex;
+
+            let images = [];
+            let count = 0;
+            for (var k in reportData) {
+              if (count === listIndex && reportData[k][listSubIndex]) {
+                images = reportData[k][listSubIndex].images;
+              }
+              count++;     
+            }
+
+            
+            if (images.length>=4) {
+              Alert.alert(
+                config.PIC_LIMIT_TITLE,
+                config.PIC_LIMIT_CNT,
+                [
+                  {text: 'OK', onPress: () => { } }
+                ]
+              )
+              return;
+            }
+            
             var options = {
               title: 'Select Avatar',
               storageOptions: {
@@ -100,10 +135,13 @@ class Report extends Component {
               let source = { uri: response.data };
 
               if (response.data) {
-                this.props.reportActions.addImage({listIndex: this.state.listIndex, listSubIndex: this.state.listSubIndex, res: response.data});
+                this.props.reportActions.addImage({selectedAddressIndex: selectedAddressIndex, listIndex: this.state.listIndex, listSubIndex: this.state.listSubIndex, res: response.data});
               }
 
             });
+          }}
+          selectBigCategoryForPreview={()=>{
+            this.props.previewActions.selectBigCategory({bigCategory: selectedBigCategory });
           }}
         />
      	  <View style={{flex:1}}>
@@ -118,6 +156,19 @@ class Report extends Component {
               handleGoDetail={(index)=>this.handleGoDetail(index)}
               isCameraPicVisible={isCameraPicVisible}
               isCategoryNoteVisible={isCategoryNoteVisible}
+              addressName={addressName}
+              isLimitationNoteVisible={isLimitationNoteVisible}
+              handleChangeHighlight={(highlight)=>{
+                this.props.reportActions.setHighlight({selectedAddressIndex: selectedAddressIndex, selectedBigCategory:selectedBigCategory,  listIndex: this.state.listIndex, listSubIndex: this.state.listSubIndex, highlight: highlight});
+              }}
+              setLimitation = {(limitations)=>{
+                this.props.reportActions.setLimitation({selectedAddressIndex: selectedAddressIndex, selectedBigCategory:selectedBigCategory,  listIndex: this.state.listIndex, listSubIndex: this.state.listSubIndex, limitations: limitations});
+              }}
+              onLimitationNote={()=>{
+                this.setState({
+                  isLimitationNoteVisible: !this.state.isLimitationNoteVisible
+                });
+              }}
               onCategoryNoteToggle={()=>{
                 this.setState({
                   isCategoryNoteVisible: !this.state.isCategoryNoteVisible
@@ -127,21 +178,21 @@ class Report extends Component {
                 this.setState({
                   isCategoryNoteVisible: false
                 }, ()=>{
-                  this.props.reportActions.saveCategoryNote({listIndex: listIndex, listSubIndex: listSubIndex, categoryNote: categoryNote});
+                  this.props.reportActions.saveCategoryNote({selectedAddressIndex: selectedAddressIndex, selectedBigCategory:selectedBigCategory,  listIndex: listIndex, listSubIndex: listSubIndex, categoryNote: categoryNote});
                 });                
               }}
               onDelCategoryNote={(listIndex, listSubIndex)=>{
                 this.setState({
                   isCategoryNoteVisible: false
                 }, ()=>{
-                  this.props.reportActions.delCategoryNote({listIndex: listIndex, listSubIndex: listSubIndex});
+                  this.props.reportActions.delCategoryNote({selectedAddressIndex: selectedAddressIndex, selectedBigCategory:selectedBigCategory, listIndex: listIndex, listSubIndex: listSubIndex});
                 });
               }}
               onDelSectionNote={()=>{
-                this.props.reportActions.delSectionNote({selectedBigCategory:selectedBigCategory});
+                this.props.reportActions.delSectionNote({selectedAddressIndex: selectedAddressIndex, selectedBigCategory:selectedBigCategory});
               }}
               onSaveSectionNote={(sectionNote)=>{
-                this.props.reportActions.saveSectionNote({selectedBigCategory:selectedBigCategory, sectionNote: sectionNote});
+                this.props.reportActions.saveSectionNote({selectedAddressIndex: selectedAddressIndex, selectedBigCategory:selectedBigCategory, sectionNote: sectionNote});
               }}
               setListIndexSubIndex={(listIndex, listSubIndex)=>{
                 this.setState({
@@ -150,13 +201,13 @@ class Report extends Component {
                 })
               }}
               onDelImages={(listIndex, listSubIndex, imageIndex)=>{
-                this.props.reportActions.delImage({listIndex: listIndex, listSubIndex: listSubIndex, imageIndex: imageIndex});
+                this.props.reportActions.delImage({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, imageIndex: imageIndex});
               }}
               onSaveImage={(listIndex, listSubIndex, imageIndex, res)=>{
-                this.props.reportActions.saveImage({listIndex: listIndex, listSubIndex: listSubIndex, imageIndex: imageIndex, res: res});
+                this.props.reportActions.saveImage({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, imageIndex: imageIndex, res: res});
               }}
               onAddImage={(listIndex, listSubIndex, res)=>{
-                this.props.reportActions.addImage({listIndex: listIndex, listSubIndex: listSubIndex, res: res});
+                this.props.reportActions.addImage({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, res: res});
               }}
               onDisableCameraPicVisible={()=>{
                 this.setState({
@@ -170,24 +221,24 @@ class Report extends Component {
                 this.cancelDetail();
               }}
               handleChangeCompass={(listIndex, listSubIndex, val)=>{
-                this.props.reportActions.updateLocation({listIndex:listIndex, listSubIndex:listSubIndex, location:val});
+                this.props.reportActions.updateLocation({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, location:val});
               }}
               handleChangeFloor={(listIndex, listSubIndex, val)=>{
-                this.props.reportActions.updateFloor({listIndex:listIndex, listSubIndex:listSubIndex, floor:val});
+                this.props.reportActions.updateFloor({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, floor:val});
               }}
               handleChangeFiveStep={(listIndex, listSubIndex, val, type)=>{
                 if (type === 'life') {
-                  this.props.reportActions.updateLife({listIndex:listIndex, listSubIndex:listSubIndex, life:val});
+                  this.props.reportActions.updateLife({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, life:val});
                 } else {
-                  this.props.reportActions.updateCost({listIndex:listIndex, listSubIndex:listSubIndex, cost:val});
+                  this.props.reportActions.updateCost({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, cost:val});
                 }                
               }}
               handleChangeRightItem={
                 (listIndex, listSubIndex, selectedArray)=>{
                   if (goDetail)
-                    this.props.reportActions.selectItem({listIndex:listIndex, listSubIndex:listSubIndex, selectedArray:selectedArray});
+                    this.props.reportActions.selectItem({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, selectedArray:selectedArray});
                   else
-                    this.props.reportActions.selectDetailItem({listIndex:listIndex, listSubIndex:listSubIndex, selectedGoDetailItemIndex:selectedGoDetailItemIndex, selectedArray:selectedArray});
+                    this.props.reportActions.selectDetailItem({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, selectedGoDetailItemIndex:selectedGoDetailItemIndex, selectedArray:selectedArray});
                 }
               }
               handleLeftIcon={
@@ -206,12 +257,15 @@ class Report extends Component {
                             default: true
                           }
                         });
-                        copiedObject.endData = Object.assign([], report[selectedBigCategory][k][listSubIndex].endData);
+                        copiedObject.endData = Object.assign([], reportSeed[selectedBigCategory][k][listSubIndex].endData);
                         copiedObject.location = '';
                         copiedObject.floor = '';
                         copiedObject.life = '';
                         copiedObject.cost = '';
                         copiedObject.default = false;
+                        copiedObject.images = [];
+                        copiedObject.limitations = [];
+                        copiedObject.highlight = false;
 
 
                         report[selectedBigCategory][k].map((item, index)=>{
@@ -224,14 +278,21 @@ class Report extends Component {
                     }
                     copiedObject.name = `${label} (${(existCount+1)})`;
                     
-                    this.props.reportActions.createCategory({listIndex:listIndex, listSubIndex:listSubIndex, label: label, copiedObject: copiedObject});
+                    this.props.reportActions.createCategory({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, label: label, copiedObject: copiedObject});
                   } else {
-                    this.props.reportActions.removeCategory({listIndex:listIndex, listSubIndex:listSubIndex});
+                    this.props.reportActions.removeCategory({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex});
                   }
                 }
               }
+              onSaveNewItem={(listIndex, listSubIndex, text)=>{
+                this.props.reportActions.createItem({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, newValue: text});
+              }}
               handleCreateItem={(listIndex, listSubIndex)=>{
-                const {report, selectedBigCategory} = this.props;
+                /*
+                const {report, reportParent} = this.props;
+                const {selectedAddressIndex} = address;
+                const selectedBigCategory = reportParent.hasOwnProperty('reportData') ? reportParent.reportData[selectedAddressIndex].selectedBigCategory : 'Roofing';
+
                 let count = 0; let copiedObject = {}; let label = '';
                 let reportt = update({}, {$set:report});
                 for(var k in reportt[selectedBigCategory]) {
@@ -248,7 +309,8 @@ class Report extends Component {
                   }
                   count++;
                 }
-                this.props.reportActions.createItem({listIndex:listIndex, listSubIndex:listSubIndex, copiedObject: copiedObject});
+                this.props.reportActions.createItem({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, copiedObject: copiedObject});
+                */
               }}
             />
           </Image>
@@ -256,8 +318,24 @@ class Report extends Component {
         <Footer.Main
           page='Report'
           selectedBigCategory={selectedBigCategory}
-          pressReportFooterBtn={(bigCategory)=>{this.props.reportActions.selectBigCategory(bigCategory);}}
+          onLimitationNote={()=>{
+            this.setState({
+              isLimitationNoteVisible: !this.state.isLimitationNoteVisible
+            });
+          }}
+          pressReportFooterBtn={(bigCategory)=>{
+            this.setState({
+              isEdit: false
+            }, ()=>{
+              this.props.reportActions.selectBigCategory({selectedAddressIndex: selectedAddressIndex, bigCategory:bigCategory});
+            });            
+          }}
           handleEditReport={()=>{this.handleEditReport();}}
+          handleSaveUpdatedReport={()=>{
+            this.setState({
+              isEdit: false
+            });
+          }}
           isEdit={isEdit}
         />
       </View>
@@ -270,10 +348,13 @@ let styles = StyleSheet.create({
 
 export default connect(
   (state) => ({
-    report: state.report,
-    selectedBigCategory: state.report.selectedBigCategory
+    address: state.address,
+    reportParent: state.report,
+    reportSeed: state.reportSeed,
+    //selectedBigCategory: state.report.selectedBigCategory
   }),
   (dispatch) => ({
-    reportActions: bindActionCreators(reportActions, dispatch)
+    reportActions: bindActionCreators(reportActions, dispatch),
+    previewActions: bindActionCreators(previewActions, dispatch)
   })
 )(Report);

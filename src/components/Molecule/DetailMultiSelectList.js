@@ -14,6 +14,7 @@ const {
   Image
 } = ReactNative;
 import update from 'react-addons-update';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 /**
  * ItemList component
@@ -130,13 +131,13 @@ export default class DetailMultiSelectList extends Component {
                     <View style={{flex:0.1, justifyContent:'center'}}>
                       {chkBtn}
                     </View>
-                    <View style={{flex:0.65}}>
+                    <View style={styles.labelLeft}>
                       <Text style={radioLabelStyle}>{obj.label}</Text>
                     </View>
                     {
                       (goDetail && selectedIndex!==-1 && isEdit === false) &&
                         
-                          <View style={{flex:0.25, alignItems: 'flex-end'}}>
+                          <View style={styles.labelRight}>
                             <TextBtn
                               imgSrc={require('../../assets/imgs/BTN_Blue_130x30.png')}
                               style={{marginRight: 10}}
@@ -149,11 +150,11 @@ export default class DetailMultiSelectList extends Component {
                     }
 
                     {(isEdit) &&
-                      <View style={{flex:0.25, alignItems: 'flex-end'}}>
+                      <View style={styles.labelRight}>
                         <TextBtn
                           imgSrc={require('../../assets/imgs/BTN_Blue_130x30.png')}
                           style={{marginRight: 10}}
-                          onPress={()=>this.props.handleGoDetail(i)}
+                          onPress={()=>{}}
                         >
                           Edit
                         </TextBtn>
@@ -169,7 +170,21 @@ export default class DetailMultiSelectList extends Component {
   }
 }
 
-var styles = StyleSheet.create({
+var styles = EStyleSheet.create({
+  labelLeft: {
+    flex:0.65
+  },
+  labelRight: {
+    flex:0.25, alignItems: 'flex-end'
+  },
+  '@media (max-height: 719)': {
+    labelLeft: {
+      flex:0.6
+    },
+    labelRight: {
+      flex:0.3, alignItems: 'flex-start'
+    }
+  },
   itemList: {
     marginTop:20
   },
