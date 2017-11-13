@@ -38,6 +38,8 @@ class Report extends Component {
     this.state= {
       goDetail: true,
       selectedGoDetailItemIndex: null,
+      selectedGoEditItemIndex: null,
+      selectedGoEditDetailItemIndex: null,
       isEdit: false,
       isCameraPicVisible: false,
       isCategoryNoteVisible: false,
@@ -51,6 +53,18 @@ class Report extends Component {
     this.setState({
       goDetail: false,
       selectedGoDetailItemIndex: index
+    });
+  }
+
+  handleGoEditItem(index) {
+    this.setState({
+      selectedGoEditItemIndex: index
+    });
+  }
+
+  handleGoEditDetailItem(index) {
+    this.setState({
+      selectedGoEditDetailItemIndex: index
     });
   }
 
@@ -80,7 +94,7 @@ class Report extends Component {
 
     const addressName = address.address[selectedAddressIndex]['reportName'];    
 
-    const {goDetail, selectedGoDetailItemIndex, isEdit, isCameraPicVisible, isCategoryNoteVisible, isLimitationNoteVisible} = this.state;
+    const {goDetail, selectedGoDetailItemIndex, selectedGoEditItemIndex, selectedGoEditDetailItemIndex, isEdit, isCameraPicVisible, isCategoryNoteVisible, isLimitationNoteVisible} = this.state;
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
       	<Header.Main
@@ -154,6 +168,8 @@ class Report extends Component {
               selectedGoDetailItemIndex={selectedGoDetailItemIndex}
               isEdit={isEdit}
               handleGoDetail={(index)=>this.handleGoDetail(index)}
+              handleGoEditItem={(index)=>this.handleGoEditItem(index)}
+              handleGoEditDetailItem={(index)=>this.handleGoEditDetailItem(index)}
               isCameraPicVisible={isCameraPicVisible}
               isCategoryNoteVisible={isCategoryNoteVisible}
               addressName={addressName}
@@ -278,14 +294,29 @@ class Report extends Component {
                     }
                     copiedObject.name = `${label} (${(existCount+1)})`;
                     
-                    this.props.reportActions.createCategory({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, label: label, copiedObject: copiedObject});
+                    this.props.reportActions.createCategory({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, label: label, copiedObject: copiedObject});
                   } else {
-                    this.props.reportActions.removeCategory({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex});
+                    this.props.reportActions.removeCategory({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex});
                   }
                 }
               }
               onSaveNewItem={(listIndex, listSubIndex, text)=>{
-                this.props.reportActions.createItem({selectedAddressIndex: selectedAddressIndex, listIndex:listIndex, listSubIndex:listSubIndex, newValue: text});
+                this.props.reportActions.createItem({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, newValue: text});
+              }}
+              onSaveEditItem={(listIndex, listSubIndex, text)=>{
+                this.props.reportActions.updateItem({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, selectedGoEditItemIndex: selectedGoEditItemIndex, newValue: text});
+              }}
+              onDelEditItem={(listIndex, listSubIndex)=>{
+                this.props.reportActions.delItem({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, selectedGoEditItemIndex: selectedGoEditItemIndex});
+              }}
+              onDelEditDetailItem={(listIndex, listSubIndex)=>{
+                this.props.reportActions.delDetailItem({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, selectedGoEditDetailItemIndex: selectedGoEditDetailItemIndex});
+              }}
+              onSaveNewDetailItem={(listIndex, listSubIndex, text)=>{
+                this.props.reportActions.createDetailItem({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, newValue: text});
+              }}
+              onSaveEditDetailItem={(listIndex, listSubIndex, text)=>{
+                this.props.reportActions.updateDetailItem({selectedAddressIndex: selectedAddressIndex, listIndex: listIndex, listSubIndex: listSubIndex, selectedGoEditDetailItemIndex: selectedGoEditDetailItemIndex, newValue: text});
               }}
               handleCreateItem={(listIndex, listSubIndex)=>{
                 /*

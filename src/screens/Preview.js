@@ -16,6 +16,7 @@ const {
 } = ReactNative;
 
 import * as previewActions from '../modules/preview';
+import * as addressActions from '../modules/address';
 
 /**
  * Container component for Preview page
@@ -36,12 +37,13 @@ class Preview extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {    
-    const {address, reportParent, preview} = this.props;
+    const {address, reportParent, preview, addressActions} = this.props;
     const {selectedAddressIndex} = address;
     const {selectedBigCategory, categories} = preview;
     const report = reportParent.hasOwnProperty('reportData')?reportParent.reportData[selectedAddressIndex]:{};
     
     const addressName = address.address[selectedAddressIndex]['reportName'];
+    const reportEmails = address.address[selectedAddressIndex]['reportEmails'];
 
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
@@ -55,6 +57,9 @@ class Preview extends Component {
               selectedBigCategory = {selectedBigCategory}
               categories = {categories}
               addressName = {addressName}
+              reportEmails = {reportEmails}
+              delReportEmail = {(index)=>{addressActions.delReportEmail({index: index});}}
+              addReportEmail = {(email)=>{addressActions.addReportEmail({email: email});}}
             />
           </Image>
         </View>
@@ -79,6 +84,7 @@ export default connect(
     preview: state.preview
   }),
   (dispatch) => ({
-    previewActions: bindActionCreators(previewActions, dispatch)
+    previewActions: bindActionCreators(previewActions, dispatch),
+    addressActions: bindActionCreators(addressActions, dispatch)
   })
 )(Preview);

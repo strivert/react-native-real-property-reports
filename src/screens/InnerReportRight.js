@@ -106,6 +106,8 @@ class InnerReportRight extends Component {
                   onPress={()=>{
                     if(goDetail) {
                       this.props.handleCreateItem();
+                    } else {
+                      this.props.handleCreateDetailItem();                      
                     }
                   }}
                 >
@@ -139,6 +141,9 @@ class InnerReportRight extends Component {
               handleChangeItem = {(selectedArray)=>{this.props.handleChangeRightItem(selectedArray);}}
               goDetail={true}
               handleGoDetail={(index)=>this.handleGoDetail(index)}
+              handleGoEditItem={(index, itemLabel)=>{
+                this.props.handleGoEditItem(index, itemLabel);
+              }}
               isEdit={isEdit}
             />
           </ScrollView>
@@ -188,12 +193,19 @@ class InnerReportRight extends Component {
             <DetailMultiSelectList
               items={endDataList}
               handleChangeItem = {(selectedArray)=>{this.props.handleChangeRightItem(selectedArray);}}
+              handleGoEditDetailItem={(index, itemLabel)=>{
+                this.props.handleGoEditDetailItem(index, itemLabel);
+              }}
               goDetail={false}
               isEdit={isEdit}
             />
           </ScrollView>
-          <View style={styles.tmpPan}>
-          </View>
+          {
+            /*
+            <View style={styles.tmpPan}>
+            </View>
+            */
+          }
         </View>
       )
 

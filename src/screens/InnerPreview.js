@@ -34,7 +34,7 @@ class InnerPreview extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {reportAddressData, selectedBigCategory, categories, addressName} = this.props;
+    const {reportAddressData, selectedBigCategory, categories, addressName, reportEmails} = this.props;
 
     let previewData = {};
     // const 
@@ -114,7 +114,11 @@ class InnerPreview extends Component {
     return (
       <View style={{flex:1, flexDirection: 'row' }}>
         <View style={{width: 360}}>
-          <InnerPreviewLeft />
+          <InnerPreviewLeft
+            reportEmails = {reportEmails}
+            delReportEmail = {(index)=>{this.props.delReportEmail(index);}}
+            addReportEmail = {(email)=>{this.props.addReportEmail(email);}}
+          />
         </View>
         <View style={{flex: 1}}>
           <InnerPreviewRight

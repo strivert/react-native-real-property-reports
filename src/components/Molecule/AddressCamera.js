@@ -239,7 +239,7 @@ class AddressCamera extends Component {
 
     const myAlbumPath = RNFS.PicturesDirectoryPath;
     let imageLocation = myAlbumPath+'/'+'filename'+new Date().getTime().toString()+'.png';
-    alert(imageLocation);
+    // alert(imageLocation);
     // RNFS.mkdir(myAlbumPath).then(()=>{
       RNFS.writeFile(imageLocation, img64Str, 'base64').then((success) => {
        // alert('FILE WRITTEN!');
@@ -420,7 +420,9 @@ class AddressCamera extends Component {
                     imgSrc={require('../../assets/imgs/PhotoControlBtn.png')}
                     style={{height: 34, resizeMode: 'stretch', margin: 10, marginRight: 20}}
                     onPress={()=>{
-                      alert('');
+                      this.setState({
+                        isDraw: false
+                      });
                     }}
                   >
                     Clear

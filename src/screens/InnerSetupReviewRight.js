@@ -99,6 +99,7 @@ class InnerSetupReviewRight extends Component {
    */
   render() {
     let mode = (this.props.reportEditBtnClicked)?'0':'1';
+
     const {address, selectedAddressIndex} = this.props;
     const {
       reportName,

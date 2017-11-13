@@ -16,6 +16,9 @@ const SAVE_SIGNATURE = 'address/SAVE_SIGNATURE';
 
 const SAVE_NEW = 'address/SAVE_NEW';
 
+const DEL_REPORT_EMAIL = 'address/DEL_REPORT_EMAIL';
+const ADD_REPORT_EMAIL = 'address/ADD_REPORT_EMAIL';
+
 // action creators
 export const create = createAction(CREATE); // reportName
 export const remove = createAction(REMOVE); // 
@@ -27,6 +30,8 @@ export const addImage = createAction(ADD_IMAGE); // res
 export const delSignature = createAction(DEL_SIGNATURE); // 
 export const saveSignature = createAction(SAVE_SIGNATURE); // 
 export const saveNew = createAction(SAVE_NEW); // 
+export const delReportEmail = createAction(DEL_REPORT_EMAIL); // 
+export const addReportEmail = createAction(ADD_REPORT_EMAIL); // 
 
 // seed state
 const seed = {
@@ -47,6 +52,7 @@ const seed = {
   ud4: '',	// weather
   ud5: '',	// direction
   images: [],
+  reportEmails: [],
   inspectorSignature: '',
   clientSignature: ''
 }
@@ -73,9 +79,10 @@ const initialState = {
       ud4: 'Sunny',  // weather
       ud5: 'North',  // direction,
       images: [],
+      reportEmails: [],
       inspectorSignature: '',
       clientSignature: ''
-    },
+    }/*,
     {
       reportName: 'WIND-876 Bloor st',
       firstName: 'Jeryy',
@@ -119,7 +126,7 @@ const initialState = {
       ],
       inspectorSignature: '',
       clientSignature: ''
-    }
+    }*/
   ]
 };
 
@@ -129,6 +136,7 @@ export default handleActions({
     const {title} = action.payload;
     let newSeed = Object.assign({}, seed);
     newSeed.reportName = title;   
+    newSeed.address1 = title;
 
     return update(state, {
       address: { $push: [newSeed]}
@@ -164,6 +172,35 @@ export default handleActions({
   [SET_ADDRESS_INDEX]: (state, action) => {
     return update(state, {
       selectedAddressIndex: {$set: action.payload}  // index
+    });
+  },
+  [DEL_REPORT_EMAIL]: (state, action) => {
+    const {index} = action.payload;
+    const {selectedAddressIndex} = state;
+    
+    // return updateState;
+    return update(state, {
+      address: {
+        [selectedAddressIndex]: {
+          reportEmails: {
+            $splice: [[index, 1]]
+          }
+        }
+      }
+    });
+  },
+  [ADD_REPORT_EMAIL]: (state, action) => {
+    const {email} = action.payload;
+    const {selectedAddressIndex} = state;
+
+    return update(state, {
+      address: {
+        [selectedAddressIndex]: {
+          reportEmails: {
+            $push: [email]            
+          }
+        }
+      }
     });
   },
   [DEL_IMAGE]: (state, action) => {

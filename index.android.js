@@ -12,11 +12,11 @@ export default class FortReports extends Component {
   constructor(props){
     super(props);
     this.state = {
-	  isLoading: false, // true
-    // isLoading: true,
+	  // isLoading: false, // true
+    isLoading: true,
 	  store: configureStore(() => {
 	    this.setState({ isLoading: false });          
-	  })
+	  })    
 	};
   }
 

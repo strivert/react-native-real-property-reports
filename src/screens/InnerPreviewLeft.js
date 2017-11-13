@@ -50,8 +50,28 @@ class InnerPreviewLeft extends Component {
       ]
     }
   }
+
+  componentDidMount() {
+    const {reportEmails} = this.props;
+    this.setState({
+      emails: Object.assign([], reportEmails)
+    });
+  }
+  /*
+  shouldComponentUpdate(nextProps, nextState){
+    return (JSON.stringify(nextProps) != JSON.stringify(this.props));
+  }
+  */
+
+  componentWillReceiveProps (nextProps) {
+    const {reportEmails} = nextProps;
+    this.setState({
+      emails: Object.assign([], reportEmails)
+    });
+  }
   
   delEmail(index) {
+    /*
     this.setState(
       update(this.state, {
         emails: {
@@ -59,6 +79,8 @@ class InnerPreviewLeft extends Component {
         }
       })
     );
+    */
+    this.props.delReportEmail(index);
   }
 
   handleAddEmail() {
@@ -72,6 +94,7 @@ class InnerPreviewLeft extends Component {
       )
       return;
     } else {
+      /*
       this.setState(
         update(this.state, {
             emails: {
@@ -84,6 +107,12 @@ class InnerPreviewLeft extends Component {
           Keyboard.dismiss();
         }
       );
+      */
+      this.props.addReportEmail(this.state.enteredEmail);
+      this.setState({
+        enteredEmail: ''
+      });
+      Keyboard.dismiss();
     }
   }
 

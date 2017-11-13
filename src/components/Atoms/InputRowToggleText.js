@@ -40,7 +40,8 @@ class InputRowToggleText extends Component {
         {mode === '0' ?
             <TextInput
               style={{height: 40, width: 200, borderColor: 'gray', borderWidth: 1}}
-              onChangeText={(text) => {}}
+              underlineColorAndroid='transparent'
+              onChangeText={(text) => this.props.onChangeText(text)}
               value={value}
             />
           :

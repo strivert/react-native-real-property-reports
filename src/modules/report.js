@@ -8,11 +8,13 @@ const HIGHLIGHT_SELECT_CATEGORY = 'report/HIGHLIGHT_SELECT_CATEGORY';
 
 const CREATE_ITEM = 'report/CREATE_ITEM';
 const UPDATE_ITEM = 'report/UPDATE_ITEM';
-const SELECT_ITEM = 'report/SELECT_ITEM';	
+const SELECT_ITEM = 'report/SELECT_ITEM';
+const DEL_ITEM = 'report/DEL_ITEM';	
 const SELECT_DETAIL_ITEM = 'report/SELECT_DETAIL_ITEM';  
 
-const CREATE_END_ITEM = 'report/CREATE_END_ITEM';
-const UPDATE_END_ITEM = 'report/UPDATE_END_ITEM';
+const CREATE_DETAIL_ITEM = 'report/CREATE_DETAIL_ITEM';
+const UPDATE_DETAIL_ITEM = 'report/UPDATE_DETAIL_ITEM';
+const DEL_DETAIL_ITEM = 'report/DEL_DETAIL_ITEM';
 const HIGHLIGHT_SELECT_END_ITEM = 'report/HIGHLIGHT_SELECT_END_ITEM';
 
 const SELECT_BIG_CATEGORY = 'report/SELECT_BIG_CATEGORY';
@@ -45,6 +47,12 @@ export const removeCategory = createAction(REMOVE_CATEGORY); // listIndex, listS
 export const selectItem = createAction(SELECT_ITEM);  // listIndex, listSubIndex, selectedArray
 export const selectDetailItem = createAction(SELECT_DETAIL_ITEM);  // listIndex, listSubIndex, selectedGoDetailItemIndex, selectedArray
 export const createItem = createAction(CREATE_ITEM);  // listIndex, listSubIndex, copiedObject(parent:Roofing->Roofing)
+export const updateItem = createAction(UPDATE_ITEM);  //
+export const delItem = createAction(DEL_ITEM);  //
+
+export const createDetailItem = createAction(CREATE_DETAIL_ITEM);
+export const updateDetailItem = createAction(UPDATE_DETAIL_ITEM);
+export const delDetailItem = createAction(DEL_DETAIL_ITEM);
 
 export const selectBigCategory = createAction(SELECT_BIG_CATEGORY); // bigCategory
 
@@ -5667,7 +5675,134 @@ export default handleActions({
   },
 
   [UPDATE_ITEM]: (state, action) => {
-    return state;
+    const {selectedAddressIndex, listIndex, listSubIndex, selectedGoEditItemIndex, newValue} = action.payload;
+    // console.log(selectedArray);
+    let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+
+    let count = 0; 
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {'data':{}};
+        }
+        
+        updateState.reportData[selectedAddressIndex][selectedBigCategory][k][listSubIndex].data.map((item, index)=>{
+          if (selectedGoEditItemIndex == index) {
+            if( !changeJson[k][listSubIndex]['data'].hasOwnProperty(index) ) {
+              changeJson[k][listSubIndex]['data'][index] = {};
+            }
+            changeJson[k][listSubIndex]['data'][index]['name'] = {$set: newValue};
+          }
+        });
+      }
+      count++;
+    }
+    
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+  },
+
+  [UPDATE_DETAIL_ITEM]: (state, action) => {
+    const {selectedAddressIndex, listIndex, listSubIndex, selectedGoEditDetailItemIndex, newValue} = action.payload;
+    // console.log(selectedArray);
+    let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+
+    let count = 0; 
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {        
+        changeJson[k] = {};
+        changeJson[k][listSubIndex] = {'endData':{
+          [selectedGoEditDetailItemIndex]: {
+            $set: {name: newValue}
+          }
+        }};        
+      }
+      count++;
+    }
+    
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+  },
+
+  [DEL_ITEM]: (state, action) => {
+    const {selectedAddressIndex, listIndex, listSubIndex, selectedGoEditItemIndex} = action.payload;
+    // console.log(selectedArray);
+    let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+
+    let count = 0; 
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {'data':{}};
+        }
+
+        changeJson[k][listSubIndex] = {'data':{
+          $splice: [[selectedGoEditItemIndex, 1]]
+        }};
+      }
+      count++;
+    }
+    
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
+  },
+
+  [DEL_DETAIL_ITEM]: (state, action) => {
+    const {selectedAddressIndex, listIndex, listSubIndex, selectedGoEditDetailItemIndex} = action.payload;
+    // console.log(selectedArray);
+    let updateState = Object.assign({}, state);
+    let changeJson = {};
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+
+    let count = 0; 
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {
+        if( !changeJson.hasOwnProperty(k) ) {
+          changeJson[k] = {};
+          changeJson[k][listSubIndex] = {'endData':{}};
+        }
+
+        changeJson[k][listSubIndex] = {'endData':{
+          $splice: [[selectedGoEditDetailItemIndex, 1]]
+        }};
+      }
+      count++;
+    }
+    
+    // return updateState;
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
 
   [SELECT_ITEM]: (state, action) => {	// listIndex, listSubIndex, selectedArray        
@@ -5811,12 +5946,34 @@ export default handleActions({
       }      
     });
   },
-  [CREATE_END_ITEM]: (state, action) => {
-    return state;
-  },
+  [CREATE_DETAIL_ITEM]: (state, action) => {
+    const{ selectedAddressIndex, listIndex, listSubIndex, newValue} = action.payload;    
+    let updateState = Object.assign({}, state);
+    let changeJson = {};
 
-  [UPDATE_END_ITEM]: (state, action) => {
-    return state;
+    const selectedBigCategory = updateState.reportData[selectedAddressIndex].selectedBigCategory;
+    // console.log(selectedAddressIndex, selectedBigCategory);
+    
+    let count = 0; let selectedCount = 0;
+    for(var k in updateState.reportData[selectedAddressIndex][selectedBigCategory]) {
+      if ( count == listIndex) {        
+        changeJson[k] = {};
+        changeJson[k][listSubIndex] = {'endData':{
+          $push:[{
+            name: newValue
+          }] 
+        }};        
+      }
+      count++;
+    }
+    // console.log(changeJson);
+    return update(state, {
+      'reportData': {
+        [selectedAddressIndex]: {
+          [`${selectedBigCategory}`]: changeJson
+        }
+      }      
+    });
   },
 
   [HIGHLIGHT_SELECT_END_ITEM]: (state, action) => {

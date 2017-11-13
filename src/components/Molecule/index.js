@@ -12,6 +12,9 @@ import AddressCamera from './AddressCamera';
 import Signature from './Signature';
 import NewAddress from './NewAddress';
 import NewItem from './NewItem';
+import EditItem from './EditItem';
+import NewDetailItem from './NewDetailItem';
+import EditDetailItem from './EditDetailItem';
 
 export {
   ItemList,
@@ -27,5 +30,8 @@ export {
   AddressCamera,
   Signature,
   NewAddress,
-  NewItem
+  NewItem,
+  EditItem,
+  NewDetailItem,
+  EditDetailItem
 }

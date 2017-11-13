@@ -145,11 +145,11 @@ class App extends Component {
   render() {
     return (
         <Router duration={0}>
-          <Scene key="root" hideNavBar={true} hideTabBar={true} hideOnChildTabs={true}>
+          <Scene key="root"  hideNavBar={true} hideTabBar={true} hideOnChildTabs={true}>
             <Scene key="intro" component={Intro} initial={true} />
-            <Scene key="setup" component={Setup}  />
-            <Scene key="report" component={Report} />
-            <Scene key="preview" component={Preview} />
+            <Scene key="setup" type="reset" component={Setup} />
+            <Scene key="report"  type="reset" component={Report} />
+            <Scene key="preview" type="reset" component={Preview} />
           </Scene>
         </Router>
     );

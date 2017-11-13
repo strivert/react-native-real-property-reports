@@ -46,12 +46,13 @@ class InnerSetup extends Component {
    * @return {jsxresult} result in jsx format
    */
   render() {
-    const {clickedPage, reportEditBtnClicked, userEditBtnClicked, isAddressCameraVisible} = this.props;
-    const {address, selectedAddressIndex} = this.props;
+    const {clickedPage, reportEditBtnClicked, userEditBtnClicked, isAddressCameraVisible, isUserCameraVisible} = this.props;
+    const {address, selectedAddressIndex, account} = this.props;
     const {onSelectAddress, onDeleteAddress, onStoreTempAddress, onUpdateAddress} = this.props;
     const {isInspectorSignatureVisible, isClientSignatureVisible, isNewAddressVisible} = this.state;
 
     const addressImages = address[selectedAddressIndex].images;
+    const accountImages = account[0].images;
 
     const inspectorSignature = address[selectedAddressIndex].inspectorSignature;
     const clientSignature = address[selectedAddressIndex].clientSignature;
@@ -100,6 +101,11 @@ class InnerSetup extends Component {
       rightPage =
         <InnerSetupUserRight
           userEditBtnClicked={userEditBtnClicked}
+          account={account}
+          onStoreTempAddress={(tempAddress)=>onStoreTempAddress(tempAddress)}
+          onDisableCameraPicVisible = {()=>{
+            this.props.onDisableCameraPicVisible();
+          }}
         />;
     }
 
@@ -127,6 +133,21 @@ class InnerSetup extends Component {
                 }, ()=>{
                   this.props.onSaveNewAddress(text);
                 });
+              }}
+            />
+          </View>
+        }
+
+        {
+          isUserCameraVisible && 
+          <View>
+            <AddressCamera
+              propImages={accountImages}
+              onDelImages={(imageIndex)=>{this.props.onDelImages(imageIndex);}}
+              onSaveImage={(imageIndex, res)=>{this.props.onSaveImage(imageIndex, res);}}
+              onAddImage={(res)=>{this.props.onAddImage(res);}}
+              onDisableCameraPicVisible = {()=>{
+                this.props.onDisableCameraPicVisible();
               }}
             />
           </View>

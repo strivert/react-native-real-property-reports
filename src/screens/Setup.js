@@ -22,6 +22,7 @@ const {
 
 import * as previewActions from '../modules/preview';
 import * as reportActions from '../modules/report';
+import * as accountActions from '../modules/account';
 
 var ImagePicker = require('react-native-image-picker');
 
@@ -41,26 +42,47 @@ class Setup extends Component {
       clickedPage: 'report',
       reportEditBtnClicked: false,
       userEditBtnClicked: false,
-      isAddressCameraVisible: false
+      isAddressCameraVisible: false,
+      isUserCameraVisible: false
     };
 
     this.tempAddress = {};
+    this.tempAccount = {};
   }
 
-  onUpdateAddress() {    
-    if ( Object.keys(this.tempAddress).length !== 0 ) {
-      this.setState({
-        reportEditBtnClicked: false,
-        userEditBtnClicked: false
-      }, ()=>{
-        this.props.addressActions.updateAddress(this.tempAddress);
-        this.tempAddress = {};
-      });      
+  onUpdateAddress() {
+    const {clickedPage} = this.state;
+    
+    if (clickedPage == 'report') {
+      if ( Object.keys(this.tempAddress).length !== 0 ) {
+        this.setState({
+          reportEditBtnClicked: false,
+          userEditBtnClicked: false
+        }, ()=>{
+            this.props.addressActions.updateAddress(this.tempAddress);
+            this.tempAddress = {};
+        });      
+      } else {
+        this.setState({
+          reportEditBtnClicked: false,
+          userEditBtnClicked: false
+        });
+      }
     } else {
-      this.setState({
-        reportEditBtnClicked: false,
-        userEditBtnClicked: false
-      });
+      if ( Object.keys(this.tempAccount).length !== 0 ) {
+        this.setState({
+          reportEditBtnClicked: false,
+          userEditBtnClicked: false
+        }, ()=>{
+            this.props.accountActions.updateAccount(this.tempAccount);
+            this.tempAccount = {};
+        });      
+      } else {
+        this.setState({
+          reportEditBtnClicked: false,
+          userEditBtnClicked: false
+        });
+      }
     }
   }
 
@@ -71,8 +93,7 @@ class Setup extends Component {
   render() {
     const {address, reportParent, selectedAddressIndex, reportSeed} = this.props;
     const selectedBigCategory = reportParent.hasOwnProperty('reportData')?reportParent.reportData[selectedAddressIndex].selectedBigCategory : 'Roofing';
-    const {isAddressCameraVisible} = this.state;
-
+    const {isAddressCameraVisible, isUserCameraVisible, clickedPage} = this.state;
     return (
       <View style={{flex: 1, flexDirection: 'column'}}>
       	<Header.Main
@@ -81,9 +102,15 @@ class Setup extends Component {
             this.props.previewActions.selectBigCategory({bigCategory: selectedBigCategory });
           }}
           onDisableCameraPicVisible={()=>{
-            this.setState({
-              isAddressCameraVisible: !this.state.isAddressCameraVisible
-            });
+            if (clickedPage =='report') {
+              this.setState({
+                isAddressCameraVisible: !this.state.isAddressCameraVisible
+              });
+            } else {
+              this.setState({
+                isUserCameraVisible: !this.state.isUserCameraVisible
+              });              
+            }
           }}
           onFromPickerImage={()=>{
             var options = {
@@ -98,7 +125,11 @@ class Setup extends Component {
               let source = { uri: response.data };
 
               if (response.data) {
-                this.props.addressActions.addImage({res: response.data});
+                if (clickedPage =='report') {
+                  this.props.addressActions.addImage({res: response.data});
+                } else {
+                  this.props.accountActions.addImage({res: response.data});
+                }
               }
 
             });
@@ -111,8 +142,10 @@ class Setup extends Component {
               reportEditBtnClicked={this.state.reportEditBtnClicked}
               userEditBtnClicked={this.state.userEditBtnClicked}
               address={this.props.address}
+              account={this.props.account}
               selectedAddressIndex={this.props.selectedAddressIndex}
               isAddressCameraVisible = {isAddressCameraVisible}
+              isUserCameraVisible = {isUserCameraVisible}
               onSaveNewAddress={(text)=>{
                 this.props.addressActions.create({title: text});
                 this.props.reportActions.createParentReport({oneReport: reportSeed});
@@ -124,18 +157,36 @@ class Setup extends Component {
                 this.props.addressActions.saveSignature({type: type, res: res});
               }}
               onAddImage={(res)=>{
-                this.props.addressActions.addImage({res: res});
+                if (clickedPage =='report') {
+                  this.props.addressActions.addImage({res: res});
+                } else {
+                  this.props.accountActions.addImage({res: res});                  
+                }
               }}
               onSaveImage={(imageIndex, res)=>{
-                this.props.addressActions.saveImage({imageIndex: imageIndex, res: res});
+                if (clickedPage =='report') {
+                  this.props.addressActions.saveImage({imageIndex: imageIndex, res: res});
+                } else {
+                this.props.accountActions.saveImage({imageIndex: 0, res: res});                  
+                }
               }}
               onDelImages={(imageIndex)=>{
-                this.props.addressActions.delImage({imageIndex: imageIndex});
+                if (clickedPage =='report') {
+                  this.props.addressActions.delImage({imageIndex: imageIndex});
+                } else {
+                  this.props.accountActions.delImage({imageIndex: 0});                  
+                }
               }}
               onDisableCameraPicVisible={()=>{
-                this.setState({
-                  isAddressCameraVisible: !this.state.isAddressCameraVisible
-                });
+                if (clickedPage =='report') {
+                  this.setState({
+                    isAddressCameraVisible: !this.state.isAddressCameraVisible
+                  });
+                } else {
+                  this.setState({
+                    isUserCameraVisible: !this.state.isUserCameraVisible
+                  });  
+                }
               }}
               onSelectAddress={(index)=>{
                 this.setState({
@@ -165,7 +216,11 @@ class Setup extends Component {
                 }
               }}
               onStoreTempAddress={(tempAddress)=>{
-                this.tempAddress = Object.assign({}, tempAddress);
+                if (clickedPage =='report') {
+                  this.tempAddress = Object.assign({}, tempAddress);
+                } else {
+                  this.tempAccount = Object.assign({}, tempAddress);                  
+                }
               }}
               onUpdateAddress={()=>{
                 this.onUpdateAddress();
@@ -185,11 +240,15 @@ class Setup extends Component {
           reportEditBtnClicked={this.state.reportEditBtnClicked}
           userEditBtnClicked={this.state.userEditBtnClicked}
           changeEditToggle={(reportEditBtnClicked, userEditBtnClicked)=>{
+
             this.setState({
               reportEditBtnClicked: reportEditBtnClicked,
               userEditBtnClicked: userEditBtnClicked
             }, ()=>{
-              if (this.state.reportEditBtnClicked === false) {
+              if (clickedPage=='report' && this.state.reportEditBtnClicked === false) {
+                this.onUpdateAddress();
+              }
+              if (clickedPage=='user' && this.state.userEditBtnClicked === false) {
                 this.onUpdateAddress();
               }
             })
@@ -207,12 +266,14 @@ let styles = StyleSheet.create({
 export default connect(
   (state) => ({
     address: state.address.address,
+    account: state.account.account,
     selectedAddressIndex: state.address.selectedAddressIndex,
     reportParent: state.report,
     reportSeed: state.reportSeed
   }),
   (dispatch) => ({
     addressActions: bindActionCreators(addressActions, dispatch),
+    accountActions: bindActionCreators(accountActions, dispatch),
     reportActions: bindActionCreators(reportActions, dispatch),
     previewActions: bindActionCreators(previewActions, dispatch)
   })

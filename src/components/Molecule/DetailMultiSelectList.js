@@ -154,7 +154,13 @@ export default class DetailMultiSelectList extends Component {
                         <TextBtn
                           imgSrc={require('../../assets/imgs/BTN_Blue_130x30.png')}
                           style={{marginRight: 10}}
-                          onPress={()=>{}}
+                          onPress={()=>{
+                            if(goDetail) {
+                              this.props.handleGoEditItem(i, obj.label);
+                            } else {
+                              this.props.handleGoEditDetailItem(i, obj.label);
+                            }
+                          }}
                         >
                           Edit
                         </TextBtn>

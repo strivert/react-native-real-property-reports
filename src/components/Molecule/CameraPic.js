@@ -421,7 +421,9 @@ class CameraPic extends Component {
                     imgSrc={require('../../assets/imgs/PhotoControlBtn.png')}
                     style={{height: 34, resizeMode: 'stretch', margin: 10, marginRight: 20}}
                     onPress={()=>{
-                      alert('');
+                      this.setState({
+                        isDraw: false
+                      });
                     }}
                   >
                     Clear

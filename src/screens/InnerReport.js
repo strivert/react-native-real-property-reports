@@ -10,7 +10,10 @@ import {
   Notes,
   CategoryNotes,
   Limitations,
-  NewItem
+  NewItem,
+  EditItem,
+  NewDetailItem,
+  EditDetailItem
 } from '../components/Molecule';
 
 const {
@@ -41,7 +44,12 @@ class InnerReport extends Component {
       goDetail: true,
       selectedGoDetailItemIndex: null,
       isSectionNoteVisible: false,
-      isAddNewItemVisible: false
+      isAddNewItemVisible: false,
+      isEditItemVisible: false,
+      isAddNewDetailItemVisible: false,
+      isEditDetailItemVisible: false,
+      tempEditItemText: '',
+      tempEditDetailItemText: ''
     }
   }
 
@@ -75,13 +83,28 @@ class InnerReport extends Component {
     this.props.handleGoDetail(index);
   }
 
+  handleGoEditItem(index, itemValue) {
+    this.props.handleGoEditItem(index);
+    this.setState({
+      isEditItemVisible: !this.state.isEditItemVisible,
+      tempEditItemText: itemValue
+    });
+  }
+
+  handleGoEditDetailItem(index, itemValue) {
+    this.props.handleGoEditDetailItem(index);
+    this.setState({
+      isEditDetailItemVisible: !this.state.isEditDetailItemVisible,
+      tempEditDetailItemText: itemValue
+    });
+  }
   /**
    * Render InnerReport page
    * @return {jsxresult} result in jsx format
    */
   render() {
     const {reportData, goDetail, selectedGoDetailItemIndex, isEdit, addressName} = this.props;
-    const {listIndex, listSubIndex, isSectionNoteVisible, isAddNewItemVisible } = this.state;
+    const {listIndex, listSubIndex, isSectionNoteVisible, isAddNewItemVisible, isEditItemVisible, isEditDetailItemVisible, isAddNewDetailItemVisible } = this.state;
     const {isCameraPicVisible, sectionNote, selectedBigCategory, isCategoryNoteVisible, isLimitationNoteVisible} = this.props;
     if ( !reportData )
       return null;
@@ -170,6 +193,8 @@ class InnerReport extends Component {
             handleChangeFiveStep={(val, type)=>{this.props.handleChangeFiveStep(listIndex, listSubIndex, val, type);}}
             handleChangeRightItem = {(selectedArray)=>{this.handleChangeRightItem(selectedArray)}}
             handleGoDetail={(index)=>{this.handleGoDetail(index);}}
+            handleGoEditItem={(index, itemValue)=>{this.handleGoEditItem(index, itemValue);}}
+            handleGoEditDetailItem={(index, itemValue)=>{this.handleGoEditDetailItem(index, itemValue);}}
             handleCreateItem={()=>{
               this.setState({
                 isAddNewItemVisible: !this.state.isAddNewItemVisible
@@ -177,6 +202,11 @@ class InnerReport extends Component {
               /*
               this.props.handleCreateItem(listIndex, listSubIndex);
               */
+            }}
+            handleCreateDetailItem={()=>{
+              this.setState({
+                isAddNewDetailItemVisible: !this.state.isAddNewDetailItemVisible
+              });
             }}
           />
         </View>
@@ -200,6 +230,83 @@ class InnerReport extends Component {
             />
           </View>
         }
+
+        {
+          isAddNewDetailItemVisible && 
+          <View>
+            <NewDetailItem
+              onDisableNewDetailItemVisible={()=>{
+                this.setState({
+                  isAddNewDetailItemVisible: !this.state.isAddNewDetailItemVisible
+                });
+              }}
+              onSaveNewDetailItem={(text)=>{
+                this.setState({
+                  isAddNewDetailItemVisible: !this.state.isAddNewDetailItemVisible
+                }, ()=>{
+                  this.props.onSaveNewDetailItem(listIndex, listSubIndex, text);
+                });                
+              }}
+            />
+          </View>
+        }
+
+        {
+          isEditItemVisible &&
+          <View>
+            <EditItem
+              onDisableEditItemVisible={()=>{
+                this.setState({
+                  isEditItemVisible: !this.state.isEditItemVisible
+                });
+              }}
+              onDelEditItem={()=>{
+                this.setState({
+                  isEditItemVisible: !this.state.isEditItemVisible
+                }, ()=>{
+                  this.props.onDelEditItem(listIndex, listSubIndex)
+                });                
+              }}
+              onSaveEditItem={(text)=>{
+                this.setState({
+                  isEditItemVisible: !this.state.isEditItemVisible
+                }, ()=>{
+                  this.props.onSaveEditItem(listIndex, listSubIndex, text);
+                });
+              }}
+              defaultValue={this.state.tempEditItemText}
+            />
+          </View>
+        }
+
+        {
+          isEditDetailItemVisible &&
+          <View>
+            <EditDetailItem
+              onDisableEditDetailItemVisible={()=>{
+                this.setState({
+                  isEditDetailItemVisible: !this.state.isEditDetailItemVisible
+                });
+              }}
+              onDelEditDetailItem={()=>{
+                this.setState({
+                  isEditDetailItemVisible: !this.state.isEditDetailItemVisible
+                }, ()=>{
+                  this.props.onDelEditDetailItem(listIndex, listSubIndex)
+                });                
+              }}
+              onSaveEditDetailItem={(text)=>{
+                this.setState({
+                  isEditDetailItemVisible: !this.state.isEditDetailItemVisible
+                }, ()=>{
+                  this.props.onSaveEditDetailItem(listIndex, listSubIndex, text);
+                });
+              }}
+              defaultValue={this.state.tempEditDetailItemText}
+            />
+          </View>
+        }
+
 
         {
           isLimitationNoteVisible &&

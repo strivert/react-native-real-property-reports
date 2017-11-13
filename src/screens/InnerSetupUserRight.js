@@ -13,6 +13,7 @@ const {
   View,
   ScrollView,
   TouchableHighlight,
+  TouchableOpacity,
   Linking,
   Switch
 } = ReactNative;
@@ -34,13 +35,64 @@ class InnerSetupUserRight extends Component {
 
     this.state={
       data: { 
-        firstName: {
-          label: 'First Name',
-          value: 'Samual'
-        }
+        userEmail: '',
+        firstName: '',
+        lastName: '',
+        workPhone: '',
+        homePhone: '',
+        cellPhone: '',
+        companyName: '',
+        employeeName: '',
+        Address: '',
+        city: '',
+        stateProvince: '',
+        zipCode: '',
+        licenseType: '',
+        licenseNumber: '',
+        standardOfInspection: '',
+        legal: '',
+        isnUserName: '',
+        isnPasswd: '',
+        isnCompanyKey: '',
+        isFlorida: false,
+        images: []
       },
       falseSwitchIsOn: false
     }
+  }
+
+  componentDidMount() {
+    const {account} = this.props;
+    this.setState({
+      data: Object.assign({}, account[0])
+    });
+  }
+
+  componentWillReceiveProps (nextProps) {
+    const {account} = nextProps;
+    this.setState({
+      data: Object.assign({}, account[0])
+    });
+  }
+
+  onChangeText(what, text) {
+    let updateState = Object.assign({}, this.state.data);
+    updateState[what] = text;
+    this.setState({
+      data: updateState
+    }, ()=>{
+      this.props.onStoreTempAddress(updateState);
+    })
+  }
+
+  dispImage(arrObj, styleObj) {
+    let obj = 
+      arrObj['drawImage'] !='' ?
+        (<Image source={{uri: `data:image/png;base64,${arrObj.drawImage}`}} style={styleObj} />)
+      :
+        (<Image source={{uri: `data:image/png;base64,${arrObj.backImage}`}} style={styleObj} />);
+
+    return obj;
   }
 
   /**
@@ -49,54 +101,92 @@ class InnerSetupUserRight extends Component {
    */
   render() {    
     let mode = (this.props.userEditBtnClicked)?'0':'1';
+    const {account} = this.props;
+    const {
+      userEmail,
+      firstName,
+      lastName,
+      workPhone,
+      homePhone,
+      cellPhone,
+      companyName,
+      employeeName,
+      address,
+      city,
+      stateProvince,
+      zipCode,
+      licenseType,
+      licenseNumber,
+      standardOfInspection,
+      legal,
+      isnUserName,
+      isnPasswd,
+      isnCompanyKey,
+      isFlorida,
+      images
+    } = this.state.data;
+
     return (
       <View style={styles.container}>
         <ScrollView>          
           <View style={{flexDirection: 'row'}}>
             <View style={styles.userInfo}>
                 <Text style={{color:'gray', fontWeight:'bold'}}>User Information</Text>
-                <InputToggleText label='First Name'  value='' mode={mode} />
-                <InputToggleText label='Last Name'  value='' mode={mode} />
-                <InputToggleText label='Work Phone'  value='' mode={mode} />
+                <InputToggleText label='First Name'  value={firstName} mode={mode} onChangeText={(text)=>this.onChangeText('firstName', text)} />
+                <InputToggleText label='Last Name'  value={lastName} mode={mode} onChangeText={(text)=>this.onChangeText('lastName', text)} />
+                <InputToggleText label='Work Phone'  value={workPhone} mode={mode} onChangeText={(text)=>this.onChangeText('workPhone', text)} />
             </View>
             <View style={styles.logoImg}>
-              <Image source={require('../assets/imgs/sampleLogo.png')} />
+              <TouchableOpacity 
+                onPress={()=>{
+                  this.props.onDisableCameraPicVisible();
+                }}
+              >
+                <Image source={require('../assets/imgs/sampleLogo.png')}>
+                  {
+                    images.length > 0 &&
+                    this.dispImage(images[0], {width: 290, height: 200, resizeMode: 'stretch'})
+                  }
+                </Image>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={{flexDirection: 'row'}}>
             <View style={{flex:0.5, marginRight: 15}}>
-              <InputToggleText label='Home Phone'  value='' mode={mode} />
+              <InputToggleText label='Home Phone'  value={homePhone} mode={mode} onChangeText={(text)=>this.onChangeText('homePhone', text)} />
             </View>
             <View style={{flex:0.5}}>
-              <InputToggleText label='Cell Phone'  value='' mode={mode} />
+              <InputToggleText label='Cell Phone'  value={homePhone} mode={mode} onChangeText={(text)=>this.onChangeText('cellPhone', text)} />
             </View>
           </View>
           <View>
-            <InputToggleText label='Email'  value='' mode={mode} />
-            <InputToggleText label='Company Name'  value='' mode={mode} />
-            <InputToggleText label='Employee Name'  value='' mode={mode} />
-            <InputToggleText label='Address'  value='' mode={mode} />
+            <InputToggleText label='Email'  value={userEmail} mode={mode} onChangeText={(text)=>this.onChangeText('userEmail', text)} />
+            <InputToggleText label='Company Name' value={companyName} mode={mode} onChangeText={(text)=>this.onChangeText('companyName', text)} />
+            <InputToggleText label='Employee Name' value={employeeName} mode={mode} onChangeText={(text)=>this.onChangeText('employeeName', text)} />
+            <InputToggleText label='Address'  value={address} mode={mode} onChangeText={(text)=>this.onChangeText('address', text)} />
           </View>
           <View style={{flexDirection: 'row'}}>
             <View style={{flex:0.5, marginRight: 15}}>
-              <InputToggleText label='City'  value='' mode={mode} />
-              <InputToggleText label='Zip / Postal Code'  value='' mode={mode} />
+              <InputToggleText label='City'  value={city} mode={mode} onChangeText={(text)=>this.onChangeText('city', text)} />
+              <InputToggleText label='Zip / Postal Code'  value={zipCode} mode={mode} onChangeText={(text)=>this.onChangeText('zipCode', text)} />
             </View>
             <View style={{flex:0.5}}>
-              <InputToggleText label='State / Province'  value='' mode={mode} />
+              <InputToggleText label='State / Province'  value={stateProvince} mode={mode} onChangeText={(text)=>this.onChangeText('stateProvince', text)} />
             </View>
           </View>
           <View style={{flexDirection: 'row'}}>
             <View style={{flex:0.5, marginRight: 15}}>
-              <InputToggleText label='License Type'  value='' mode={mode} />
+              <InputToggleText label='License Type'  value={licenseType} mode={mode} onChangeText={(text)=>this.onChangeText('licenseType', text)} />
             </View>
             <View style={{flex:0.5}}>
-              <InputToggleText label='License / Certificate Number'  value='' mode={mode} />
+              <InputToggleText label='License / Certificate Number'  value={licenseNumber} mode={mode} onChangeText={(text)=>this.onChangeText('licenseNumber', text)} />
             </View>
           </View>
           <View>
-            <InputToggleText label='Standards of Inspection (optional: appears at front of report after Fact Sheet)'  value='' mode={mode} />
-            <InputToggleText label='Legal, Terms and Conditions (optional: inserted at bottom of report with signatures)'  value='' mode={mode} />            
+            <InputToggleText label='Standards of Inspection (optional: appears at front of report after Fact Sheet)'
+              value={standardOfInspection} mode={mode} onChangeText={(text)=>this.onChangeText('standardOfInspection', text)} />
+            <InputToggleText label='Legal, Terms and Conditions (optional: inserted at bottom of report with signatures)'
+              value={legal} mode={mode} onChangeText={(text)=>this.onChangeText('legal', text)} />
           </View>
 
           <View style={{flexDirection: 'row'}}>
@@ -105,9 +195,9 @@ class InnerSetupUserRight extends Component {
           </View>
 
           <View>
-            <InputRowToggleText label='Username'  value='Ssdfsdf' mode={mode} />
-            <InputRowToggleText label='Password'  value='' mode={mode} />
-            <InputRowToggleText label='Company Key'  value='' mode={mode} />
+            <InputRowToggleText label='Username'  value={isnUserName} mode={mode} onChangeText={(text)=>this.onChangeText('isnUserName', text)} />
+            <InputRowToggleText label='Password'  value={isnPasswd} mode={mode} onChangeText={(text)=>this.onChangeText('isnPasswd', text)} />
+            <InputRowToggleText label='Company Key'  value={isnCompanyKey} mode={mode} onChangeText={(text)=>this.onChangeText('isnCompanyKey', text)} />
           </View>
 
           <View>
@@ -118,9 +208,12 @@ class InnerSetupUserRight extends Component {
           <View style={{flexDirection: 'row', marginTop: 15}}>
             <Text style={{color:'black', fontSize: 17, fontWeight: 'bold', marginRight: 20}}>Florida</Text>
             <Switch
-              onValueChange={(value) => this.setState({falseSwitchIsOn: value})}
+              onValueChange={(value) => {
+                // this.setState({falseSwitchIsOn: value})
+                this.onChangeText('isFlorida', value);
+              }}
               style={{marginBottom: 10}}
-              value={this.state.falseSwitchIsOn} />
+              value={isFlorida} />
           </View>
 
         </ScrollView>
