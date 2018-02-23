@@ -4,6 +4,7 @@ The app needs to read and write to the SQLite database stored internally in the 
 ## Setup - Reports & User
 Reports page shows a list of all of the report addresses on the left and a form to add/edit report addresses on the right.
 User page is a single form that allows the user to edit their profile information and purchase credits. 
+
 ![proto](https://content.screencast.com/users/prageer/folders/Default/media/92bdaf08-abf0-49b2-856a-c594f4b182b3/fort2.png)
 
 ## Report
@@ -11,10 +12,12 @@ This page is the most complicated. This is where the user creates their report. 
 
 ## Reports - Camera
 Clicking the camera icon on the top right of the reports page  opens the camera window. Users can take up to 4 images for each category. Users can also draw on the image by clicking the draw button and using their finger to draw circles and arrows on the image
+
 ![proto](https://content.screencast.com/users/prageer/folders/Default/media/2a9d8db9-9988-4668-ba7d-c6cb81b585ef/fort-report.png)
 
 ## Preview
 On this page the user can preview the report they have created . They can see the whole report at once , or click the section buttons at the bottom to preview just that section. The preview will show the images (up to 4) and the report data for each category.
+
 ![proto](https://content.screencast.com/users/prageer/folders/Default/media/ee943f30-ade2-42a8-b1d6-9bb51e610155/fort-preview.png)
 
 ## Run it locally
