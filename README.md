@@ -8,7 +8,9 @@ User page is a single form that allows the user to edit their profile informatio
 ![proto](https://content.screencast.com/users/prageer/folders/Default/media/92bdaf08-abf0-49b2-856a-c594f4b182b3/fort2.png)
 
 ## Report
-This page is the most complicated. This is where the user creates their report. On the left is a list of categories. On the bottom is buttons for each section of the house. Each section has it’s own list of categories. On the right is the list of selections for the selected category, and the details button leads to a second list of selections for the selected category. ![proto](https://content.screencast.com/users/prageer/folders/Default/media/acf4f191-722b-4be7-950c-7e4436b57d32/fort3.png)
+This page is the most complicated. This is where the user creates their report. On the left is a list of categories. On the bottom is buttons for each section of the house. Each section has it’s own list of categories. On the right is the list of selections for the selected category, and the details button leads to a second list of selections for the selected category. 
+
+![proto](https://content.screencast.com/users/prageer/folders/Default/media/acf4f191-722b-4be7-950c-7e4436b57d32/fort3.png)
 
 ## Reports - Camera
 Clicking the camera icon on the top right of the reports page  opens the camera window. Users can take up to 4 images for each category. Users can also draw on the image by clicking the draw button and using their finger to draw circles and arrows on the image
